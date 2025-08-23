@@ -1,40 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  Alert
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../types';
-import { COLORS, SPACING, FONT_SIZES, BORDER_RADIUS } from '../../utils/constants';
-import { Input, Button } from '@/components/ui';
-import { useRegisterMutation } from '../../hooks/useAuthQueries';
-import { useAuthClientStore } from '../../store/authClientStore';
+  Alert,
+} from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteProp } from "@react-navigation/native";
+import { RootStackParamList } from "@/types";
+import { COLORS, SPACING, FONT_SIZES, BORDER_RADIUS } from "@/utils/theme";
+import { Input, Button } from "@/components/ui";
+import { useRegisterMutation } from "@/hooks/useAuthQueries";
+import { useAuthStore } from "@/store/authStore";
 
-type CreatePasswordScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CreatePassword'>;
-type CreatePasswordScreenRouteProp = RouteProp<RootStackParamList, 'CreatePassword'>;
+type CreatePasswordScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "CreatePassword"
+>;
+type CreatePasswordScreenRouteProp = RouteProp<
+  RootStackParamList,
+  "CreatePassword"
+>;
 
-// Zod schema for password validation
-const createPasswordSchema = z.object({
-  password: z.string()
-    .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Mật khẩu phải có chữ hoa, chữ thường và số'),
-  confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'Mật khẩu xác nhận không khớp',
-  path: ['confirmPassword'],
-});
+const createPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+        "Mật khẩu phải có chữ hoa, chữ thường và số"
+      ),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Mật khẩu xác nhận không khớp",
+    path: ["confirmPassword"],
+  });
 
 type CreatePasswordFormData = z.infer<typeof createPasswordSchema>;
 
@@ -42,16 +52,20 @@ const CreatePasswordScreen: React.FC = () => {
   const navigation = useNavigation<CreatePasswordScreenNavigationProp>();
   const route = useRoute<CreatePasswordScreenRouteProp>();
   const { phoneNumber, userInfo } = route.params;
-  const { setAuthData } = useAuthClientStore();
+  const { setAuthData } = useAuthStore();
   const registerMutation = useRegisterMutation();
 
-  const { control, handleSubmit, formState: { errors, isValid } } = useForm<CreatePasswordFormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<CreatePasswordFormData>({
     defaultValues: {
-      password: '',
-      confirmPassword: '',
+      password: "",
+      confirmPassword: "",
     },
     resolver: zodResolver(createPasswordSchema),
-    mode: 'onChange'
+    mode: "onChange",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -69,29 +83,34 @@ const CreatePasswordScreen: React.FC = () => {
 
       // Store authentication data
       if (response.access_token) {
-        setAuthData(response.user, response.access_token, response.refresh_token);
+        setAuthData(
+          response.user,
+          response.access_token,
+          response.refresh_token
+        );
       }
 
       Alert.alert(
-        'Tạo tài khoản thành công',
-        'Tài khoản của bạn đã được tạo thành công!',
+        "Tạo tài khoản thành công",
+        "Tài khoản của bạn đã được tạo thành công!",
         [
           {
-            text: 'Tiếp tục',
-            onPress: () => navigation.navigate('MainTabs'),
+            text: "Tiếp tục",
+            onPress: () => navigation.navigate("MainTabs"),
           },
         ]
       );
     } catch (error: any) {
-      Alert.alert('Lỗi', error.message || 'Không thể tạo tài khoản');
+      Alert.alert("Lỗi", error.message || "Không thể tạo tài khoản");
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
+      <KeyboardAwareScrollView
         style={styles.keyboardAvoidingView}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        contentContainerStyle={{ flexGrow: 1 }}
+        bottomOffset={0}
       >
         {/* Header */}
         <View style={styles.header}>
@@ -113,7 +132,8 @@ const CreatePasswordScreen: React.FC = () => {
           <View style={styles.content}>
             <Text style={styles.title}>Tạo mật khẩu bảo mật</Text>
             <Text style={styles.subtitle}>
-              Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số
+              Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và
+              số
             </Text>
 
             <View style={styles.form}>
@@ -131,8 +151,12 @@ const CreatePasswordScreen: React.FC = () => {
                     autoCapitalize="none"
                     leftIcon={<Text style={styles.inputIcon}>🔒</Text>}
                     rightIcon={
-                      <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                        <Text style={styles.eyeIcon}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
+                      <TouchableOpacity
+                        onPress={() => setShowPassword(!showPassword)}
+                      >
+                        <Text style={styles.eyeIcon}>
+                          {showPassword ? "👁️" : "👁️‍🗨️"}
+                        </Text>
                       </TouchableOpacity>
                     }
                     onRightIconPress={() => setShowPassword(!showPassword)}
@@ -154,11 +178,19 @@ const CreatePasswordScreen: React.FC = () => {
                     autoCapitalize="none"
                     leftIcon={<Text style={styles.inputIcon}>🔒</Text>}
                     rightIcon={
-                      <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-                        <Text style={styles.eyeIcon}>{showConfirmPassword ? '👁️' : '👁️‍🗨️'}</Text>
+                      <TouchableOpacity
+                        onPress={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                      >
+                        <Text style={styles.eyeIcon}>
+                          {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                        </Text>
                       </TouchableOpacity>
                     }
-                    onRightIconPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                    onRightIconPress={() =>
+                      setShowConfirmPassword(!showConfirmPassword)
+                    }
                   />
                 )}
               />
@@ -167,7 +199,9 @@ const CreatePasswordScreen: React.FC = () => {
               <View style={styles.requirementsContainer}>
                 <Text style={styles.requirementsTitle}>Yêu cầu mật khẩu:</Text>
                 <Text style={styles.requirementItem}>• Ít nhất 8 ký tự</Text>
-                <Text style={styles.requirementItem}>• Có chữ hoa và chữ thường</Text>
+                <Text style={styles.requirementItem}>
+                  • Có chữ hoa và chữ thường
+                </Text>
                 <Text style={styles.requirementItem}>• Có ít nhất 1 số</Text>
               </View>
             </View>
@@ -177,7 +211,11 @@ const CreatePasswordScreen: React.FC = () => {
         {/* Footer */}
         <View style={styles.footer}>
           <Button
-            title={registerMutation.isPending ? 'Đang tạo tài khoản...' : 'Tạo tài khoản'}
+            title={
+              registerMutation.isPending
+                ? "Đang tạo tài khoản..."
+                : "Tạo tài khoản"
+            }
             onPress={handleSubmit(onSubmit)}
             variant="primary"
             size="large"
@@ -186,7 +224,7 @@ const CreatePasswordScreen: React.FC = () => {
             disabled={registerMutation.isPending || !isValid}
           />
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 };
@@ -200,9 +238,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: SPACING.lg,
     paddingVertical: SPACING.md,
     borderBottomWidth: 1,
@@ -211,8 +249,8 @@ const styles = StyleSheet.create({
   backButton: {
     width: 40,
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   backButtonText: {
     fontSize: FONT_SIZES.xl,
@@ -220,7 +258,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: FONT_SIZES.lg,
-    fontWeight: '600',
+    fontWeight: "600",
     color: COLORS.textPrimary,
   },
   headerRight: {
@@ -239,7 +277,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: FONT_SIZES.xxl,
-    fontWeight: '600',
+    fontWeight: "600",
     color: COLORS.textPrimary,
     marginBottom: SPACING.md,
   },
@@ -266,7 +304,7 @@ const styles = StyleSheet.create({
   },
   requirementsTitle: {
     fontSize: FONT_SIZES.md,
-    fontWeight: '500',
+    fontWeight: "500",
     color: COLORS.textPrimary,
     marginBottom: SPACING.md,
   },

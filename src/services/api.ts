@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { getToken, getRefreshToken, removeToken } from './storage';
-import { ApiResponse } from '../types';
+import { getToken, getRefreshToken, removeToken } from '@/services/storage';
+import { ApiResponse } from '@/types';
 
 // Extend the AxiosRequestConfig to include metadata
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {

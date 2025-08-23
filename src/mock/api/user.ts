@@ -1,5 +1,5 @@
 import { mockDelay, mockApiResponse } from './index';
-import { mockUserProfile } from '../data/user';
+import { mockUserProfile } from '@/mock/data/user';
 
 export const mockUserApi = {
   getProfile: async () => {

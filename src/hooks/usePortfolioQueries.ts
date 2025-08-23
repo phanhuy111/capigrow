@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { Portfolio } from '../types';
-import apiService from '../services/api';
+import { Portfolio } from '@/types';
+import apiService from '@/services/api';
 
 // Query keys
 export const portfolioKeys = {

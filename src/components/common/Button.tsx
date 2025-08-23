@@ -7,7 +7,7 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native';
-import { COLORS, TYPOGRAPHY, BUTTON_STYLES, SPACING, BORDER_RADIUS } from '../../utils/theme';
+import { COLORS, TYPOGRAPHY, BUTTON_STYLES, SPACING, BORDER_RADIUS } from '@/utils/theme';
 
 interface ButtonProps {
   title: string;

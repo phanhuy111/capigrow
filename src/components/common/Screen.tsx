@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { COLORS, SPACING } from '../../utils/theme';
+import { COLORS, SPACING } from '@/utils/theme';
 import StatusBar from './StatusBar';
 
 interface ScreenProps {

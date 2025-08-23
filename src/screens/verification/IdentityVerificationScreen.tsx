@@ -10,12 +10,12 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SvgXml } from "react-native-svg";
-import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from "../../utils/theme";
-import { Icons } from "../../assets";
-import Screen from "../../components/common/Screen";
+import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from "@/utils/theme";
+import { Icons } from "@/assets";
+import Screen from "@/components/common/Screen";
 import { Card } from "@/components/ui";
 import { Button } from "@/components/ui";
-import { mockUserApi } from "../../mock/api/user";
+import { mockUserApi } from "@/mock/api/user";
 
 const IdentityVerificationScreen: React.FC = () => {
   const navigation = useNavigation();

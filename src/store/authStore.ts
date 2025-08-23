@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import { AuthState, User, LoginRequest, RegisterRequest, AuthResponse } from '../types';
-import apiService from '../services/api';
-import { setToken, setRefreshToken, setUserData, clearAllData } from '../services/storage';
+import { AuthState, User, LoginRequest, RegisterRequest, AuthResponse } from '@/types';
+import apiService from '@/services/api';
+import { setToken, setRefreshToken, setUserData, clearAllData } from '@/services/storage';
 
 interface AuthStore extends AuthState {
   // Actions

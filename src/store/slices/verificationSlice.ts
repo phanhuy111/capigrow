@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { VerificationState, IdentityVerification } from '../../types';
-import apiService from '../../services/api';
+import { VerificationState, IdentityVerification } from '@/types';
+import apiService from '@/services/api';
 
 const initialState: VerificationState = {
   verification: null,

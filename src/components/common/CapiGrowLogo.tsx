@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { COLORS, SPACING } from '../../utils/constants';
+import { COLORS, SPACING } from '@/utils/theme';
 
 interface CapiGrowLogoProps {
   size?: 'small' | 'medium' | 'large';

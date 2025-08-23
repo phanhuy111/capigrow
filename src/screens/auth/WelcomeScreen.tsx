@@ -3,8 +3,11 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types';
-import { COLORS, SPACING, BORDER_RADIUS } from '../../utils/theme';
+import { RootStackParamList } from '@/types';
+import Screen from '@/components/common/Screen';
+import CapiGrowLogo from '@/components/common/CapiGrowLogo';
+import { COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS } from '@/utils/theme';
+import { useAuthStore } from '@/store/authStore';
 
 type WelcomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Welcome'>;
 

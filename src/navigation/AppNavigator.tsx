@@ -1,33 +1,33 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { getToken, getUserData } from '../services/storage';
-import { useAuthStore } from '../store';
+import { getToken, getUserData } from '@/services/storage';
+import { useAuthStore } from '@/store';
 
 // Import screens
-import SplashScreen from '../screens/auth/SplashScreen';
-import WelcomeScreen from '../screens/auth/WelcomeScreen';
-import PhoneEntryScreen from '../screens/auth/PhoneEntryScreen';
-import OTPVerificationScreen from '../screens/auth/OTPVerificationScreen';
-import CreateAccountScreen from '../screens/auth/CreateAccountScreen';
-import CreatePasswordScreen from '../screens/auth/CreatePasswordScreen';
-import LoginScreen from '../screens/auth/LoginScreen';
-import RegisterScreen from '../screens/auth/RegisterScreen';
-import MainTabNavigator from './MainTabNavigator';
-import NotificationScreen from '../screens/notification/NotificationScreen';
-import IdentityVerificationScreen from '../screens/verification/IdentityVerificationScreen';
-import VerificationDocumentScreen from '../screens/verification/VerificationDocumentScreen';
-import VerificationSelfieScreen from '../screens/verification/VerificationSelfieScreen';
-import VerificationStatusScreen from '../screens/verification/VerificationStatusScreen';
-import InvestmentDetailsScreen from '../screens/investment/InvestmentDetailsScreen';
-import InvestmentAmountScreen from '../screens/investment/InvestmentAmountScreen';
-import InvestmentReviewScreen from '../screens/investment/InvestmentReviewScreen';
-import PaymentConfirmationScreen from '../screens/payment/PaymentConfirmationScreen';
-import PaymentProcessingScreen from '../screens/payment/PaymentProcessingScreen';
-import BankTransferQRScreen from '../screens/payment/BankTransferQRScreen';
-import LoadingScreen from '../screens/common/LoadingScreen';
+import SplashScreen from '@/screens/auth/SplashScreen';
+import WelcomeScreen from '@/screens/auth/WelcomeScreen';
+import PhoneEntryScreen from '@/screens/auth/PhoneEntryScreen';
+import OTPVerificationScreen from '@/screens/auth/OTPVerificationScreen';
+import CreateAccountScreen from '@/screens/auth/CreateAccountScreen';
+import CreatePasswordScreen from '@/screens/auth/CreatePasswordScreen';
+import LoginScreen from '@/screens/auth/LoginScreen';
+import RegisterScreen from '@/screens/auth/RegisterScreen';
+import MainTabNavigator from '@/navigation/MainTabNavigator';
+import NotificationScreen from '@/screens/notification/NotificationScreen';
+import IdentityVerificationScreen from '@/screens/verification/IdentityVerificationScreen';
+import VerificationDocumentScreen from '@/screens/verification/VerificationDocumentScreen';
+import VerificationSelfieScreen from '@/screens/verification/VerificationSelfieScreen';
+import VerificationStatusScreen from '@/screens/verification/VerificationStatusScreen';
+import InvestmentDetailsScreen from '@/screens/investment/InvestmentDetailsScreen';
+import InvestmentAmountScreen from '@/screens/investment/InvestmentAmountScreen';
+import InvestmentReviewScreen from '@/screens/investment/InvestmentReviewScreen';
+import PaymentConfirmationScreen from '@/screens/payment/PaymentConfirmationScreen';
+import PaymentProcessingScreen from '@/screens/payment/PaymentProcessingScreen';
+import BankTransferQRScreen from '@/screens/payment/BankTransferQRScreen';
+import LoadingScreen from '@/screens/common/LoadingScreen';
 
-import { RootStackParamList } from '../types';
+import { RootStackParamList } from '@/types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

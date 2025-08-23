@@ -6,15 +6,17 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { RootStackParamList } from '../../types';
-import { COLORS, SPACING, BORDER_RADIUS } from '../../utils/theme';
+import { RootStackParamList } from '@/types';
+import Screen from '@/components/common/Screen';
+import { COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS } from '@/utils/theme';
+import { useAuthStore } from '@/store/authStore';
 
 // import LinearGradient from 'react-native-linear-gradient';
-import CapiGrowLogo from '../../components/common/CapiGrowLogo';
-import NumericKeypad from '../../components/common/NumericKeypad';
+import CapiGrowLogo from '@/components/common/CapiGrowLogo';
+import NumericKeypad from '@/components/common/NumericKeypad';
 import { Input } from '@/components/ui';
-import { usePhoneVerificationMutation } from '../../hooks/useAuthQueries';
-import { cleanPhoneNumber } from '../../utils/validation';
+import { usePhoneVerificationMutation } from '@/hooks/useAuthQueries';
+import { cleanPhoneNumber } from '@/utils/validation';
 
 const { height } = Dimensions.get('window');
 

@@ -4,10 +4,9 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform
+  TouchableOpacity
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useForm, Controller } from 'react-hook-form';
@@ -15,9 +14,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../types';
-import { COLORS, SPACING, FONT_SIZES } from '../../utils/theme';
+import { RootStackParamList } from '@/types';
+import Screen from '@/components/common/Screen';
+import CapiGrowLogo from '@/components/common/CapiGrowLogo';
+import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES } from '@/utils/theme';
 import { Input, Button } from '@/components/ui';
+import { useAuthStore } from '@/store/authStore';
 
 type CreateAccountScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CreateAccount'>;
 type CreateAccountScreenRouteProp = RouteProp<RootStackParamList, 'CreateAccount'>;
@@ -65,9 +67,10 @@ const CreateAccountScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
+      <KeyboardAwareScrollView
         style={styles.keyboardAvoidingView}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        contentContainerStyle={{ flexGrow: 1 }}
+        bottomOffset={0}
       >
         {/* Header */}
         <View style={styles.header}>
@@ -172,7 +175,7 @@ const CreateAccountScreen: React.FC = () => {
             disabled={!isValid}
           />
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 };

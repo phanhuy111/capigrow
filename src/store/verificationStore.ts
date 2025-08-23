@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { VerificationState, IdentityVerification } from '../types';
-import apiService from '../services/api';
+import { VerificationState, IdentityVerification } from '@/types';
+import apiService from '@/services/api';
 
 interface VerificationStore extends VerificationState {
   // Actions

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
-import { COLORS, SPACING } from '../../utils/theme';
+import { COLORS, SPACING } from '@/utils/theme';
 
 const LoadingScreen: React.FC = () => {
   return (
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginTop: SPACING.md,
-    fontSize: FONT_SIZES.md,
+    fontSize: 16,
     color: COLORS.textSecondary,
   },
 });

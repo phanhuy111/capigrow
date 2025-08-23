@@ -13,9 +13,11 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import QRCode from 'react-native-qrcode-svg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { RootStackParamList } from '../../types';
-import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS } from '../../utils/constants';
-import { formatCurrency, generateQRData } from '../../utils/helpers';
+import { RootStackParamList } from '@/types';
+import Screen from '@/components/common/Screen';
+import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES, BORDER_RADIUS } from '@/utils/theme';
+import { formatCurrency, generateQRData } from '@/utils/helpers';
+import { useInvestmentStore } from '@/store/investmentStore';
 
 type BankTransferQRScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,

@@ -3,15 +3,16 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput } from 
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SvgXml } from 'react-native-svg';
-import { useAuthStore } from '../../store';
-import { RootStackParamList } from '../../types';
-import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '../../utils/theme';
-import { Icons } from '../../assets';
-import Screen from '../../components/common/Screen';
+import { useAuthStore } from '@/store/authStore';
+import { RootStackParamList } from '@/types';
+import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '@/utils/theme';
+import { Icons } from '@/assets';
+import Screen from '@/components/common/Screen';
 import { Card } from '@/components/ui';
-import { mockPortfolioApi } from '../../mock/api/portfolio';
-import { mockInvestmentApi } from '../../mock/api/investments';
-import { mockNotificationApi } from '../../mock/api/notifications';
+import { mockPortfolioApi } from '@/mock/api/portfolio';
+import { mockInvestmentApi } from '@/mock/api/investments';
+import { mockNotificationApi } from '@/mock/api/notifications';
+import { formatCurrency, formatPercentage } from '@/utils/helpers';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -50,16 +51,7 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-    }).format(amount);
-  };
 
-  const formatPercentage = (value: number) => {
-    return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
-  };
 
   return (
     <Screen paddingHorizontal>

@@ -11,10 +11,11 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types';
-import { useInvestmentStore } from '../../store';
-import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS, RISK_LEVELS } from '../../utils/constants';
-import { formatCurrency, formatPercentage, formatDate } from '../../utils/helpers';
+import { RootStackParamList } from '@/types';
+import { useInvestmentStore } from '@/store/investmentStore';
+import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES, BORDER_RADIUS } from '@/utils/theme';
+import { RISK_LEVELS } from '@/utils/constants';
+import { formatCurrency, formatPercentage, formatDate } from '@/utils/helpers';
 
 type InvestmentDetailsScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,

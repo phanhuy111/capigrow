@@ -1,5 +1,5 @@
 import { mockDelay, mockApiResponse } from './index';
-import { mockNotifications, mockNotificationSettings } from '../data/notifications';
+import { mockNotifications, mockNotificationSettings } from '@/mock/data/notifications';
 
 export const mockNotificationApi = {
   getNotifications: async (filters?: {

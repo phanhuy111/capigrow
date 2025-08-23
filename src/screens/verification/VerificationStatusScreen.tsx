@@ -10,10 +10,11 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types';
-import { useVerificationStore } from '../../store';
-import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS, VERIFICATION_STATUS } from '../../utils/constants';
-import { formatDate } from '../../utils/helpers';
+import { RootStackParamList } from '@/types';
+import { useVerificationStore } from '@/store/verificationStore';
+import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES, BORDER_RADIUS } from '@/utils/theme';
+import { VERIFICATION_STATUS } from '@/utils/constants';
+import { formatDate } from '@/utils/helpers';
 
 type VerificationStatusScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,

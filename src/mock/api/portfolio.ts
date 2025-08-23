@@ -1,5 +1,5 @@
 import { mockDelay, mockApiResponse } from './index';
-import { mockPortfolio } from '../data/portfolio';
+import { mockPortfolio } from '@/mock/data/portfolio';
 
 export const mockPortfolioApi = {
   getPortfolio: async () => {

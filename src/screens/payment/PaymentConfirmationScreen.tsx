@@ -10,9 +10,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { RootStackParamList } from '../../types';
-import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS } from '../../utils/constants';
-import { formatCurrency, formatDate } from '../../utils/helpers';
+import { RootStackParamList } from '@/types';
+import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS } from '@/utils/theme';
+import { formatCurrency, formatDate } from '@/utils/helpers';
 
 type PaymentConfirmationScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,

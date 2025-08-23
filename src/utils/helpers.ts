@@ -1,4 +1,4 @@
-import { VALIDATION_PATTERNS } from './constants';
+import { VALIDATION_PATTERNS } from '@/utils/constants';
 
 // Format currency
 export const formatCurrency = (amount: number, currency: string = 'USD'): string => {

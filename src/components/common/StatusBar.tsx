@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { COLORS, TYPOGRAPHY, SPACING } from '../../utils/theme';
+import { COLORS, TYPOGRAPHY, SPACING } from '@/utils/theme';
 
 interface StatusBarProps {
   backgroundColor?: string;

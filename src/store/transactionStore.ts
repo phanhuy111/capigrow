@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { TransactionState, Transaction } from '../types';
-import apiService from '../services/api';
+import { TransactionState, Transaction } from '@/types';
+import apiService from '@/services/api';
 
 interface TransactionStore extends TransactionState {
   // Actions

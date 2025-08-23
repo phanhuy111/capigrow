@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { InvestmentState, Investment, UserInvestment } from '../../types';
-import apiService from '../../services/api';
+import { InvestmentState, Investment, UserInvestment } from '@/types';
+import apiService from '@/services/api';
 
 const initialState: InvestmentState = {
   investments: [],

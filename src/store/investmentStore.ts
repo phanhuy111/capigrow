@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { InvestmentState, Investment, UserInvestment } from '../types';
-import apiService from '../services/api';
+import { InvestmentState, Investment, UserInvestment } from '@/types';
+import apiService from '@/services/api';
 
 interface InvestmentStore extends InvestmentState {
   // Actions

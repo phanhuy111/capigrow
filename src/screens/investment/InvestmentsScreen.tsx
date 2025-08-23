@@ -12,13 +12,13 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SvgXml } from 'react-native-svg';
-import { RootStackParamList } from '../../types';
-import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '../../utils/theme';
-import { Icons } from '../../assets';
-import Screen from '../../components/common/Screen';
+import { RootStackParamList } from '@/types';
+import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '@/utils/theme';
+import { Icons } from '@/assets';
+import Screen from '@/components/common/Screen';
 import { Card } from '@/components/ui';
-import { mockInvestmentApi } from '../../mock/api/investments';
-import { formatCurrency, formatPercentage } from '../../utils/helpers';
+import { mockInvestmentApi } from '@/mock/api/investments';
+import { formatCurrency, formatPercentage } from '@/utils/helpers';
 
 const { width } = Dimensions.get('window');
 

@@ -1,5 +1,5 @@
 import { mockDelay, mockApiResponse } from './index';
-import { mockAuthData, mockLoginResponse, mockRegisterResponse } from '../data/auth';
+import { mockAuthData, mockLoginResponse, mockRegisterResponse } from '@/mock/data/auth';
 
 export const mockAuthApi = {
   login: async (email: string, password: string) => {

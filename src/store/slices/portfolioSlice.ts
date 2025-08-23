@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { PortfolioState, Portfolio } from '../../types';
-import apiService from '../../services/api';
+import { PortfolioState, Portfolio } from '@/types';
+import apiService from '@/services/api';
 
 const initialState: PortfolioState = {
   portfolio: null,

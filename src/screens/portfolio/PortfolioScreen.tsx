@@ -8,12 +8,12 @@ import {
   RefreshControl,
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '../../utils/theme';
-import { Icons } from '../../assets';
-import Screen from '../../components/common/Screen';
+import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '@/utils/theme';
+import { Icons } from '@/assets';
+import Screen from '@/components/common/Screen';
 import { Card } from '@/components/ui';
-import { mockPortfolioApi } from '../../mock/api/portfolio';
-import { formatDate } from '../../utils/helpers';
+import { mockPortfolioApi } from '@/mock/api/portfolio';
+import { formatDate } from '@/utils/helpers';
 
 
 

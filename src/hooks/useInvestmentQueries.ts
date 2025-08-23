@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Investment, UserInvestment } from '../types';
-import apiService from '../services/api';
+import { Investment, UserInvestment } from '@/types';
+import apiService from '@/services/api';
 
 // Query keys
 export const investmentKeys = {

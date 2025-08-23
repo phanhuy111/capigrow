@@ -10,10 +10,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useTransactionStore } from '../../store';
-import { Transaction } from '../../types';
-import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS, TRANSACTION_STATUS } from '../../utils/constants';
-import { formatCurrency, formatDate } from '../../utils/helpers';
+import { useTransactionStore } from '@/store';
+import { Transaction, RootStackParamList } from '@/types';
+import Screen from '@/components/common/Screen';
+import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES, BORDER_RADIUS } from '@/utils/theme';
+import { TRANSACTION_STATUS } from '@/utils/constants';
+import { formatCurrency, formatDate } from '@/utils/helpers';
 
 const TransactionsScreen: React.FC = () => {
   const { transactions, isLoading, fetchTransactions } = useTransactionStore();

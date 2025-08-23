@@ -1,7 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { COLORS, FONT_SIZES, SPACING } from '../../utils/constants';
+import { RootStackParamList } from '@/types';
+import Screen from '@/components/common/Screen';
+import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES } from '@/utils/theme';
+import { useInvestmentStore } from '@/store/investmentStore';
 
 const PaymentProcessingScreen: React.FC = () => {
   return (

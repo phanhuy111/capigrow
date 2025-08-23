@@ -13,9 +13,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types';
-import { useVerificationStore } from '../../store';
-import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS } from '../../utils/constants';
+import { RootStackParamList } from '@/types';
+import { useVerificationStore } from '@/store/verificationStore';
+import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES, BORDER_RADIUS } from '@/utils/theme';
 
 type VerificationDocumentScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,

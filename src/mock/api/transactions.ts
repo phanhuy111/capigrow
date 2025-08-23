@@ -1,5 +1,5 @@
 import { mockDelay, mockApiResponse } from './index';
-import { mockTransactions, mockPaymentMethods } from '../data/transactions';
+import { mockTransactions, mockPaymentMethods } from '@/mock/data/transactions';
 
 export const mockTransactionApi = {
   getTransactions: async (filters?: {

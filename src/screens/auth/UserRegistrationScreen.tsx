@@ -5,22 +5,21 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
+  ScrollView
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { RootStackParamList } from '../../types';
-import Screen from '../../components/common/Screen';
+import { RootStackParamList } from '@/types';
+import Screen from '@/components/common/Screen';
 import { Input, Button } from '@/components/ui';
-import CapiGrowLogo from '../../components/common/CapiGrowLogo';
-import { COLORS, SPACING, TYPOGRAPHY } from '../../utils/theme';
-import { useRegisterMutation } from '../../hooks/useAuthQueries';
-import { useAuthClientStore } from '../../store/authClientStore';
+import CapiGrowLogo from '@/components/common/CapiGrowLogo';
+import { COLORS, SPACING, TYPOGRAPHY } from '@/utils/theme';
+import { useRegisterMutation } from '@/hooks/useAuthQueries';
+import { useAuthStore } from '@/store/authStore';
 
 type UserRegistrationScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -58,7 +57,7 @@ type RegistrationFormData = z.infer<typeof userRegistrationSchema>;
 const UserRegistrationScreen: React.FC = () => {
   const navigation = useNavigation<UserRegistrationScreenNavigationProp>();
   const route = useRoute<UserRegistrationScreenRouteProp>();
-  const { setAuthData } = useAuthClientStore();
+  const { setAuthData } = useAuthStore();
   const { phoneNumber, token } = route.params;
   
   const registerMutation = useRegisterMutation();
@@ -101,14 +100,12 @@ const UserRegistrationScreen: React.FC = () => {
   
   return (
     <Screen style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      <KeyboardAwareScrollView
         style={styles.keyboardAvoid}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        bottomOffset={0}
       >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
           <View style={styles.header}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
@@ -231,7 +228,6 @@ const UserRegistrationScreen: React.FC = () => {
               />
             </View>
           </View>
-        </ScrollView>
         
         <View style={styles.footer}>
           <Button
@@ -249,7 +245,7 @@ const UserRegistrationScreen: React.FC = () => {
             <Text style={styles.termsLink}>Privacy Policy</Text>
           </Text>
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     </Screen>
   );
 };

@@ -3,9 +3,11 @@ import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types';
-import { COLORS, TYPOGRAPHY, SPACING } from '../../utils/theme';
-import CapiGrowLogo from '../../components/common/CapiGrowLogo';
+import { RootStackParamList } from '@/types';
+import Screen from '@/components/common/Screen';
+import CapiGrowLogo from '@/components/common/CapiGrowLogo';
+import { COLORS, SPACING, TYPOGRAPHY } from '@/utils/theme';
+import { useAuthStore } from '@/store/authStore';
 
 type SplashScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>;
 

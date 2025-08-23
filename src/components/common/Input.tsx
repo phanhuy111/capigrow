@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Control, Controller, FieldError } from 'react-hook-form';
-import { COLORS, TYPOGRAPHY, INPUT_STYLES, SPACING } from '../../utils/theme';
+import { COLORS, TYPOGRAPHY, INPUT_STYLES, SPACING } from '@/utils/theme';
 
 interface InputProps {
   label?: string;

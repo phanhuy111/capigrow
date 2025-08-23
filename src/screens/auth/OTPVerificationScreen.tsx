@@ -7,11 +7,12 @@ import { RouteProp } from '@react-navigation/native';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { RootStackParamList } from '../../types';
-import { COLORS, SPACING, BORDER_RADIUS } from '../../utils/theme';
-import { useOTPVerificationMutation, useResendOTPMutation } from '../../hooks/useAuthQueries';
-import { useAuthClientStore } from '../../store/authClientStore';
-import NumericKeypad from '../../components/common/NumericKeypad';
+import { RootStackParamList } from '@/types';
+import Screen from '@/components/common/Screen';
+import { COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS } from '@/utils/theme';
+import { useOTPVerificationMutation, useResendOTPMutation } from '@/hooks/useAuthQueries';
+import { useAuthStore } from '@/store/authStore';
+import NumericKeypad from '@/components/common/NumericKeypad';
 
 type OTPVerificationScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'OTPVerification'>;
 type OTPVerificationScreenRouteProp = RouteProp<RootStackParamList, 'OTPVerification'>;
@@ -26,7 +27,7 @@ type OTPFormData = z.infer<typeof otpSchema>;
 const OTPVerificationScreen: React.FC = () => {
   const navigation = useNavigation<OTPVerificationScreenNavigationProp>();
   const route = useRoute<OTPVerificationScreenRouteProp>();
-  const { setAuthData } = useAuthClientStore();
+  const { setAuthData } = useAuthStore();
   const { phoneNumber, isLogin = false } = route.params;
   // For demo purposes, using a mock sessionId - in real app this would come from previous screen
   const sessionId = 'mock-session-id';

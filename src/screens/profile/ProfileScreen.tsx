@@ -12,14 +12,14 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SvgXml } from 'react-native-svg';
-import { RootStackParamList } from '../../types';
-import { useAuthStore } from '../../store';
-import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '../../utils/theme';
-import { Icons } from '../../assets';
-import Screen from '../../components/common/Screen';
+import { RootStackParamList } from '@/types';
+import { useAuthStore } from '@/store/authStore';
+import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '@/utils/theme';
+import { Icons } from '@/assets';
+import Screen from '@/components/common/Screen';
 import { Card } from '@/components/ui';
-import { mockUserApi } from '../../mock/api/user';
-import { formatDate } from '../../utils/helpers';
+import { mockUserApi } from '@/mock/api/user';
+import { formatDate } from '@/utils/helpers';
 
 type ProfileScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 

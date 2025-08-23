@@ -12,4 +12,4 @@ export type {
   PortfolioState,
   TransactionState,
   VerificationState,
-} from '../types';
+} from '@/types';

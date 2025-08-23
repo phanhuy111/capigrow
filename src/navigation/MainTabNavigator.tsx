@@ -4,15 +4,15 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SvgXml } from 'react-native-svg';
 
 // Import screens
-import HomeScreen from '../screens/home/HomeScreen';
-import InvestmentsScreen from '../screens/investment/InvestmentsScreen';
-import PortfolioScreen from '../screens/portfolio/PortfolioScreen';
-import TransactionsScreen from '../screens/transaction/TransactionsScreen';
-import ProfileScreen from '../screens/profile/ProfileScreen';
+import HomeScreen from '@/screens/home/HomeScreen';
+import InvestmentsScreen from '@/screens/investment/InvestmentsScreen';
+import PortfolioScreen from '@/screens/portfolio/PortfolioScreen';
+import TransactionsScreen from '@/screens/transaction/TransactionsScreen';
+import ProfileScreen from '@/screens/profile/ProfileScreen';
 
-import { MainTabParamList } from '../types';
-import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '../utils/theme';
-import { Icons } from '../assets';
+import { MainTabParamList } from '@/types';
+import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '@/utils/theme';
+import { Icons } from '@/assets';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 

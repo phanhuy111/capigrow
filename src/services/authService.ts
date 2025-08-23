@@ -1,5 +1,5 @@
-import apiClient from './apiClient';
-import { API_ENDPOINTS } from '../utils/constants';
+import apiClient from '@/services/apiClient';
+import { API_ENDPOINTS } from '@/utils/constants';
 
 // Types for authentication
 export interface PhoneVerificationRequest {

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SvgXml } from 'react-native-svg';
-import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '../../utils/theme';
-import { Icons } from '../../assets';
-import Screen from '../../components/common/Screen';
+import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '@/utils/theme';
+import { Icons } from '@/assets';
+import Screen from '@/components/common/Screen';
 import { Card } from '@/components/ui';
-import { mockNotificationApi } from '../../mock/api/notifications';
-import { formatDate } from '../../utils/helpers';
+import { mockNotificationApi } from '@/mock/api/notifications';
+import { formatDate } from '@/utils/helpers';
 
 const NotificationScreen: React.FC = () => {
   const navigation = useNavigation();

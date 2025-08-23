@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { API_ENDPOINTS } from '../utils/constants';
+import { API_ENDPOINTS } from '@/utils/constants';
 
 class ApiClient {
   private instance: AxiosInstance;

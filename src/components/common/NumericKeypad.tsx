@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { COLORS, SPACING, BORDER_RADIUS } from '../../utils/constants';
+import { COLORS, SPACING, BORDER_RADIUS } from '@/utils/constants';
 
 interface NumericKeypadProps {
   onKeyPress: (key: string) => void;

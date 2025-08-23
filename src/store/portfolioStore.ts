@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { PortfolioState, Portfolio } from '../types';
-import apiService from '../services/api';
+import { PortfolioState, Portfolio } from '@/types';
+import apiService from '@/services/api';
 
 interface PortfolioStore extends PortfolioState {
   // Actions

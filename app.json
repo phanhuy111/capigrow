@@ -23,7 +23,10 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#8B5CF6"
       },
-      "package": "com.capigrowapp"
+      "package": "com.capigrowapp",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -37,6 +40,11 @@
           "cameraPermission": "The app accesses your camera to let you take photos for identity verification."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "92a503ce-ae2f-4278-84a4-a0693ef189fc"
+      }
+    }
   }
 }

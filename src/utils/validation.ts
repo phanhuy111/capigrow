@@ -1,4 +1,4 @@
-import { VALIDATION_PATTERNS, ERROR_MESSAGES } from './constants';
+import { VALIDATION_PATTERNS, ERROR_MESSAGES } from '@/utils/constants';
 
 // Validation rules for React Hook Form
 export const validationRules = {

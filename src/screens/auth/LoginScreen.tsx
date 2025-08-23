@@ -6,13 +6,15 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types';
-import { COLORS, SPACING, BORDER_RADIUS } from '../../utils/theme';
-import { useLoginMutation } from '../../hooks/useAuthQueries';
-import { formatPhoneNumber, cleanPhoneNumber } from '../../utils/validation';
+import { RootStackParamList } from '@/types';
+import Screen from '@/components/common/Screen';
+import CapiGrowLogo from '@/components/common/CapiGrowLogo';
+import { COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS } from '@/utils/theme';
+import { useLoginMutation } from '@/hooks/useAuthQueries';
+import { useAuthStore } from '@/store/authStore';
+import { formatPhoneNumber, cleanPhoneNumber } from '@/utils/validation';
 // import LinearGradient from 'react-native-linear-gradient';
-import CapiGrowLogo from '../../components/common/CapiGrowLogo';
-import NumericKeypad from '../../components/common/NumericKeypad';
+import NumericKeypad from '@/components/common/NumericKeypad';
 
 const { height } = Dimensions.get('window');
 

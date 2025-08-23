@@ -1,4 +1,4 @@
-import { COLORS, FONTS, FONT_WEIGHTS, FONT_SIZES, LINE_HEIGHTS, SPACING, BORDER_RADIUS } from './constants';
+import { COLORS, FONTS, FONT_WEIGHTS, FONT_SIZES, LINE_HEIGHTS, SPACING, BORDER_RADIUS } from '@/utils/constants';
 
 // Typography styles matching Figma design
 export const TYPOGRAPHY = {

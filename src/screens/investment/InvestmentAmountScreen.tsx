@@ -14,10 +14,12 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types';
-import { useInvestmentStore } from '../../store';
-import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS } from '../../utils/constants';
-import { formatCurrency, calculateReturns } from '../../utils/helpers';
+import { RootStackParamList } from '@/types';
+import Screen from '@/components/common/Screen';
+import NumericKeypad from '@/components/common/NumericKeypad';
+import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES, BORDER_RADIUS } from '@/utils/theme';
+import { useInvestmentStore } from '@/store/investmentStore';
+import { formatCurrency, calculateReturns } from '@/utils/helpers';
 import { Input } from '@/components/ui';
 
 type InvestmentAmountScreenNavigationProp = NativeStackNavigationProp<

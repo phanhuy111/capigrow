@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { TransactionState, Transaction } from '../../types';
-import apiService from '../../services/api';
+import { TransactionState, Transaction } from '@/types';
+import apiService from '@/services/api';
 
 const initialState: TransactionState = {
   transactions: [],
