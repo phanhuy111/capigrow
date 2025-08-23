@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   Alert,
   ScrollView,
@@ -15,7 +14,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types';
 import { useVerificationStore } from '@/store/verificationStore';
-import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES, BORDER_RADIUS } from '@/utils/theme';
+import { COLORS } from '@/utils/theme';
 
 type VerificationSelfieScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -77,52 +76,65 @@ const VerificationSelfieScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Take a Selfie</Text>
-          <Text style={styles.subtitle}>
+    <SafeAreaView className="flex-1 bg-white">
+      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 16 }}>
+        <View className="mt-4 mb-6 items-center">
+          <Text className="text-2xl font-bold text-gray-900 mb-1">
+            Take a Selfie
+          </Text>
+          <Text className="text-base text-gray-600 text-center leading-6">
             Take a clear selfie to complete your identity verification
           </Text>
         </View>
 
-        <View style={styles.selfieContainer}>
-          <View style={styles.selfieFrame}>
+        <View className="items-center mb-6">
+          <View className="w-64 h-80 rounded-2xl border-4 border-blue-600 overflow-hidden mb-4">
             {selfieImage ? (
-              <Image source={{ uri: selfieImage }} style={styles.selfieImage} />
+              <Image source={{ uri: selfieImage }} className="w-full h-full" />
             ) : (
-              <View style={styles.selfiePlaceholder}>
-                <Text style={styles.selfieIcon}>🤳</Text>
-                <Text style={styles.placeholderText}>Your selfie will appear here</Text>
+              <View className="flex-1 justify-center items-center bg-gray-100">
+                <Text className="text-6xl mb-2">🤳</Text>
+                <Text className="text-sm text-gray-600 text-center">
+                  Your selfie will appear here
+                </Text>
               </View>
             )}
           </View>
 
-          <TouchableOpacity style={styles.cameraButton} onPress={takeSelfie}>
-            <Text style={styles.cameraButtonText}>
+          <TouchableOpacity 
+            className="bg-blue-600 py-3 px-6 rounded-md" 
+            onPress={takeSelfie}
+          >
+            <Text className="text-white text-base font-semibold">
               {selfieImage ? 'Retake Selfie' : 'Take Selfie'}
             </Text>
           </TouchableOpacity>
         </View>
 
-        <View style={styles.instructions}>
-          <Text style={styles.instructionsTitle}>Instructions:</Text>
-          <Text style={styles.instructionText}>• Look directly at the camera</Text>
-          <Text style={styles.instructionText}>• Ensure your face is well-lit</Text>
-          <Text style={styles.instructionText}>• Remove sunglasses or hats</Text>
-          <Text style={styles.instructionText}>• Keep a neutral expression</Text>
-          <Text style={styles.instructionText}>• Make sure your entire face is visible</Text>
+        <View className="bg-gray-100 p-4 rounded-md mb-6">
+          <Text className="text-sm font-semibold text-gray-900 mb-1">
+            Instructions:
+          </Text>
+          <Text className="text-sm text-gray-600 mb-1">• Look directly at the camera</Text>
+          <Text className="text-sm text-gray-600 mb-1">• Ensure your face is well-lit</Text>
+          <Text className="text-sm text-gray-600 mb-1">• Remove sunglasses or hats</Text>
+          <Text className="text-sm text-gray-600 mb-1">• Keep a neutral expression</Text>
+          <Text className="text-sm text-gray-600 mb-1">• Make sure your entire face is visible</Text>
         </View>
 
         <TouchableOpacity
-          style={[styles.submitButton, (!selfieImage || isLoading) && styles.submitButtonDisabled]}
+          className={`py-4 rounded-md items-center mb-6 ${
+            (!selfieImage || isLoading) ? 'bg-gray-400' : 'bg-blue-600'
+          }`}
           onPress={handleSubmit}
           disabled={!selfieImage || isLoading}
         >
           {isLoading ? (
             <ActivityIndicator color={COLORS.white} />
           ) : (
-            <Text style={styles.submitButtonText}>Submit Selfie</Text>
+            <Text className="text-white text-base font-semibold">
+              Submit Selfie
+            </Text>
           )}
         </TouchableOpacity>
       </ScrollView>
@@ -130,107 +142,6 @@ const VerificationSelfieScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  content: {
-    flexGrow: 1,
-    paddingHorizontal: SPACING.lg,
-  },
-  header: {
-    marginTop: SPACING.lg,
-    marginBottom: SPACING.xl,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: FONT_SIZES.xxl,
-    fontWeight: 'bold',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.xs,
-  },
-  subtitle: {
-    fontSize: FONT_SIZES.md,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  selfieContainer: {
-    alignItems: 'center',
-    marginBottom: SPACING.xl,
-  },
-  selfieFrame: {
-    width: 250,
-    height: 300,
-    borderRadius: BORDER_RADIUS.xl,
-    borderWidth: 3,
-    borderColor: COLORS.primary,
-    overflow: 'hidden',
-    marginBottom: SPACING.lg,
-  },
-  selfieImage: {
-    width: '100%',
-    height: '100%',
-  },
-  selfiePlaceholder: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.gray100,
-  },
-  selfieIcon: {
-    fontSize: 60,
-    marginBottom: SPACING.sm,
-  },
-  placeholderText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-  },
-  cameraButton: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: SPACING.md,
-    paddingHorizontal: SPACING.xl,
-    borderRadius: BORDER_RADIUS.md,
-  },
-  cameraButtonText: {
-    color: COLORS.white,
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-  },
-  instructions: {
-    backgroundColor: COLORS.gray100,
-    padding: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    marginBottom: SPACING.xl,
-  },
-  instructionsTitle: {
-    fontSize: FONT_SIZES.sm,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.xs,
-  },
-  instructionText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-    marginBottom: SPACING.xs,
-  },
-  submitButton: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    alignItems: 'center',
-    marginBottom: SPACING.xl,
-  },
-  submitButtonDisabled: {
-    backgroundColor: COLORS.gray400,
-  },
-  submitButtonText: {
-    color: COLORS.white,
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-  },
-});
+
 
 export default VerificationSelfieScreen;

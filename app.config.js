@@ -39,6 +39,9 @@ export default ({ config }) => {
           cameraPermission: 'The app accesses your camera to let you take photos for identity verification.',
         },
       ],
+      "expo-font",
+      "expo-router",
+      "expo-web-browser",
     ],
     extra: {
       eas: {

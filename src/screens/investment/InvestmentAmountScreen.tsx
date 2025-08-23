@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
   Alert,
@@ -17,7 +16,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types';
 import Screen from '@/components/common/Screen';
 import NumericKeypad from '@/components/common/NumericKeypad';
-import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES, BORDER_RADIUS } from '@/utils/theme';
+import { COLORS } from '@/utils/theme';
 import { useInvestmentStore } from '@/store/investmentStore';
 import { formatCurrency, calculateReturns } from '@/utils/helpers';
 import { Input } from '@/components/ui';
@@ -77,9 +76,9 @@ const InvestmentAmountScreen: React.FC = () => {
 
   if (!investment) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Investment not found</Text>
+      <SafeAreaView className="flex-1 bg-white">
+        <View className="flex-1 px-4">
+          <Text className="text-2xl font-bold text-gray-900">Investment not found</Text>
         </View>
       </SafeAreaView>
     );
@@ -100,17 +99,17 @@ const InvestmentAmountScreen: React.FC = () => {
   ].filter(amt => amt <= investment.max_amount);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Choose Investment Amount</Text>
-          <Text style={styles.subtitle}>{investment.title}</Text>
+    <SafeAreaView className="flex-1 bg-white">
+      <ScrollView contentContainerStyle={{flexGrow: 1, paddingHorizontal: 16}}>
+        <View className="mt-4 mb-6 items-center">
+          <Text className="text-2xl font-bold text-gray-900 mb-1">Choose Investment Amount</Text>
+          <Text className="text-base text-gray-600 text-center">{investment.title}</Text>
         </View>
 
-        <View style={styles.amountSection}>
-          <Text style={styles.amountLabel}>Investment Amount</Text>
-          <View style={styles.amountInputContainer}>
-            <Text style={styles.currencySymbol}>$</Text>
+        <View className="mb-6">
+          <Text className="text-base font-semibold text-gray-900 mb-2 text-center">Investment Amount</Text>
+          <View className="flex-row items-center justify-center border-b-2 border-blue-600 pb-2">
+            <Text className="text-4xl font-bold text-blue-600 mr-1">$</Text>
             <Controller
                   control={control}
                   name="amount"
@@ -126,7 +125,7 @@ const InvestmentAmountScreen: React.FC = () => {
                   }}
                   render={({ field: { onChange, value } }) => (
                     <TextInput
-                      style={styles.amountInput}
+                      className="text-4xl font-bold text-gray-900 text-center min-w-[200px]"
                       value={value}
                       onChangeText={onChange}
                       placeholder="0"
@@ -138,16 +137,16 @@ const InvestmentAmountScreen: React.FC = () => {
           </View>
         </View>
 
-        <View style={styles.quickAmountsSection}>
-          <Text style={styles.quickAmountsLabel}>Quick Amounts</Text>
-          <View style={styles.quickAmountsContainer}>
+        <View className="mb-6">
+          <Text className="text-sm font-semibold text-gray-900 mb-2">Quick Amounts</Text>
+          <View className="flex-row flex-wrap justify-between">
             {quickAmounts.map((quickAmount, index) => (
               <TouchableOpacity
                 key={index}
-                style={styles.quickAmountButton}
+                className="bg-gray-100 py-2 px-3 rounded-lg mb-2 min-w-[48%] items-center"
                 onPress={() => setQuickAmount(quickAmount)}
               >
-                <Text style={styles.quickAmountText}>
+                <Text className="text-sm text-gray-900 font-medium">
                   {formatCurrency(quickAmount)}
                 </Text>
               </TouchableOpacity>
@@ -155,46 +154,46 @@ const InvestmentAmountScreen: React.FC = () => {
           </View>
         </View>
 
-        <View style={styles.limitsSection}>
-          <View style={styles.limitRow}>
-            <Text style={styles.limitLabel}>Minimum:</Text>
-            <Text style={styles.limitValue}>
+        <View className="bg-gray-100 p-3 rounded-lg mb-6">
+          <View className="flex-row justify-between items-center mb-1">
+            <Text className="text-sm text-gray-600">Minimum:</Text>
+            <Text className="text-sm font-semibold text-gray-900">
               {formatCurrency(investment.min_amount)}
             </Text>
           </View>
-          <View style={styles.limitRow}>
-            <Text style={styles.limitLabel}>Maximum:</Text>
-            <Text style={styles.limitValue}>
+          <View className="flex-row justify-between items-center mb-1">
+            <Text className="text-sm text-gray-600">Maximum:</Text>
+            <Text className="text-sm font-semibold text-gray-900">
               {formatCurrency(investment.max_amount)}
             </Text>
           </View>
         </View>
 
         {investmentAmount > 0 && (
-          <View style={styles.projectionSection}>
-            <Text style={styles.projectionTitle}>Investment Projection</Text>
-            <View style={styles.projectionCard}>
-              <View style={styles.projectionRow}>
-                <Text style={styles.projectionLabel}>Investment Amount:</Text>
-                <Text style={styles.projectionValue}>
+          <View className="mb-6">
+            <Text className="text-lg font-bold text-gray-900 mb-3">Investment Projection</Text>
+            <View className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-600">
+              <View className="flex-row justify-between items-center mb-2">
+                <Text className="text-sm text-gray-600">Investment Amount:</Text>
+                <Text className="text-sm font-semibold text-gray-900">
                   {formatCurrency(investmentAmount)}
                 </Text>
               </View>
-              <View style={styles.projectionRow}>
-                <Text style={styles.projectionLabel}>Expected Return:</Text>
-                <Text style={styles.projectionValue}>
+              <View className="flex-row justify-between items-center mb-2">
+                <Text className="text-sm text-gray-600">Expected Return:</Text>
+                <Text className="text-sm font-semibold text-gray-900">
                   {formatCurrency(expectedReturns)}
                 </Text>
               </View>
-              <View style={styles.projectionRow}>
-                <Text style={styles.projectionLabel}>Total Value:</Text>
-                <Text style={[styles.projectionValue, styles.totalValue]}>
+              <View className="flex-row justify-between items-center mb-2">
+                <Text className="text-sm text-gray-600">Total Value:</Text>
+                <Text className="text-base font-semibold text-blue-600">
                   {formatCurrency(investmentAmount + expectedReturns)}
                 </Text>
               </View>
-              <View style={styles.projectionRow}>
-                <Text style={styles.projectionLabel}>Duration:</Text>
-                <Text style={styles.projectionValue}>
+              <View className="flex-row justify-between items-center mb-2">
+                <Text className="text-sm text-gray-600">Duration:</Text>
+                <Text className="text-sm font-semibold text-gray-900">
                   {investment.duration} months
                 </Text>
               </View>
@@ -203,182 +202,21 @@ const InvestmentAmountScreen: React.FC = () => {
         )}
       </ScrollView>
 
-      <View style={styles.footer}>
+      <View className="p-4 bg-white border-t border-gray-200">
         <TouchableOpacity
-          style={[
-            styles.continueButton,
-            !isValid && styles.continueButtonDisabled,
-          ]}
+          className={`py-3 rounded-lg items-center ${
+            !isValid ? 'bg-gray-400' : 'bg-blue-600'
+          }`}
           onPress={handleSubmit(onSubmit)}
           disabled={!isValid}
         >
-          <Text style={styles.continueButtonText}>Continue</Text>
+          <Text className="text-white text-base font-semibold">Continue</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  content: {
-    flexGrow: 1,
-    paddingHorizontal: SPACING.lg,
-  },
-  header: {
-    marginTop: SPACING.lg,
-    marginBottom: SPACING.xl,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: FONT_SIZES.xxl,
-    fontWeight: 'bold',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.xs,
-  },
-  subtitle: {
-    fontSize: FONT_SIZES.md,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-  },
-  amountSection: {
-    marginBottom: SPACING.xl,
-  },
-  amountLabel: {
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.sm,
-    textAlign: 'center',
-  },
-  amountInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: COLORS.primary,
-    paddingBottom: SPACING.sm,
-  },
-  currencySymbol: {
-    fontSize: FONT_SIZES.xxxl,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginRight: SPACING.xs,
-  },
-  amountInput: {
-    fontSize: FONT_SIZES.xxxl,
-    fontWeight: 'bold',
-    color: COLORS.textPrimary,
-    textAlign: 'center',
-    minWidth: 200,
-  },
-  quickAmountsSection: {
-    marginBottom: SPACING.xl,
-  },
-  quickAmountsLabel: {
-    fontSize: FONT_SIZES.sm,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.sm,
-  },
-  quickAmountsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  quickAmountButton: {
-    backgroundColor: COLORS.gray100,
-    paddingVertical: SPACING.sm,
-    paddingHorizontal: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    marginBottom: SPACING.sm,
-    minWidth: '48%',
-    alignItems: 'center',
-  },
-  quickAmountText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textPrimary,
-    fontWeight: '500',
-  },
-  limitsSection: {
-    backgroundColor: COLORS.gray100,
-    padding: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    marginBottom: SPACING.xl,
-  },
-  limitRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.xs,
-  },
-  limitLabel: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-  },
-  limitValue: {
-    fontSize: FONT_SIZES.sm,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-  },
-  projectionSection: {
-    marginBottom: SPACING.xl,
-  },
-  projectionTitle: {
-    fontSize: FONT_SIZES.lg,
-    fontWeight: 'bold',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.md,
-  },
-  projectionCard: {
-    backgroundColor: COLORS.primary + '10',
-    padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.md,
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.primary,
-  },
-  projectionRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.sm,
-  },
-  projectionLabel: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-  },
-  projectionValue: {
-    fontSize: FONT_SIZES.sm,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-  },
-  totalValue: {
-    color: COLORS.primary,
-    fontSize: FONT_SIZES.md,
-  },
-  footer: {
-    padding: SPACING.lg,
-    backgroundColor: COLORS.white,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.gray200,
-  },
-  continueButton: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    alignItems: 'center',
-  },
-  continueButtonDisabled: {
-    backgroundColor: COLORS.gray400,
-  },
-  continueButtonText: {
-    color: COLORS.white,
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-  },
-});
+
 
 export default InvestmentAmountScreen;

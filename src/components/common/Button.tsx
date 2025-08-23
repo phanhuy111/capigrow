@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  ViewStyle,
-  TextStyle,
-} from 'react-native';
-import { COLORS, TYPOGRAPHY, BUTTON_STYLES, SPACING, BORDER_RADIUS } from '@/utils/theme';
+import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 
 interface ButtonProps {
   title: string;
@@ -16,9 +8,9 @@ interface ButtonProps {
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
   loading?: boolean;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
   fullWidth?: boolean;
+  style?: any;
+  textStyle?: any;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -32,89 +24,105 @@ const Button: React.FC<ButtonProps> = ({
   textStyle,
   fullWidth = false,
 }) => {
-  const getButtonStyle = (): ViewStyle => {
-    const baseStyle = BUTTON_STYLES[variant];
-    const sizeStyle = getSizeStyle();
+  const getButtonClassName = () => {
+    let baseClasses = 'justify-center items-center rounded-lg';
     
-    return {
-      ...baseStyle,
-      ...sizeStyle,
-      ...(fullWidth && { width: '100%' }),
-      ...(disabled && { opacity: 0.5 }),
-      ...style,
-    };
-  };
-
-  const getSizeStyle = (): ViewStyle => {
+    // Size classes
     switch (size) {
       case 'small':
-        return {
-          paddingVertical: SPACING.lg,
-          paddingHorizontal: SPACING.xxl,
-        };
+        baseClasses += ' px-4 py-2 min-h-[36px]';
+        break;
       case 'large':
-        return {
-          paddingVertical: SPACING.xxxl,
-          paddingHorizontal: SPACING.xxxxl,
-        };
-      default:
-        return {
-          paddingVertical: SPACING.xl,
-          paddingHorizontal: SPACING.xxxl,
-        };
+        baseClasses += ' px-6 py-4 min-h-[52px]';
+        break;
+      default: // medium
+        baseClasses += ' px-5 py-3 min-h-[44px]';
+        break;
     }
-  };
-
-  const getTextStyle = (): TextStyle => {
-    const baseTextStyle = getBaseTextStyle();
-    const colorStyle = getTextColorStyle();
     
-    return {
-      ...baseTextStyle,
-      ...colorStyle,
-      ...textStyle,
-    };
+    // Variant classes
+    if (disabled) {
+      baseClasses += ' bg-gray-300';
+    } else {
+      switch (variant) {
+        case 'primary':
+          baseClasses += ' bg-purple-600';
+          break;
+        case 'secondary':
+          baseClasses += ' bg-gray-100 border border-gray-300';
+          break;
+        case 'tertiary':
+          baseClasses += ' bg-transparent border border-purple-600';
+          break;
+        case 'invisible':
+          baseClasses += ' bg-transparent';
+          break;
+        default:
+          baseClasses += ' bg-purple-600';
+          break;
+      }
+    }
+    
+    return baseClasses;
   };
 
-  const getBaseTextStyle = (): TextStyle => {
+  const getTextClassName = () => {
+    let textClasses = 'font-medium text-center';
+    
+    // Size classes
     switch (size) {
       case 'small':
-        return TYPOGRAPHY.buttonSmall;
+        textClasses += ' text-sm';
+        break;
       case 'large':
-        return TYPOGRAPHY.buttonLarge;
-      default:
-        return TYPOGRAPHY.buttonMedium;
+        textClasses += ' text-lg';
+        break;
+      default: // medium
+        textClasses += ' text-base';
+        break;
     }
-  };
-
-  const getTextColorStyle = (): TextStyle => {
-    switch (variant) {
-      case 'primary':
-        return { color: COLORS.textOnPrimary };
-      case 'secondary':
-        return { color: COLORS.primary };
-      case 'tertiary':
-      case 'invisible':
-        return { color: COLORS.primary };
-      default:
-        return { color: COLORS.textOnPrimary };
+    
+    // Color classes
+    if (disabled) {
+      textClasses += ' text-gray-500';
+    } else {
+      switch (variant) {
+        case 'primary':
+          textClasses += ' text-white';
+          break;
+        case 'secondary':
+          textClasses += ' text-gray-900';
+          break;
+        case 'tertiary':
+        case 'invisible':
+          textClasses += ' text-purple-600';
+          break;
+        default:
+          textClasses += ' text-white';
+          break;
+      }
     }
+    
+    return textClasses;
   };
 
   return (
     <TouchableOpacity
-      style={getButtonStyle()}
+      className={`${getButtonClassName()} ${fullWidth ? 'w-full' : ''}`}
+      style={style}
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.8}
     >
       {loading ? (
-        <ActivityIndicator
-          size="small"
-          color={variant === 'primary' ? COLORS.white : COLORS.primary}
+        <ActivityIndicator 
+          size="small" 
+          color={disabled ? '#6B7280' : variant === 'primary' ? '#FFFFFF' : variant === 'secondary' ? '#111827' : '#8B5CF6'} 
         />
       ) : (
-        <Text style={getTextStyle()}>{title}</Text>
+        <Text className={getTextClassName()}>
+          {title}
+        </Text>
       )}
     </TouchableOpacity>
   );

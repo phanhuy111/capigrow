@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
@@ -11,7 +10,7 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RootStackParamList } from '@/types';
-import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS } from '@/utils/theme';
+import { COLORS } from '@/utils/theme';
 import { formatCurrency, formatDate } from '@/utils/helpers';
 
 type PaymentConfirmationScreenNavigationProp = NativeStackNavigationProp<
@@ -47,67 +46,84 @@ const PaymentConfirmationScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.successContainer}>
-          <View style={styles.successIcon}>
+    <SafeAreaView className="flex-1 bg-white">
+      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 16 }}>
+        <View className="items-center mt-6 mb-6">
+          <View className="mb-4">
             <Icon name="check-circle" size={80} color={COLORS.success} />
           </View>
-          <Text style={styles.successTitle}>Payment Successful!</Text>
-          <Text style={styles.successSubtitle}>
+          <Text className="text-2xl font-bold text-gray-900 mb-1 text-center">
+            Payment Successful!
+          </Text>
+          <Text className="text-base text-gray-600 text-center leading-6">
             Your investment has been processed successfully
           </Text>
         </View>
 
-        <View style={styles.detailsContainer}>
-          <Text style={styles.detailsTitle}>Transaction Details</Text>
+        <View className="bg-gray-100 p-4 rounded-md mb-6">
+          <Text className="text-lg font-bold text-gray-900 mb-4">Transaction Details</Text>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Investment:</Text>
-            <Text style={styles.detailValue}>{transaction.investment_title}</Text>
+          <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+            <Text className="text-sm text-gray-600 flex-1">Investment:</Text>
+            <Text className="text-sm text-gray-900 font-medium flex-1 text-right">
+              {transaction.investment_title}
+            </Text>
           </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Amount:</Text>
-            <Text style={[styles.detailValue, styles.amountValue]}>
+          <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+            <Text className="text-sm text-gray-600 flex-1">Amount:</Text>
+            <Text 
+              className="text-base font-bold flex-1 text-right"
+              style={{ color: COLORS.primary }}
+            >
               {formatCurrency(transaction.amount)}
             </Text>
           </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Payment Method:</Text>
-            <Text style={styles.detailValue}>{transaction.payment_method}</Text>
+          <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+            <Text className="text-sm text-gray-600 flex-1">Payment Method:</Text>
+            <Text className="text-sm text-gray-900 font-medium flex-1 text-right">
+              {transaction.payment_method}
+            </Text>
           </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Reference Number:</Text>
-            <Text style={styles.detailValue}>{transaction.reference_number}</Text>
+          <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+            <Text className="text-sm text-gray-600 flex-1">Reference Number:</Text>
+            <Text className="text-sm text-gray-900 font-medium flex-1 text-right">
+              {transaction.reference_number}
+            </Text>
           </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Date & Time:</Text>
-            <Text style={styles.detailValue}>
+          <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+            <Text className="text-sm text-gray-600 flex-1">Date & Time:</Text>
+            <Text className="text-sm text-gray-900 font-medium flex-1 text-right">
               {formatDate(transaction.created_at, 'long')}
             </Text>
           </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Status:</Text>
-            <View style={styles.statusContainer}>
+          <View className="flex-row justify-between items-center py-2">
+            <Text className="text-sm text-gray-600 flex-1">Status:</Text>
+            <View className="flex-row items-center flex-1 justify-end">
               <Icon name="check-circle" size={16} color={COLORS.success} />
-              <Text style={[styles.detailValue, styles.statusText]}>
+              <Text 
+                className="text-sm font-medium ml-1"
+                style={{ color: COLORS.success }}
+              >
                 Completed
               </Text>
             </View>
           </View>
         </View>
 
-        <View style={styles.infoContainer}>
-          <View style={styles.infoCard}>
+        <View className="mb-6">
+          <View 
+            className="flex-row p-4 rounded-md border-l-4"
+            style={{ backgroundColor: COLORS.info + '10', borderLeftColor: COLORS.info }}
+          >
             <Icon name="info" size={24} color={COLORS.info} />
-            <View style={styles.infoContent}>
-              <Text style={styles.infoTitle}>What's Next?</Text>
-              <Text style={styles.infoText}>
+            <View className="flex-1 ml-2">
+              <Text className="text-sm font-semibold text-gray-900 mb-1">What's Next?</Text>
+              <Text className="text-sm text-gray-600 leading-5">
                 Your investment will be processed within {transaction.estimated_completion}.
                 You'll receive a confirmation email and can track your investment in the Portfolio section.
               </Text>
@@ -115,23 +131,38 @@ const PaymentConfirmationScreen: React.FC = () => {
           </View>
         </View>
 
-        <View style={styles.actionsContainer}>
-          <TouchableOpacity style={styles.primaryButton} onPress={handleViewTransaction}>
-            <Text style={styles.primaryButtonText}>View Portfolio</Text>
+        <View className="mb-6">
+          <TouchableOpacity 
+            className="py-4 rounded-md items-center mb-4"
+            style={{ backgroundColor: COLORS.primary }}
+            onPress={handleViewTransaction}
+          >
+            <Text className="text-white text-base font-semibold">View Portfolio</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.secondaryButton} onPress={handleNewInvestment}>
-            <Text style={styles.secondaryButtonText}>Explore More Investments</Text>
+          <TouchableOpacity 
+            className="border py-4 rounded-md items-center"
+            style={{ borderColor: COLORS.primary }}
+            onPress={handleNewInvestment}
+          >
+            <Text className="text-base font-semibold" style={{ color: COLORS.primary }}>
+              Explore More Investments
+            </Text>
           </TouchableOpacity>
         </View>
 
-        <View style={styles.supportContainer}>
-          <Text style={styles.supportText}>
+        <View className="items-center pb-6">
+          <Text className="text-sm text-gray-600 mb-2">
             Need help? Contact our support team
           </Text>
-          <TouchableOpacity style={styles.supportButton}>
+          <TouchableOpacity className="flex-row items-center">
             <Icon name="support-agent" size={16} color={COLORS.primary} />
-            <Text style={styles.supportButtonText}>Get Support</Text>
+            <Text 
+              className="text-sm font-medium ml-1"
+              style={{ color: COLORS.primary }}
+            >
+              Get Support
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -139,155 +170,6 @@ const PaymentConfirmationScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  content: {
-    flexGrow: 1,
-    paddingHorizontal: SPACING.lg,
-  },
-  successContainer: {
-    alignItems: 'center',
-    marginTop: SPACING.xl,
-    marginBottom: SPACING.xl,
-  },
-  successIcon: {
-    marginBottom: SPACING.lg,
-  },
-  successTitle: {
-    fontSize: FONT_SIZES.xxl,
-    fontWeight: 'bold',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.xs,
-    textAlign: 'center',
-  },
-  successSubtitle: {
-    fontSize: FONT_SIZES.md,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  detailsContainer: {
-    backgroundColor: COLORS.gray100,
-    padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.md,
-    marginBottom: SPACING.xl,
-  },
-  detailsTitle: {
-    fontSize: FONT_SIZES.lg,
-    fontWeight: 'bold',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.md,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: SPACING.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray200,
-  },
-  detailLabel: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-    flex: 1,
-  },
-  detailValue: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textPrimary,
-    fontWeight: '500',
-    flex: 1,
-    textAlign: 'right',
-  },
-  amountValue: {
-    fontSize: FONT_SIZES.md,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-  },
-  statusContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  statusText: {
-    marginLeft: SPACING.xs,
-    color: COLORS.success,
-  },
-  infoContainer: {
-    marginBottom: SPACING.xl,
-  },
-  infoCard: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.info + '10',
-    padding: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.info,
-  },
-  infoContent: {
-    flex: 1,
-    marginLeft: SPACING.sm,
-  },
-  infoTitle: {
-    fontSize: FONT_SIZES.sm,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.xs,
-  },
-  infoText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-    lineHeight: 20,
-  },
-  actionsContainer: {
-    marginBottom: SPACING.xl,
-  },
-  primaryButton: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    alignItems: 'center',
-    marginBottom: SPACING.md,
-  },
-  primaryButtonText: {
-    color: COLORS.white,
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-  },
-  secondaryButton: {
-    borderWidth: 1,
-    borderColor: COLORS.primary,
-    paddingVertical: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    alignItems: 'center',
-  },
-  secondaryButtonText: {
-    color: COLORS.primary,
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-  },
-  supportContainer: {
-    alignItems: 'center',
-    paddingBottom: SPACING.xl,
-  },
-  supportText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-    marginBottom: SPACING.sm,
-  },
-  supportButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  supportButtonText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.primary,
-    fontWeight: '500',
-    marginLeft: SPACING.xs,
-  },
-});
+
 
 export default PaymentConfirmationScreen;

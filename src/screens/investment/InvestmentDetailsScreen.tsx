@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
@@ -13,7 +12,7 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types';
 import { useInvestmentStore } from '@/store/investmentStore';
-import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES, BORDER_RADIUS } from '@/utils/theme';
+import { COLORS } from '@/utils/theme';
 import { RISK_LEVELS } from '@/utils/constants';
 import { formatCurrency, formatPercentage, formatDate } from '@/utils/helpers';
 
@@ -42,10 +41,10 @@ const InvestmentDetailsScreen: React.FC = () => {
 
   if (isLoading || !selectedInvestment) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
+      <SafeAreaView className="flex-1 bg-white">
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color={COLORS.primary} />
-          <Text style={styles.loadingText}>Loading investment details...</Text>
+          <Text className="mt-4 text-base text-gray-600">Loading investment details...</Text>
         </View>
       </SafeAreaView>
     );
@@ -56,105 +55,103 @@ const InvestmentDetailsScreen: React.FC = () => {
   const progressPercentage = (selectedInvestment.current_amount / selectedInvestment.target_amount) * 100;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <SafeAreaView className="flex-1 bg-white">
+      <ScrollView className="flex-1">
         {selectedInvestment.image_url && (
-          <Image source={{ uri: selectedInvestment.image_url }} style={styles.investmentImage} />
+          <Image source={{ uri: selectedInvestment.image_url }} className="w-full h-48" style={{ resizeMode: 'cover' }} />
         )}
 
-        <View style={styles.header}>
-          <Text style={styles.title}>{selectedInvestment.title}</Text>
-          <View style={[styles.riskBadge, { backgroundColor: riskInfo.color + '20' }]}>
-            <Text style={[styles.riskText, { color: riskInfo.color }]}>
+        <View className="flex-row justify-between items-start p-4 pb-3">
+          <Text className="text-2xl font-bold text-gray-900 flex-1 mr-2">{selectedInvestment.title}</Text>
+          <View className="px-2 py-1 rounded" style={{ backgroundColor: riskInfo.color + '20' }}>
+            <Text className="text-xs font-semibold" style={{ color: riskInfo.color }}>
               {riskInfo.label}
             </Text>
           </View>
         </View>
 
-        <Text style={styles.description}>{selectedInvestment.description}</Text>
+        <Text className="text-base text-gray-600 leading-6 px-4 mb-4">{selectedInvestment.description}</Text>
 
-        <View style={styles.statsContainer}>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>{formatPercentage(selectedInvestment.expected_return)}</Text>
-            <Text style={styles.statLabel}>Expected Return</Text>
+        <View className="flex-row justify-between px-4 mb-4">
+          <View className="bg-gray-100 p-3 rounded-lg items-center flex-1 mx-1">
+            <Text className="text-lg font-bold text-blue-600 mb-1">{formatPercentage(selectedInvestment.expected_return)}</Text>
+            <Text className="text-xs text-gray-600 text-center">Expected Return</Text>
           </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>{selectedInvestment.duration} months</Text>
-            <Text style={styles.statLabel}>Duration</Text>
+          <View className="bg-gray-100 p-3 rounded-lg items-center flex-1 mx-1">
+            <Text className="text-lg font-bold text-blue-600 mb-1">{selectedInvestment.duration} months</Text>
+            <Text className="text-xs text-gray-600 text-center">Duration</Text>
           </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>{formatCurrency(selectedInvestment.min_amount)}</Text>
-            <Text style={styles.statLabel}>Min Investment</Text>
+          <View className="bg-gray-100 p-3 rounded-lg items-center flex-1 mx-1">
+            <Text className="text-lg font-bold text-blue-600 mb-1">{formatCurrency(selectedInvestment.min_amount)}</Text>
+            <Text className="text-xs text-gray-600 text-center">Min Investment</Text>
           </View>
         </View>
 
-        <View style={styles.progressSection}>
-          <View style={styles.progressHeader}>
-            <Text style={styles.progressTitle}>Funding Progress</Text>
-            <Text style={styles.progressPercentage}>
+        <View className="px-4 mb-4">
+          <View className="flex-row justify-between items-center mb-2">
+            <Text className="text-base font-semibold text-gray-900">Funding Progress</Text>
+            <Text className="text-base font-bold text-blue-600">
               {formatPercentage(progressPercentage, 0)}
             </Text>
           </View>
-          <View style={styles.progressBar}>
+          <View className="h-2 bg-gray-200 rounded mb-2">
             <View
-              style={[
-                styles.progressFill,
-                { width: `${Math.min(progressPercentage, 100)}%` },
-              ]}
+              className="h-full bg-blue-600 rounded"
+              style={{ width: `${Math.min(progressPercentage, 100)}%` }}
             />
           </View>
-          <View style={styles.progressFooter}>
-            <Text style={styles.progressText}>
+          <View className="flex-row justify-between">
+            <Text className="text-sm text-gray-600">
               {formatCurrency(selectedInvestment.current_amount)} raised
             </Text>
-            <Text style={styles.progressText}>
+            <Text className="text-sm text-gray-600">
               of {formatCurrency(selectedInvestment.target_amount)}
             </Text>
           </View>
         </View>
 
-        <View style={styles.detailsSection}>
-          <Text style={styles.sectionTitle}>Investment Details</Text>
+        <View className="px-4 mb-4">
+          <Text className="text-lg font-bold text-gray-900 mb-3">Investment Details</Text>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Category:</Text>
-            <Text style={styles.detailValue}>{selectedInvestment.category}</Text>
+          <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+            <Text className="text-sm text-gray-600 flex-1">Category:</Text>
+            <Text className="text-sm text-gray-900 font-medium flex-1 text-right">{selectedInvestment.category}</Text>
           </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Risk Level:</Text>
-            <Text style={styles.detailValue}>{riskInfo.label}</Text>
+          <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+            <Text className="text-sm text-gray-600 flex-1">Risk Level:</Text>
+            <Text className="text-sm text-gray-900 font-medium flex-1 text-right">{riskInfo.label}</Text>
           </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Investment Range:</Text>
-            <Text style={styles.detailValue}>
+          <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+            <Text className="text-sm text-gray-600 flex-1">Investment Range:</Text>
+            <Text className="text-sm text-gray-900 font-medium flex-1 text-right">
               {formatCurrency(selectedInvestment.min_amount)} - {formatCurrency(selectedInvestment.max_amount)}
             </Text>
           </View>
 
           {selectedInvestment.start_date && (
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Start Date:</Text>
-              <Text style={styles.detailValue}>
+            <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+              <Text className="text-sm text-gray-600 flex-1">Start Date:</Text>
+              <Text className="text-sm text-gray-900 font-medium flex-1 text-right">
                 {formatDate(selectedInvestment.start_date)}
               </Text>
             </View>
           )}
 
           {selectedInvestment.end_date && (
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>End Date:</Text>
-              <Text style={styles.detailValue}>
+            <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+              <Text className="text-sm text-gray-600 flex-1">End Date:</Text>
+              <Text className="text-sm text-gray-900 font-medium flex-1 text-right">
                 {formatDate(selectedInvestment.end_date)}
               </Text>
             </View>
           )}
 
           {selectedInvestment.maturity_date && (
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Maturity Date:</Text>
-              <Text style={styles.detailValue}>
+            <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+              <Text className="text-sm text-gray-600 flex-1">Maturity Date:</Text>
+              <Text className="text-sm text-gray-900 font-medium flex-1 text-right">
                 {formatDate(selectedInvestment.maturity_date)}
               </Text>
             </View>
@@ -162,26 +159,26 @@ const InvestmentDetailsScreen: React.FC = () => {
         </View>
 
         {selectedInvestment.terms && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Terms & Conditions</Text>
-            <Text style={styles.sectionContent}>{selectedInvestment.terms}</Text>
+          <View className="px-4 mb-4">
+            <Text className="text-lg font-bold text-gray-900 mb-3">Terms & Conditions</Text>
+            <Text className="text-sm text-gray-600 leading-5">{selectedInvestment.terms}</Text>
           </View>
         )}
 
         {selectedInvestment.conditions && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Additional Conditions</Text>
-            <Text style={styles.sectionContent}>{selectedInvestment.conditions}</Text>
+          <View className="px-4 mb-4">
+            <Text className="text-lg font-bold text-gray-900 mb-3">Additional Conditions</Text>
+            <Text className="text-sm text-gray-600 leading-5">{selectedInvestment.conditions}</Text>
           </View>
         )}
 
         {selectedInvestment.tags && selectedInvestment.tags.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Tags</Text>
-            <View style={styles.tagsContainer}>
+          <View className="px-4 mb-4">
+            <Text className="text-lg font-bold text-gray-900 mb-3">Tags</Text>
+            <View className="flex-row flex-wrap">
               {selectedInvestment.tags.map((tag, index) => (
-                <View key={index} style={styles.tag}>
-                  <Text style={styles.tagText}>{tag}</Text>
+                <View key={index} className="bg-blue-100 px-2 py-1 rounded mr-1 mb-1">
+                  <Text className="text-xs text-blue-600 font-medium">{tag}</Text>
                 </View>
               ))}
             </View>
@@ -189,205 +186,15 @@ const InvestmentDetailsScreen: React.FC = () => {
         )}
       </ScrollView>
 
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.investButton} onPress={handleInvest}>
-          <Text style={styles.investButtonText}>Invest Now</Text>
+      <View className="p-4 bg-white border-t border-gray-200">
+        <TouchableOpacity className="bg-blue-600 py-3 rounded-lg items-center" onPress={handleInvest}>
+          <Text className="text-white text-base font-semibold">Invest Now</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: SPACING.md,
-    fontSize: FONT_SIZES.md,
-    color: COLORS.textSecondary,
-  },
-  content: {
-    flexGrow: 1,
-  },
-  investmentImage: {
-    width: '100%',
-    height: 200,
-    resizeMode: 'cover',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    padding: SPACING.lg,
-    paddingBottom: SPACING.md,
-  },
-  title: {
-    fontSize: FONT_SIZES.xxl,
-    fontWeight: 'bold',
-    color: COLORS.textPrimary,
-    flex: 1,
-    marginRight: SPACING.sm,
-  },
-  riskBadge: {
-    paddingHorizontal: SPACING.sm,
-    paddingVertical: SPACING.xs,
-    borderRadius: BORDER_RADIUS.sm,
-  },
-  riskText: {
-    fontSize: FONT_SIZES.xs,
-    fontWeight: '600',
-  },
-  description: {
-    fontSize: FONT_SIZES.md,
-    color: COLORS.textSecondary,
-    lineHeight: 24,
-    paddingHorizontal: SPACING.lg,
-    marginBottom: SPACING.lg,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: SPACING.lg,
-    marginBottom: SPACING.lg,
-  },
-  statCard: {
-    backgroundColor: COLORS.gray100,
-    padding: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    alignItems: 'center',
-    flex: 1,
-    marginHorizontal: SPACING.xs,
-  },
-  statValue: {
-    fontSize: FONT_SIZES.lg,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginBottom: SPACING.xs,
-  },
-  statLabel: {
-    fontSize: FONT_SIZES.xs,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-  },
-  progressSection: {
-    paddingHorizontal: SPACING.lg,
-    marginBottom: SPACING.lg,
-  },
-  progressHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.sm,
-  },
-  progressTitle: {
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-  },
-  progressPercentage: {
-    fontSize: FONT_SIZES.md,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-  },
-  progressBar: {
-    height: 8,
-    backgroundColor: COLORS.gray200,
-    borderRadius: 4,
-    marginBottom: SPACING.sm,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: COLORS.primary,
-    borderRadius: 4,
-  },
-  progressFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  progressText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-  },
-  detailsSection: {
-    paddingHorizontal: SPACING.lg,
-    marginBottom: SPACING.lg,
-  },
-  sectionTitle: {
-    fontSize: FONT_SIZES.lg,
-    fontWeight: 'bold',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.md,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: SPACING.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray200,
-  },
-  detailLabel: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-    flex: 1,
-  },
-  detailValue: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textPrimary,
-    fontWeight: '500',
-    flex: 1,
-    textAlign: 'right',
-  },
-  section: {
-    paddingHorizontal: SPACING.lg,
-    marginBottom: SPACING.lg,
-  },
-  sectionContent: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-    lineHeight: 22,
-  },
-  tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  tag: {
-    backgroundColor: COLORS.primary + '20',
-    paddingHorizontal: SPACING.sm,
-    paddingVertical: SPACING.xs,
-    borderRadius: BORDER_RADIUS.sm,
-    marginRight: SPACING.xs,
-    marginBottom: SPACING.xs,
-  },
-  tagText: {
-    fontSize: FONT_SIZES.xs,
-    color: COLORS.primary,
-    fontWeight: '500',
-  },
-  footer: {
-    padding: SPACING.lg,
-    backgroundColor: COLORS.white,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.gray200,
-  },
-  investButton: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    alignItems: 'center',
-  },
-  investButtonText: {
-    color: COLORS.white,
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-  },
-});
+
 
 export default InvestmentDetailsScreen;

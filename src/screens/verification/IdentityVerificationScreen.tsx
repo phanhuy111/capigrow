@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   Alert,
   Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SvgXml } from "react-native-svg";
-import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from "@/utils/theme";
+import { COLORS } from "@/utils/theme";
 import { Icons } from "@/assets";
 import Screen from "@/components/common/Screen";
 import { Card } from "@/components/ui";
@@ -89,15 +88,17 @@ const IdentityVerificationScreen: React.FC = () => {
   };
 
   const renderStepIndicator = () => (
-    <View style={styles.stepIndicator}>
+    <View className="flex-row justify-center items-center mb-12">
       {steps.map((step, index) => (
-        <View key={step.id} style={styles.stepContainer}>
+        <View key={step.id} className="flex-row items-center">
           <View
-            style={[
-              styles.stepCircle,
-              currentStep >= step.id && styles.activeStepCircle,
-              currentStep > step.id && styles.completedStepCircle,
-            ]}
+            className={`w-8 h-8 rounded-full justify-center items-center ${
+              currentStep >= step.id
+                ? currentStep > step.id
+                  ? "bg-green-500"
+                  : "bg-blue-600"
+                : "bg-gray-300"
+            }`}
           >
             {currentStep > step.id ? (
               <SvgXml
@@ -108,10 +109,7 @@ const IdentityVerificationScreen: React.FC = () => {
               />
             ) : (
               <Text
-                style={[
-                  styles.stepNumber,
-                  currentStep >= step.id && styles.activeStepNumber,
-                ]}
+                className="text-xs text-white font-semibold"
               >
                 {step.id}
               </Text>
@@ -119,10 +117,9 @@ const IdentityVerificationScreen: React.FC = () => {
           </View>
           {index < steps.length - 1 && (
             <View
-              style={[
-                styles.stepLine,
-                currentStep > step.id && styles.completedStepLine,
-              ]}
+              className={`w-10 h-0.5 mx-4 ${
+                currentStep > step.id ? "bg-green-500" : "bg-gray-300"
+              }`}
             />
           )}
         </View>
@@ -131,70 +128,88 @@ const IdentityVerificationScreen: React.FC = () => {
   );
 
   const renderDocumentUpload = () => (
-    <View style={styles.stepContent}>
-      <Text style={styles.stepTitle}>Upload Identity Document</Text>
-      <Text style={styles.stepDescription}>
+    <View className="mb-12">
+      <Text className="text-xl font-semibold text-gray-900 text-center mb-4">
+        Upload Identity Document
+      </Text>
+      <Text className="text-base text-gray-600 text-center leading-6 mb-10">
         Please upload clear photos of the front and back of your
         government-issued ID card or passport.
       </Text>
 
-      <View style={styles.uploadSection}>
-        <Text style={styles.uploadLabel}>Front of ID</Text>
+      <View className="mb-10">
+        <Text className="text-sm font-medium text-gray-900 mb-4">
+          Front of ID
+        </Text>
         <Button
           variant="outline"
           onPress={() => handleDocumentUpload("idFront")}
           className="border-2 border-dashed border-gray-300 rounded-lg p-8 mb-6 items-center"
         >
           {documents.idFront ? (
-            <View style={styles.uploadedContent}>
+            <View className="items-center gap-4">
               <SvgXml
                 xml={Icons.tick}
                 width={24}
                 height={24}
                 fill={COLORS.success}
               />
-              <Text style={styles.uploadedText}>Document uploaded</Text>
+              <Text className="text-sm font-medium text-green-600">
+                Document uploaded
+              </Text>
             </View>
           ) : (
-            <View style={styles.uploadContent}>
+            <View className="items-center gap-4">
               <SvgXml
                 xml={Icons.camera}
                 width={32}
                 height={32}
                 fill={COLORS.primary}
               />
-              <Text style={styles.uploadText}>Tap to upload front of ID</Text>
-              <Text style={styles.uploadSubtext}>JPG, PNG up to 10MB</Text>
+              <Text className="text-sm font-medium text-gray-900">
+                Tap to upload front of ID
+              </Text>
+              <Text className="text-xs text-gray-500">
+                JPG, PNG up to 10MB
+              </Text>
             </View>
           )}
         </Button>
 
-        <Text style={styles.uploadLabel}>Back of ID</Text>
+        <Text className="text-sm font-medium text-gray-900 mb-4">
+          Back of ID
+        </Text>
         <Button
           variant="outline"
           onPress={() => handleDocumentUpload("idBack")}
           className="border-2 border-dashed border-gray-300 rounded-lg p-8 mb-6 items-center"
         >
           {documents.idBack ? (
-            <View style={styles.uploadedContent}>
+            <View className="items-center gap-4">
               <SvgXml
                 xml={Icons.tick}
                 width={24}
                 height={24}
                 fill={COLORS.success}
               />
-              <Text style={styles.uploadedText}>Document uploaded</Text>
+              <Text className="text-sm font-medium text-green-600">
+                Document uploaded
+              </Text>
             </View>
           ) : (
-            <View style={styles.uploadContent}>
+            <View className="items-center gap-4">
               <SvgXml
                 xml={Icons.camera}
                 width={32}
                 height={32}
                 fill={COLORS.primary}
               />
-              <Text style={styles.uploadText}>Tap to upload back of ID</Text>
-              <Text style={styles.uploadSubtext}>JPG, PNG up to 10MB</Text>
+              <Text className="text-sm font-medium text-gray-900">
+                Tap to upload back of ID
+              </Text>
+              <Text className="text-xs text-gray-500">
+                JPG, PNG up to 10MB
+              </Text>
             </View>
           )}
         </Button>
@@ -210,39 +225,45 @@ const IdentityVerificationScreen: React.FC = () => {
   );
 
   const renderSelfieVerification = () => (
-    <View style={styles.stepContent}>
-      <Text style={styles.stepTitle}>Take a Selfie</Text>
-      <Text style={styles.stepDescription}>
+    <View className="mb-12">
+      <Text className="text-xl font-semibold text-gray-900 text-center mb-4">
+        Take a Selfie
+      </Text>
+      <Text className="text-base text-gray-600 text-center leading-6 mb-10">
         Take a clear selfie to verify your identity matches the uploaded
         document.
       </Text>
 
-      <View style={styles.selfieSection}>
+      <View className="mb-10">
         <Button
           variant="outline"
           onPress={() => handleDocumentUpload("selfie")}
           className="border-2 border-dashed border-gray-300 rounded-lg p-12 items-center"
         >
           {documents.selfie ? (
-            <View style={styles.uploadedContent}>
+            <View className="items-center gap-4">
               <SvgXml
                 xml={Icons.tick}
                 width={32}
                 height={32}
                 fill={COLORS.success}
               />
-              <Text style={styles.uploadedText}>Selfie captured</Text>
+              <Text className="text-sm font-medium text-green-600">
+                Selfie captured
+              </Text>
             </View>
           ) : (
-            <View style={styles.selfieContent}>
+            <View className="items-center gap-6">
               <SvgXml
                 xml={Icons.camera}
                 width={48}
                 height={48}
                 fill={COLORS.primary}
               />
-              <Text style={styles.selfieText}>Tap to take selfie</Text>
-              <Text style={styles.selfieSubtext}>
+              <Text className="text-lg font-medium text-gray-900">
+                Tap to take selfie
+              </Text>
+              <Text className="text-base text-gray-500 text-center">
                 Make sure your face is clearly visible
               </Text>
             </View>
@@ -250,43 +271,49 @@ const IdentityVerificationScreen: React.FC = () => {
         </Button>
       </View>
 
-      <View style={styles.buttonRow}>
+      <View className="flex-row gap-4">
         <Button
           title="Back"
           onPress={() => setCurrentStep(1)}
           variant="secondary"
-          style={styles.halfButton}
+          className="flex-1"
         />
         <Button
           title="Continue"
           onPress={() => setCurrentStep(3)}
           disabled={!documents.selfie}
-          style={styles.halfButton}
+          className="flex-1"
         />
       </View>
     </View>
   );
 
   const renderReviewSubmit = () => (
-    <View style={styles.stepContent}>
-      <Text style={styles.stepTitle}>Review & Submit</Text>
-      <Text style={styles.stepDescription}>
+    <View className="mb-12">
+      <Text className="text-xl font-semibold text-gray-900 text-center mb-4">
+        Review & Submit
+      </Text>
+      <Text className="text-base text-gray-600 text-center leading-6 mb-10">
         Please review your uploaded documents before submitting for
         verification.
       </Text>
 
-      <View style={styles.reviewSection}>
-        <Card style={styles.reviewCard}>
-          <View style={styles.reviewItem}>
+      <View className="mb-10">
+        <Card className="mb-4">
+          <View className="flex-row items-center gap-4">
             <SvgXml
               xml={Icons.cardPos}
               width={24}
               height={24}
               fill={COLORS.primary}
             />
-            <View style={styles.reviewContent}>
-              <Text style={styles.reviewTitle}>Identity Document</Text>
-              <Text style={styles.reviewStatus}>Front and back uploaded</Text>
+            <View className="flex-1">
+              <Text className="text-sm font-medium text-gray-900 mb-1">
+                Identity Document
+              </Text>
+              <Text className="text-xs text-gray-600">
+                Front and back uploaded
+              </Text>
             </View>
             <SvgXml
               xml={Icons.tick}
@@ -297,17 +324,21 @@ const IdentityVerificationScreen: React.FC = () => {
           </View>
         </Card>
 
-        <Card style={styles.reviewCard}>
-          <View style={styles.reviewItem}>
+        <Card className="mb-4">
+          <View className="flex-row items-center gap-4">
             <SvgXml
               xml={Icons.camera}
               width={24}
               height={24}
               fill={COLORS.primary}
             />
-            <View style={styles.reviewContent}>
-              <Text style={styles.reviewTitle}>Selfie Verification</Text>
-              <Text style={styles.reviewStatus}>Photo captured</Text>
+            <View className="flex-1">
+              <Text className="text-sm font-medium text-gray-900 mb-1">
+                Selfie Verification
+              </Text>
+              <Text className="text-xs text-gray-600">
+                Photo captured
+              </Text>
             </View>
             <SvgXml
               xml={Icons.tick}
@@ -319,31 +350,31 @@ const IdentityVerificationScreen: React.FC = () => {
         </Card>
       </View>
 
-      <View style={styles.infoCard}>
+      <View className="flex-row items-start gap-4 bg-blue-50 p-6 rounded-lg mb-10">
         <SvgXml
           xml={Icons.infoCircle}
           width={20}
           height={20}
           fill={COLORS.info}
         />
-        <Text style={styles.infoText}>
+        <Text className="text-base text-blue-800 flex-1 leading-5">
           Verification typically takes 1-2 business days. You'll be notified
           once complete.
         </Text>
       </View>
 
-      <View style={styles.buttonRow}>
+      <View className="flex-row gap-4">
         <Button
           title="Back"
           onPress={() => setCurrentStep(2)}
           variant="secondary"
-          style={styles.halfButton}
+          className="flex-1"
         />
         <Button
           title="Submit"
           onPress={handleSubmitVerification}
           loading={uploading}
-          style={styles.halfButton}
+          className="flex-1"
         />
       </View>
     </View>
@@ -366,7 +397,7 @@ const IdentityVerificationScreen: React.FC = () => {
     <Screen paddingHorizontal>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View style={styles.header}>
+        <View className="flex-row justify-between items-center mb-12 pt-4">
           <Button
             variant="ghost"
             size="icon"
@@ -380,8 +411,10 @@ const IdentityVerificationScreen: React.FC = () => {
               fill={COLORS.textPrimary}
             />
           </Button>
-          <Text style={styles.screenTitle}>Identity Verification</Text>
-          <View style={styles.placeholder} />
+          <Text className="text-xl font-semibold text-gray-900">
+            Identity Verification
+          </Text>
+          <View className="w-11" />
         </View>
 
         {/* Step Indicator */}
@@ -394,192 +427,6 @@ const IdentityVerificationScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: SPACING.xxxl,
-    paddingTop: SPACING.lg,
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: COLORS.surface,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  screenTitle: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.textPrimary,
-  },
-  placeholder: {
-    width: 44,
-  },
-  stepIndicator: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: SPACING.xxxxxxl,
-  },
-  stepContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  stepCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: COLORS.gray300,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  activeStepCircle: {
-    backgroundColor: COLORS.primary,
-  },
-  completedStepCircle: {
-    backgroundColor: COLORS.success,
-  },
-  stepNumber: {
-    ...TYPOGRAPHY.labelSmall,
-    color: COLORS.white,
-    fontWeight: "600",
-  },
-  activeStepNumber: {
-    color: COLORS.white,
-  },
-  stepLine: {
-    width: 40,
-    height: 2,
-    backgroundColor: COLORS.gray300,
-    marginHorizontal: SPACING.md,
-  },
-  completedStepLine: {
-    backgroundColor: COLORS.success,
-  },
-  stepContent: {
-    marginBottom: SPACING.xxxxxxl,
-  },
-  stepTitle: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.textPrimary,
-    textAlign: "center",
-    marginBottom: SPACING.lg,
-  },
-  stepDescription: {
-    ...TYPOGRAPHY.bodyMedium,
-    color: COLORS.textSecondary,
-    textAlign: "center",
-    lineHeight: 22,
-    marginBottom: SPACING.xxxxl,
-  },
-  uploadSection: {
-    marginBottom: SPACING.xxxxl,
-  },
-  uploadLabel: {
-    ...TYPOGRAPHY.labelMedium,
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.lg,
-  },
-  uploadCard: {
-    borderWidth: 2,
-    borderColor: COLORS.border,
-    borderStyle: "dashed",
-    borderRadius: BORDER_RADIUS.lg,
-    padding: SPACING.xxxxl,
-    marginBottom: SPACING.xxxl,
-    alignItems: "center",
-  },
-  uploadContent: {
-    alignItems: "center",
-    gap: SPACING.lg,
-  },
-  uploadText: {
-    ...TYPOGRAPHY.labelMedium,
-    color: COLORS.textPrimary,
-  },
-  uploadSubtext: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.textTertiary,
-  },
-  uploadedContent: {
-    alignItems: "center",
-    gap: SPACING.lg,
-  },
-  uploadedText: {
-    ...TYPOGRAPHY.labelMedium,
-    color: COLORS.success,
-  },
-  selfieSection: {
-    marginBottom: SPACING.xxxxl,
-  },
-  selfieCard: {
-    borderWidth: 2,
-    borderColor: COLORS.border,
-    borderStyle: "dashed",
-    borderRadius: BORDER_RADIUS.lg,
-    padding: SPACING.xxxxxxl,
-    alignItems: "center",
-  },
-  selfieContent: {
-    alignItems: "center",
-    gap: SPACING.xl,
-  },
-  selfieText: {
-    ...TYPOGRAPHY.labelLarge,
-    color: COLORS.textPrimary,
-  },
-  selfieSubtext: {
-    ...TYPOGRAPHY.bodyMedium,
-    color: COLORS.textTertiary,
-    textAlign: "center",
-  },
-  buttonRow: {
-    flexDirection: "row",
-    gap: SPACING.lg,
-  },
-  halfButton: {
-    flex: 1,
-  },
-  reviewSection: {
-    marginBottom: SPACING.xxxxl,
-  },
-  reviewCard: {
-    marginBottom: SPACING.lg,
-  },
-  reviewItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: SPACING.lg,
-  },
-  reviewContent: {
-    flex: 1,
-  },
-  reviewTitle: {
-    ...TYPOGRAPHY.labelMedium,
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.sm,
-  },
-  reviewStatus: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.textSecondary,
-  },
-  infoCard: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: SPACING.lg,
-    backgroundColor: COLORS.infoLight,
-    padding: SPACING.xl,
-    borderRadius: BORDER_RADIUS.lg,
-    marginBottom: SPACING.xxxxl,
-  },
-  infoText: {
-    ...TYPOGRAPHY.bodyMedium,
-    color: COLORS.infoDark,
-    flex: 1,
-    lineHeight: 20,
-  },
-});
+
 
 export default IdentityVerificationScreen;

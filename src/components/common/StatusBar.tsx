@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { COLORS, TYPOGRAPHY, SPACING } from '@/utils/theme';
 
 interface StatusBarProps {
   backgroundColor?: string;
@@ -13,7 +12,7 @@ interface StatusBarProps {
 }
 
 const StatusBar: React.FC<StatusBarProps> = ({
-  backgroundColor = COLORS.surface,
+  backgroundColor = '#ffffff',
   barStyle = 'dark-content',
   showTime = true,
   showBattery = true,
@@ -33,40 +32,40 @@ const StatusBar: React.FC<StatusBarProps> = ({
   return (
     <>
       <ExpoStatusBar style={barStyle === 'dark-content' ? 'dark' : 'light'} />
-      <View style={[styles.container, { backgroundColor, paddingTop: insets.top }]}>
-        <View style={styles.statusContent}>
+      <View className="px-6 pb-2" style={{ backgroundColor, paddingTop: insets.top }}>
+        <View className="flex-row justify-between items-center h-5">
           {/* Left side - Time */}
           {showTime && (
-            <View style={styles.leftSection}>
-              <Text style={styles.timeText}>{getCurrentTime()}</Text>
+            <View className="flex-1">
+              <Text className="text-sm font-semibold text-gray-900">{getCurrentTime()}</Text>
             </View>
           )}
 
           {/* Right side - Signal, WiFi, Battery */}
           {(showSignal || showBattery) && (
-            <View style={styles.rightSection}>
+            <View className="flex-row items-center gap-3">
               {showSignal && (
-                <View style={styles.signalContainer}>
+                <View className="flex-row items-end gap-0.5">
                   {/* Signal bars */}
-                  <View style={[styles.signalBar, styles.signalBar1]} />
-                  <View style={[styles.signalBar, styles.signalBar2]} />
-                  <View style={[styles.signalBar, styles.signalBar3]} />
-                  <View style={[styles.signalBar, styles.signalBar4]} />
+                  <View className="bg-gray-900 w-0.5 h-1 rounded-sm" />
+                  <View className="bg-gray-900 w-0.5 h-1.5 rounded-sm" />
+                  <View className="bg-gray-900 w-0.5 h-2 rounded-sm" />
+                  <View className="bg-gray-900 w-0.5 h-2.5 rounded-sm" />
                 </View>
               )}
 
               {showSignal && (
-                <View style={styles.wifiContainer}>
+                <View className="w-4 h-3 justify-center items-center">
                   {/* WiFi icon representation */}
-                  <View style={styles.wifiIcon} />
+                  <View className="w-3 h-2 border-2 border-gray-900 rounded-lg border-b-0" />
                 </View>
               )}
 
               {showBattery && (
-                <View style={styles.batteryContainer}>
-                  <Text style={styles.batteryText}>100%</Text>
-                  <View style={styles.batteryIcon}>
-                    <View style={styles.batteryLevel} />
+                <View className="flex-row items-center gap-1">
+                  <Text className="text-xs font-medium text-gray-900">100%</Text>
+                  <View className="w-6 h-3 border border-gray-900 rounded-sm p-0.5 relative">
+                    <View className="flex-1 bg-green-500 rounded-sm" />
                   </View>
                 </View>
               )}
@@ -78,90 +77,6 @@ const StatusBar: React.FC<StatusBarProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: SPACING.xl,
-    paddingBottom: SPACING.sm,
-  },
-  statusContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: 20,
-  },
-  leftSection: {
-    flex: 1,
-  },
-  timeText: {
-    ...TYPOGRAPHY.labelMedium,
-    color: COLORS.textPrimary,
-    fontWeight: '600',
-  },
-  rightSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.md,
-  },
-  signalContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: 1,
-  },
-  signalBar: {
-    backgroundColor: COLORS.textPrimary,
-    width: 3,
-    borderRadius: 1,
-  },
-  signalBar1: {
-    height: 4,
-  },
-  signalBar2: {
-    height: 6,
-  },
-  signalBar3: {
-    height: 8,
-  },
-  signalBar4: {
-    height: 10,
-  },
-  wifiContainer: {
-    width: 15,
-    height: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  wifiIcon: {
-    width: 12,
-    height: 8,
-    borderWidth: 2,
-    borderColor: COLORS.textPrimary,
-    borderRadius: 8,
-    borderBottomWidth: 0,
-  },
-  batteryContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.xs,
-  },
-  batteryText: {
-    ...TYPOGRAPHY.labelSmall,
-    color: COLORS.textPrimary,
-    fontWeight: '500',
-  },
-  batteryIcon: {
-    width: 24,
-    height: 12,
-    borderWidth: 1,
-    borderColor: COLORS.textPrimary,
-    borderRadius: 2,
-    padding: 1,
-    position: 'relative',
-  },
-  batteryLevel: {
-    flex: 1,
-    backgroundColor: COLORS.success,
-    borderRadius: 1,
-  },
-});
+
 
 export default StatusBar;

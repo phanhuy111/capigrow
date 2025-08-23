@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { COLORS, SPACING, BORDER_RADIUS } from '@/utils/constants';
+import { View, Text, TouchableOpacity } from 'react-native';
 
 interface NumericKeypadProps {
   onKeyPress: (key: string) => void;
@@ -32,98 +31,38 @@ const NumericKeypad: React.FC<NumericKeypadProps> = ({ onKeyPress, onDelete }) =
   const renderKey = (key: { number: string; letters: string }) => (
     <TouchableOpacity
       key={key.number}
-      style={styles.keyButton}
+      className="w-[75px] h-[75px] bg-white rounded-lg justify-center items-center shadow-sm"
       onPress={() => onKeyPress(key.number)}
       activeOpacity={0.7}
     >
-      <Text style={styles.keyNumber}>{key.number}</Text>
-      {key.letters ? <Text style={styles.keyLetters}>{key.letters}</Text> : null}
+      <Text className="text-[28px] font-semibold text-gray-900 leading-8">{key.number}</Text>
+      {key.letters ? <Text className="text-[10px] font-medium text-gray-500 tracking-widest -mt-0.5">{key.letters}</Text> : null}
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
+    <View className="px-6 pb-12">
       {keys.slice(0, 3).map((row, rowIndex) => (
-        <View key={rowIndex} style={styles.row}>
+        <View key={rowIndex} className="flex-row justify-between mb-4">
           {row.map(renderKey)}
         </View>
       ))}
 
-      <View style={styles.lastRow}>
-        <View style={styles.emptySpace} />
+      <View className="flex-row justify-between items-center">
+        <View className="w-[75px]" />
         {renderKey(keys[3][0])}
         <TouchableOpacity
-          style={styles.deleteButton}
+          className="w-[75px] h-[75px] bg-gray-200 rounded-lg justify-center items-center"
           onPress={onDelete}
           activeOpacity={0.7}
         >
-          <Text style={styles.deleteText}>×</Text>
+          <Text className="text-[32px] font-light text-gray-500">×</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: SPACING.xl,
-    paddingBottom: SPACING.xxxxl,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: SPACING.lg,
-  },
-  lastRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  keyButton: {
-    width: 75,
-    height: 75,
-    backgroundColor: COLORS.white,
-    borderRadius: BORDER_RADIUS.lg,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: COLORS.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  keyNumber: {
-    fontSize: 28,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    lineHeight: 32,
-  },
-  keyLetters: {
-    fontSize: 10,
-    fontWeight: '500',
-    color: COLORS.textSecondary,
-    letterSpacing: 1,
-    marginTop: -2,
-  },
-  emptySpace: {
-    width: 75,
-  },
-  deleteButton: {
-    width: 75,
-    height: 75,
-    backgroundColor: COLORS.gray200,
-    borderRadius: BORDER_RADIUS.lg,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  deleteText: {
-    fontSize: 32,
-    fontWeight: '300',
-    color: COLORS.textSecondary,
-  },
-});
+
 
 export default NumericKeypad;

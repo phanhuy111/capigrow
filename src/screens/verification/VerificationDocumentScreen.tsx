@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   Alert,
   ScrollView,
@@ -15,7 +14,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types';
 import { useVerificationStore } from '@/store/verificationStore';
-import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES, BORDER_RADIUS } from '@/utils/theme';
+import { COLORS } from '@/utils/theme';
 
 type VerificationDocumentScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -151,31 +150,37 @@ const VerificationDocumentScreen: React.FC = () => {
   const selectedDoc = documentTypes.find(doc => doc.id === selectedDocumentType);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Document Verification</Text>
-          <Text style={styles.subtitle}>
+    <SafeAreaView className="flex-1 bg-white">
+      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 16 }}>
+        <View className="mt-4 mb-6">
+          <Text className="text-2xl font-bold text-gray-900 mb-1">
+            Document Verification
+          </Text>
+          <Text className="text-base text-gray-600 leading-6">
             Upload a clear photo of your government-issued ID to verify your identity
           </Text>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Select Document Type</Text>
+        <View className="mb-6">
+          <Text className="text-lg font-semibold text-gray-900 mb-4">
+            Select Document Type
+          </Text>
           {documentTypes.map((docType) => (
             <TouchableOpacity
               key={docType.id}
-              style={[
-                styles.documentTypeButton,
-                selectedDocumentType === docType.id && styles.documentTypeButtonSelected,
-              ]}
+              className={`border rounded-md py-4 px-4 mb-2 ${
+                selectedDocumentType === docType.id
+                  ? 'border-blue-600 bg-blue-50'
+                  : 'border-gray-300'
+              }`}
               onPress={() => setSelectedDocumentType(docType.id)}
             >
               <Text
-                style={[
-                  styles.documentTypeText,
-                  selectedDocumentType === docType.id && styles.documentTypeTextSelected,
-                ]}
+                className={`text-base text-center ${
+                  selectedDocumentType === docType.id
+                    ? 'text-blue-600 font-semibold'
+                    : 'text-gray-900'
+                }`}
               >
                 {docType.label}
               </Text>
@@ -184,39 +189,45 @@ const VerificationDocumentScreen: React.FC = () => {
         </View>
 
         {selectedDocumentType && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Upload Photos</Text>
+          <View className="mb-6">
+            <Text className="text-lg font-semibold text-gray-900 mb-4">
+              Upload Photos
+            </Text>
 
-            <View style={styles.uploadSection}>
-              <Text style={styles.uploadLabel}>Front of Document</Text>
+            <View className="mb-4">
+              <Text className="text-sm font-medium text-gray-900 mb-1">
+                Front of Document
+              </Text>
               <TouchableOpacity
-                style={styles.uploadButton}
+                className="border-2 border-dashed border-gray-300 rounded-md h-50 justify-center items-center"
                 onPress={() => showImagePicker('front')}
               >
                 {frontImage ? (
-                  <Image source={{ uri: frontImage }} style={styles.uploadedImage} />
+                  <Image source={{ uri: frontImage }} className="w-full h-full rounded-md" />
                 ) : (
-                  <View style={styles.uploadPlaceholder}>
-                    <Text style={styles.uploadPlaceholderText}>📷</Text>
-                    <Text style={styles.uploadText}>Tap to upload</Text>
+                  <View className="items-center">
+                    <Text className="text-4xl mb-2">📷</Text>
+                    <Text className="text-base text-gray-600">Tap to upload</Text>
                   </View>
                 )}
               </TouchableOpacity>
             </View>
 
             {selectedDoc?.requiresBack && (
-              <View style={styles.uploadSection}>
-                <Text style={styles.uploadLabel}>Back of Document</Text>
+              <View className="mb-4">
+                <Text className="text-sm font-medium text-gray-900 mb-1">
+                  Back of Document
+                </Text>
                 <TouchableOpacity
-                  style={styles.uploadButton}
+                  className="border-2 border-dashed border-gray-300 rounded-md h-50 justify-center items-center"
                   onPress={() => showImagePicker('back')}
                 >
                   {backImage ? (
-                    <Image source={{ uri: backImage }} style={styles.uploadedImage} />
+                    <Image source={{ uri: backImage }} className="w-full h-full rounded-md" />
                   ) : (
-                    <View style={styles.uploadPlaceholder}>
-                      <Text style={styles.uploadPlaceholderText}>📷</Text>
-                      <Text style={styles.uploadText}>Tap to upload</Text>
+                    <View className="items-center">
+                      <Text className="text-4xl mb-2">📷</Text>
+                      <Text className="text-base text-gray-600">Tap to upload</Text>
                     </View>
                   )}
                 </TouchableOpacity>
@@ -225,23 +236,29 @@ const VerificationDocumentScreen: React.FC = () => {
           </View>
         )}
 
-        <View style={styles.tips}>
-          <Text style={styles.tipsTitle}>Tips for best results:</Text>
-          <Text style={styles.tipText}>• Ensure good lighting</Text>
-          <Text style={styles.tipText}>• Keep the document flat</Text>
-          <Text style={styles.tipText}>• Make sure all text is readable</Text>
-          <Text style={styles.tipText}>• Avoid glare and shadows</Text>
+        <View className="bg-gray-100 p-4 rounded-md mb-6">
+          <Text className="text-sm font-semibold text-gray-900 mb-1">
+            Tips for best results:
+          </Text>
+          <Text className="text-sm text-gray-600 mb-1">• Ensure good lighting</Text>
+          <Text className="text-sm text-gray-600 mb-1">• Keep the document flat</Text>
+          <Text className="text-sm text-gray-600 mb-1">• Make sure all text is readable</Text>
+          <Text className="text-sm text-gray-600 mb-1">• Avoid glare and shadows</Text>
         </View>
 
         <TouchableOpacity
-          style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
+          className={`py-4 rounded-md items-center mb-6 ${
+            isLoading ? 'bg-gray-400' : 'bg-blue-600'
+          }`}
           onPress={handleSubmit}
           disabled={isLoading}
         >
           {isLoading ? (
             <ActivityIndicator color={COLORS.white} />
           ) : (
-            <Text style={styles.submitButtonText}>Submit Documents</Text>
+            <Text className="text-white text-base font-semibold">
+              Submit Documents
+            </Text>
           )}
         </TouchableOpacity>
       </ScrollView>
@@ -249,126 +266,6 @@ const VerificationDocumentScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  content: {
-    flexGrow: 1,
-    paddingHorizontal: SPACING.lg,
-  },
-  header: {
-    marginTop: SPACING.lg,
-    marginBottom: SPACING.xl,
-  },
-  title: {
-    fontSize: FONT_SIZES.xxl,
-    fontWeight: 'bold',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.xs,
-  },
-  subtitle: {
-    fontSize: FONT_SIZES.md,
-    color: COLORS.textSecondary,
-    lineHeight: 22,
-  },
-  section: {
-    marginBottom: SPACING.xl,
-  },
-  sectionTitle: {
-    fontSize: FONT_SIZES.lg,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.md,
-  },
-  documentTypeButton: {
-    borderWidth: 1,
-    borderColor: COLORS.gray300,
-    borderRadius: BORDER_RADIUS.md,
-    paddingVertical: SPACING.md,
-    paddingHorizontal: SPACING.lg,
-    marginBottom: SPACING.sm,
-  },
-  documentTypeButtonSelected: {
-    borderColor: COLORS.primary,
-    backgroundColor: COLORS.primaryLight + '20',
-  },
-  documentTypeText: {
-    fontSize: FONT_SIZES.md,
-    color: COLORS.textPrimary,
-    textAlign: 'center',
-  },
-  documentTypeTextSelected: {
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  uploadSection: {
-    marginBottom: SPACING.lg,
-  },
-  uploadLabel: {
-    fontSize: FONT_SIZES.sm,
-    fontWeight: '500',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.xs,
-  },
-  uploadButton: {
-    borderWidth: 2,
-    borderColor: COLORS.gray300,
-    borderStyle: 'dashed',
-    borderRadius: BORDER_RADIUS.md,
-    height: 200,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  uploadPlaceholder: {
-    alignItems: 'center',
-  },
-  uploadPlaceholderText: {
-    fontSize: 40,
-    marginBottom: SPACING.sm,
-  },
-  uploadText: {
-    fontSize: FONT_SIZES.md,
-    color: COLORS.textSecondary,
-  },
-  uploadedImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: BORDER_RADIUS.md,
-  },
-  tips: {
-    backgroundColor: COLORS.gray100,
-    padding: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    marginBottom: SPACING.xl,
-  },
-  tipsTitle: {
-    fontSize: FONT_SIZES.sm,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.xs,
-  },
-  tipText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-    marginBottom: SPACING.xs,
-  },
-  submitButton: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    alignItems: 'center',
-    marginBottom: SPACING.xl,
-  },
-  submitButtonDisabled: {
-    backgroundColor: COLORS.gray400,
-  },
-  submitButtonText: {
-    color: COLORS.white,
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-  },
-});
+
 
 export default VerificationDocumentScreen;

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   TouchableOpacity,
   TextInput,
@@ -13,12 +12,13 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SvgXml } from 'react-native-svg';
 import { RootStackParamList } from '@/types';
-import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '@/utils/theme';
+import { COLORS } from '@/utils/theme';
 import { Icons } from '@/assets';
 import Screen from '@/components/common/Screen';
-import { Card } from '@/components/ui';
-import { mockInvestmentApi } from '@/mock/api/investments';
+import { Card } from '@/components/ui/card';
+import { useInvestmentsQuery } from '@/hooks/useInvestmentQueries';
 import { formatCurrency, formatPercentage } from '@/utils/helpers';
+import { mockInvestmentApi } from '@/mock/api/investments';
 
 const { width } = Dimensions.get('window');
 
@@ -114,13 +114,13 @@ const InvestmentsScreen: React.FC = () => {
     const riskColor = getRiskColor(item.riskLevel);
 
     return (
-      <Card key={item.id} style={styles.investmentCard}>
+      <Card key={item.id} className="mb-6">
         <TouchableOpacity
           onPress={() => navigation.navigate('InvestmentDetails', { investmentId: item.id })}
         >
-          <View style={styles.cardHeader}>
-            <View style={styles.cardHeaderLeft}>
-              <View style={styles.categoryIcon}>
+          <View className="flex-row justify-between items-start mb-6">
+            <View className="flex-row items-center flex-1 gap-4">
+              <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
                 <SvgXml
                   xml={getCategoryIcon(item.category)}
                   width={20}
@@ -128,57 +128,55 @@ const InvestmentsScreen: React.FC = () => {
                   fill={COLORS.primary}
                 />
               </View>
-              <View style={styles.cardTitleContainer}>
-                <Text style={styles.investmentTitle}>{item.title}</Text>
-                <Text style={styles.investmentCategory}>{item.category}</Text>
+              <View className="flex-1">
+                <Text className="text-base font-semibold text-gray-900 mb-1">{item.title}</Text>
+                <Text className="text-sm text-gray-600">{item.category}</Text>
               </View>
             </View>
-            <View style={[styles.riskBadge, { backgroundColor: riskColor + '20' }]}>
-              <Text style={[styles.riskText, { color: riskColor }]}>
+            <View className="px-3 py-1 rounded-md" style={{ backgroundColor: riskColor + '20' }}>
+              <Text className="text-xs font-semibold" style={{ color: riskColor }}>
                 {item.riskLevel.toUpperCase()}
               </Text>
             </View>
           </View>
 
-          <Text style={styles.investmentDescription} numberOfLines={2}>
+          <Text className="text-base text-gray-600 leading-5 mb-6" numberOfLines={2}>
             {item.description}
           </Text>
 
-          <View style={styles.investmentStats}>
-            <View style={styles.statItem}>
+          <View className="flex-row justify-between mb-6">
+            <View className="flex-row items-center gap-2">
               <SvgXml xml={Icons.trendUp} width={16} height={16} fill={COLORS.positive} />
-              <Text style={styles.statValue}>{item.expectedReturn}% APY</Text>
+              <Text className="text-sm text-gray-600 font-medium">{item.expectedReturn}% APY</Text>
             </View>
-            <View style={styles.statItem}>
+            <View className="flex-row items-center gap-2">
               <SvgXml xml={Icons.timer} width={16} height={16} fill={COLORS.textSecondary} />
-              <Text style={styles.statValue}>{item.duration} months</Text>
+              <Text className="text-sm text-gray-600 font-medium">{item.duration} months</Text>
             </View>
-            <View style={styles.statItem}>
+            <View className="flex-row items-center gap-2">
               <SvgXml xml={Icons.emptyWallet} width={16} height={16} fill={COLORS.textSecondary} />
-              <Text style={styles.statValue}>{formatCurrencyVND(item.minInvestment)}</Text>
+              <Text className="text-sm text-gray-600 font-medium">{formatCurrencyVND(item.minInvestment)}</Text>
             </View>
           </View>
 
-          <View style={styles.progressContainer}>
-            <View style={styles.progressHeader}>
-              <Text style={styles.progressLabel}>Funding Progress</Text>
-              <Text style={styles.progressPercentage}>
+          <View className="gap-3">
+            <View className="flex-row justify-between items-center">
+              <Text className="text-sm text-gray-600">Funding Progress</Text>
+              <Text className="text-sm text-blue-600 font-semibold">
                 {Math.round(progressPercentage)}%
               </Text>
             </View>
-            <View style={styles.progressBar}>
+            <View className="h-1.5 bg-gray-200 rounded-sm overflow-hidden">
               <View
-                style={[
-                  styles.progressFill,
-                  { width: `${Math.min(progressPercentage, 100)}%` },
-                ]}
+                className="h-full bg-blue-600 rounded-sm"
+                style={{ width: `${Math.min(progressPercentage, 100)}%` }}
               />
             </View>
-            <View style={styles.progressFooter}>
-              <Text style={styles.progressText}>
+            <View className="flex-row justify-between">
+              <Text className="text-sm text-gray-600">
                 {formatCurrencyVND(item.totalRaised)} raised
               </Text>
-              <Text style={styles.progressText}>
+              <Text className="text-sm text-gray-600">
                 {item.investorCount} investors
               </Text>
             </View>
@@ -191,13 +189,10 @@ const InvestmentsScreen: React.FC = () => {
   const renderCategoryFilter = (category: any) => (
     <TouchableOpacity
       key={category.id}
-      style={[
-        styles.categoryFilter,
-        selectedCategory === category.name && styles.activeCategoryFilter,
-      ]}
+      className="items-center mr-6 gap-4"
       onPress={() => setSelectedCategory(selectedCategory === category.name ? '' : category.name)}
     >
-      <View style={[styles.categoryFilterIcon, { backgroundColor: category.color + '20' }]}>
+      <View className="w-14 h-14 rounded-full justify-center items-center" style={{ backgroundColor: category.color + '20' }}>
         <SvgXml
           xml={getCategoryIcon(category.name)}
           width={20}
@@ -205,10 +200,7 @@ const InvestmentsScreen: React.FC = () => {
           fill={selectedCategory === category.name ? COLORS.white : category.color}
         />
       </View>
-      <Text style={[
-        styles.categoryFilterText,
-        selectedCategory === category.name && styles.activeCategoryFilterText,
-      ]}>
+      <Text className={`text-sm text-gray-900 ${selectedCategory === category.name ? 'text-blue-600 font-semibold' : ''}`}>
         {category.name}
       </Text>
     </TouchableOpacity>
@@ -217,16 +209,10 @@ const InvestmentsScreen: React.FC = () => {
   const renderRiskFilter = (riskLevel: string) => (
     <TouchableOpacity
       key={riskLevel}
-      style={[
-        styles.riskFilter,
-        selectedRiskLevel === riskLevel && styles.activeRiskFilter,
-      ]}
+      className={`px-6 py-4 rounded-lg border ${selectedRiskLevel === riskLevel ? 'bg-blue-600 border-blue-600' : 'bg-gray-50 border-gray-200'}`}
       onPress={() => setSelectedRiskLevel(selectedRiskLevel === riskLevel ? '' : riskLevel)}
     >
-      <Text style={[
-        styles.riskFilterText,
-        selectedRiskLevel === riskLevel && styles.activeRiskFilterText,
-      ]}>
+      <Text className={`text-sm ${selectedRiskLevel === riskLevel ? 'text-white' : 'text-gray-600'}`}>
         {riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)}
       </Text>
     </TouchableOpacity>
@@ -239,71 +225,71 @@ const InvestmentsScreen: React.FC = () => {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.screenTitle}>Explore</Text>
-          <TouchableOpacity style={styles.notificationButton}>
+        <View className="flex-row justify-between items-center mb-8 pt-4">
+          <Text className="text-2xl font-bold text-gray-900">Explore</Text>
+          <TouchableOpacity className="w-11 h-11 rounded-full bg-gray-50 justify-center items-center">
             <SvgXml xml={Icons.notification} width={24} height={24} fill={COLORS.textPrimary} />
           </TouchableOpacity>
         </View>
 
         {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <View style={styles.searchInputContainer}>
+        <View className="flex-row items-center mb-8 gap-4">
+          <View className="flex-1 flex-row items-center bg-gray-50 rounded-lg px-5 py-4 gap-4">
             <SvgXml xml={Icons.search} width={20} height={20} fill={COLORS.textTertiary} />
             <TextInput
-              style={styles.searchInput}
+              className="flex-1 text-base text-gray-900"
               placeholder="Search investments..."
               value={searchQuery}
               onChangeText={setSearchQuery}
               placeholderTextColor={COLORS.textTertiary}
             />
           </View>
-          <TouchableOpacity style={styles.filterButton}>
+          <TouchableOpacity className="w-12 h-12 rounded-lg bg-gray-50 justify-center items-center">
             <SvgXml xml={Icons.menuSquare} width={20} height={20} fill={COLORS.textPrimary} />
           </TouchableOpacity>
         </View>
 
         {/* Categories */}
-        <View style={styles.categoriesSection}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Categories</Text>
+        <View className="mb-8">
+          <View className="flex-row justify-between items-center mb-6">
+            <Text className="text-xl font-semibold text-gray-900">Categories</Text>
             <TouchableOpacity>
-              <Text style={styles.seeAllText}>See all</Text>
+              <Text className="text-sm font-medium text-blue-600">See all</Text>
             </TouchableOpacity>
           </View>
 
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-6 px-6">
             {categories.map(renderCategoryFilter)}
           </ScrollView>
         </View>
 
         {/* Risk Level Filters */}
-        <View style={styles.filtersSection}>
-          <Text style={styles.sectionTitle}>Risk Level</Text>
-          <View style={styles.riskFiltersContainer}>
+        <View className="mb-8">
+          <Text className="text-xl font-semibold text-gray-900 mb-6">Risk Level</Text>
+          <View className="flex-row gap-4">
             {['low', 'medium', 'high'].map(renderRiskFilter)}
           </View>
         </View>
 
         {/* Investment Results */}
-        <View style={styles.resultsSection}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>
+        <View className="mb-16">
+          <View className="flex-row justify-between items-center mb-6">
+            <Text className="text-xl font-semibold text-gray-900">
               {filteredInvestments.length} Investment{filteredInvestments.length !== 1 ? 's' : ''} Found
             </Text>
-            <TouchableOpacity style={styles.sortButton}>
+            <TouchableOpacity className="flex-row items-center gap-2">
               <SvgXml xml={Icons.arrowDown} width={16} height={16} fill={COLORS.textSecondary} />
-              <Text style={styles.sortText}>Sort</Text>
+              <Text className="text-sm font-medium text-gray-600">Sort</Text>
             </TouchableOpacity>
           </View>
 
           {filteredInvestments.length > 0 ? (
             filteredInvestments.map(renderInvestmentCard)
           ) : (
-            <View style={styles.emptyContainer}>
+            <View className="items-center py-16 gap-6">
               <SvgXml xml={Icons.cup} width={60} height={60} fill={COLORS.textTertiary} />
-              <Text style={styles.emptyTitle}>No Investments Found</Text>
-              <Text style={styles.emptyText}>
+              <Text className="text-xl font-semibold text-gray-900">No Investments Found</Text>
+              <Text className="text-base text-gray-600 text-center px-6">
                 Try adjusting your search criteria or check back later for new opportunities.
               </Text>
             </View>
@@ -314,254 +300,6 @@ const InvestmentsScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.xxxl,
-    paddingTop: SPACING.lg,
-  },
-  screenTitle: {
-    ...TYPOGRAPHY.h3,
-    color: COLORS.textPrimary,
-  },
-  notificationButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: COLORS.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: SPACING.xxxl,
-    gap: SPACING.lg,
-  },
-  searchInputContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.surface,
-    borderRadius: BORDER_RADIUS.lg,
-    paddingHorizontal: SPACING.xl,
-    paddingVertical: SPACING.lg,
-    gap: SPACING.lg,
-  },
-  searchInput: {
-    flex: 1,
-    ...TYPOGRAPHY.bodyMedium,
-    color: COLORS.textPrimary,
-    padding: 0,
-  },
-  filterButton: {
-    width: 48,
-    height: 48,
-    borderRadius: BORDER_RADIUS.lg,
-    backgroundColor: COLORS.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  categoriesSection: {
-    marginBottom: SPACING.xxxl,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.xl,
-  },
-  sectionTitle: {
-    ...TYPOGRAPHY.h5,
-    color: COLORS.textPrimary,
-  },
-  seeAllText: {
-    ...TYPOGRAPHY.labelMedium,
-    color: COLORS.primary,
-  },
-  categoriesScroll: {
-    marginHorizontal: -SPACING.xxxxl,
-    paddingHorizontal: SPACING.xxxxl,
-  },
-  categoryFilter: {
-    alignItems: 'center',
-    marginRight: SPACING.xl,
-    gap: SPACING.lg,
-  },
-  activeCategoryFilter: {
-    // Active state handled by icon background
-  },
-  categoryFilterIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  categoryFilterText: {
-    ...TYPOGRAPHY.labelMedium,
-    color: COLORS.textPrimary,
-  },
-  activeCategoryFilterText: {
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  filtersSection: {
-    marginBottom: SPACING.xxxl,
-  },
-  riskFiltersContainer: {
-    flexDirection: 'row',
-    gap: SPACING.lg,
-  },
-  riskFilter: {
-    paddingHorizontal: SPACING.xl,
-    paddingVertical: SPACING.lg,
-    borderRadius: BORDER_RADIUS.lg,
-    backgroundColor: COLORS.surface,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  activeRiskFilter: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
-  },
-  riskFilterText: {
-    ...TYPOGRAPHY.labelMedium,
-    color: COLORS.textSecondary,
-  },
-  activeRiskFilterText: {
-    color: COLORS.white,
-  },
-  resultsSection: {
-    marginBottom: SPACING.xxxxxxl,
-  },
-  sortButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.sm,
-  },
-  sortText: {
-    ...TYPOGRAPHY.labelMedium,
-    color: COLORS.textSecondary,
-  },
-  investmentCard: {
-    marginBottom: SPACING.xl,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: SPACING.xl,
-  },
-  cardHeaderLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    gap: SPACING.lg,
-  },
-  categoryIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.primarySurface,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cardTitleContainer: {
-    flex: 1,
-  },
-  investmentTitle: {
-    ...TYPOGRAPHY.labelLarge,
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.sm,
-  },
-  investmentCategory: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.textSecondary,
-  },
-  riskBadge: {
-    paddingHorizontal: SPACING.lg,
-    paddingVertical: SPACING.sm,
-    borderRadius: BORDER_RADIUS.md,
-  },
-  riskText: {
-    ...TYPOGRAPHY.labelSmall,
-    fontWeight: '600',
-  },
-  investmentDescription: {
-    ...TYPOGRAPHY.bodyMedium,
-    color: COLORS.textSecondary,
-    lineHeight: 20,
-    marginBottom: SPACING.xl,
-  },
-  investmentStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: SPACING.xl,
-  },
-  statItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.sm,
-  },
-  statValue: {
-    ...TYPOGRAPHY.labelSmall,
-    color: COLORS.textSecondary,
-    fontWeight: '500',
-  },
-  progressContainer: {
-    gap: SPACING.md,
-  },
-  progressHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  progressLabel: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.textSecondary,
-  },
-  progressPercentage: {
-    ...TYPOGRAPHY.labelSmall,
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  progressBar: {
-    height: 6,
-    backgroundColor: COLORS.gray200,
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: COLORS.primary,
-    borderRadius: 3,
-  },
-  progressFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  progressText: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.textSecondary,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    paddingVertical: SPACING.xxxxxxl,
-    gap: SPACING.xl,
-  },
-  emptyTitle: {
-    ...TYPOGRAPHY.h5,
-    color: COLORS.textPrimary,
-  },
-  emptyText: {
-    ...TYPOGRAPHY.bodyMedium,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    paddingHorizontal: SPACING.xl,
-  },
-});
+
 
 export default InvestmentsScreen;

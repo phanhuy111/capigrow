@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SvgXml } from 'react-native-svg';
 import { useAuthStore } from '@/store/authStore';
 import { RootStackParamList } from '@/types';
-import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '@/utils/theme';
+import { COLORS } from '@/utils/theme';
 import { Icons } from '@/assets';
-import Screen from '@/components/common/Screen';
+
 import { Card, Button, Input } from '@/components/ui';
+import Screen from '@/components/common/Screen';
 import { mockPortfolioApi } from '@/mock/api/portfolio';
 import { mockInvestmentApi } from '@/mock/api/investments';
 import { mockNotificationApi } from '@/mock/api/notifications';
@@ -55,17 +56,16 @@ const HomeScreen: React.FC = () => {
 
   return (
     <Screen paddingHorizontal>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <Text style={styles.greeting}>Good morning,</Text>
-            <Text style={styles.userName}>{user?.first_name || 'User'}</Text>
+        <View className="flex-row justify-between items-center mb-8 pt-4">
+          <View className="flex-1">
+            <Text className="text-base text-gray-600 mb-1">Good morning,</Text>
+            <Text className="text-xl font-semibold text-gray-900">{user?.first_name || 'User'}</Text>
           </View>
-          <Button
-            variant="ghost"
+          <TouchableOpacity
             onPress={() => navigation.navigate('Notifications')}
-            className="w-11 h-11 rounded-full bg-gray-100 justify-center items-center relative p-0"
+            className="w-11 h-11 rounded-full bg-gray-100 justify-center items-center relative"
           >
             <SvgXml xml={Icons.notification} width={24} height={24} fill={COLORS.textPrimary} />
             {notifications.filter(n => !n.isRead).length > 0 && (
@@ -75,7 +75,7 @@ const HomeScreen: React.FC = () => {
                 </Text>
               </View>
             )}
-          </Button>
+          </TouchableOpacity>
         </View>
 
         {/* Search Bar */}
@@ -89,57 +89,55 @@ const HomeScreen: React.FC = () => {
               className="bg-gray-100 border-0"
             />
           </View>
-          <Button
-            variant="ghost"
-            className="w-12 h-12 rounded-lg bg-gray-100 justify-center items-center p-0"
+          <TouchableOpacity
+            className="w-12 h-12 rounded-lg bg-gray-100 justify-center items-center"
           >
             <SvgXml xml={Icons.menuSquare} width={20} height={20} fill={COLORS.textPrimary} />
-          </Button>
+          </TouchableOpacity>
         </View>
 
         {/* Portfolio Overview */}
         {portfolioData && (
-          <Card style={styles.portfolioCard}>
-            <View style={styles.portfolioHeader}>
-              <Text style={styles.portfolioTitle}>Portfolio Overview</Text>
-              <Button variant="ghost" className="p-0">
+          <Card className="mb-8">
+            <View className="flex-row justify-between items-center mb-6">
+              <Text className="text-lg font-semibold text-gray-900">Portfolio Overview</Text>
+              <TouchableOpacity className="p-0">
                 <SvgXml xml={Icons.more} width={20} height={20} fill={COLORS.textSecondary} />
-              </Button>
+              </TouchableOpacity>
             </View>
 
-            <View style={styles.portfolioStats}>
-              <View style={styles.portfolioMainStat}>
-                <Text style={styles.portfolioValue}>
+            <View className="gap-6">
+              <View className="items-center gap-4">
+                <Text className="text-3xl font-bold text-gray-900">
                   {formatCurrency(portfolioData.totalValue)}
                 </Text>
-                <View style={styles.portfolioReturn}>
+                <View className="flex-row items-center gap-2">
                   <SvgXml
                     xml={Icons.trendUp}
                     width={16}
                     height={16}
                     fill={portfolioData.returnPercentage >= 0 ? COLORS.positive : COLORS.negative}
                   />
-                  <Text style={[
-                    styles.portfolioReturnText,
-                    { color: portfolioData.returnPercentage >= 0 ? COLORS.positive : COLORS.negative }
-                  ]}>
+                  <Text className="text-sm font-semibold" style={{
+                    color: portfolioData.returnPercentage >= 0 ? COLORS.positive : COLORS.negative
+                  }}>
                     {formatPercentage(portfolioData.returnPercentage)}
                   </Text>
                 </View>
               </View>
 
-              <View style={styles.portfolioSubStats}>
-                <View style={styles.portfolioSubStat}>
-                  <Text style={styles.portfolioSubStatValue}>
+              <View className="flex-row justify-around">
+                <View className="items-center gap-2">
+                  <Text className="text-base font-semibold text-gray-900">
                     {formatCurrency(portfolioData.totalInvested)}
                   </Text>
-                  <Text style={styles.portfolioSubStatLabel}>Total Invested</Text>
+                  <Text className="text-sm text-gray-600">Total Invested</Text>
                 </View>
-                <View style={styles.portfolioSubStat}>
-                  <Text style={styles.portfolioSubStatValue}>
+                <View className="items-center gap-2">
+                  <Text className="text-base font-semibold text-gray-900">
                     {formatCurrency(portfolioData.totalReturn)}
                   </Text>
-                  <Text style={styles.portfolioSubStatLabel}>Total Return</Text>
+                  <Text className="text-sm text-gray-600">Total Return</Text>
                 </View>
               </View>
             </View>
@@ -147,18 +145,18 @@ const HomeScreen: React.FC = () => {
         )}
 
         {/* Investment Categories */}
-        <View style={styles.categoriesSection}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Categories</Text>
-            <Button variant="ghost" size="sm" className="p-0">
-              <Text style={styles.seeAllText}>See all</Text>
-            </Button>
+        <View className="mb-8">
+          <View className="flex-row justify-between items-center mb-6">
+            <Text className="text-lg font-semibold text-gray-900">Categories</Text>
+            <TouchableOpacity className="p-0">
+              <Text className="text-sm font-medium text-purple-600">See all</Text>
+            </TouchableOpacity>
           </View>
 
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -24, paddingHorizontal: 24 }}>
             {['Energy', 'Technology', 'Real Estate', 'Healthcare'].map((category, index) => (
-              <Button key={index} variant="ghost" className="p-0 items-center mr-4 gap-3">
-                <View style={styles.categoryIcon}>
+              <TouchableOpacity key={index} className="p-0 items-center mr-4 gap-3">
+                <View className="w-14 h-14 rounded-full bg-purple-50 justify-center items-center">
                   <SvgXml
                     xml={index === 0 ? Icons.cup : index === 1 ? Icons.diagram : index === 2 ? Icons.buildings : Icons.health}
                     width={24}
@@ -166,54 +164,52 @@ const HomeScreen: React.FC = () => {
                     fill={COLORS.primary}
                   />
                 </View>
-                <Text style={styles.categoryName}>{category}</Text>
-              </Button>
+                <Text className="text-sm font-medium text-gray-900">{category}</Text>
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
 
         {/* Featured Investments */}
-        <View style={styles.investmentsSection}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Featured Investments</Text>
-            <Button variant="ghost" size="sm" className="p-0">
-              <Text style={styles.seeAllText}>See all</Text>
-            </Button>
+        <View className="mb-12">
+          <View className="flex-row justify-between items-center mb-6">
+            <Text className="text-lg font-semibold text-gray-900">Featured Investments</Text>
+            <TouchableOpacity className="p-0">
+              <Text className="text-sm font-medium text-purple-600">See all</Text>
+            </TouchableOpacity>
           </View>
 
           {investments.map((investment, index) => (
-            <Card key={investment.id} style={styles.investmentCard}>
-              <View style={styles.investmentHeader}>
-                <View style={styles.investmentInfo}>
-                  <Text style={styles.investmentTitle}>{investment.title}</Text>
-                  <Text style={styles.investmentCategory}>{investment.category}</Text>
+            <Card key={investment.id} className="mb-6">
+              <View className="flex-row justify-between items-start mb-6">
+                <View className="flex-1 mr-4">
+                  <Text className="text-base font-semibold text-gray-900 mb-2">{investment.title}</Text>
+                  <Text className="text-sm text-gray-600">{investment.category}</Text>
                 </View>
-                <View style={styles.investmentReturn}>
-                  <Text style={styles.investmentReturnText}>
+                <View className="bg-green-50 px-4 py-2 rounded-lg">
+                  <Text className="text-xs font-semibold text-green-600">
                     {investment.expectedReturn}% APY
                   </Text>
                 </View>
               </View>
 
-              <View style={styles.investmentProgress}>
-                <View style={styles.progressBar}>
+              <View className="mb-6 gap-4">
+                <View className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                   <View
-                    style={[
-                      styles.progressFill,
-                      { width: `${(investment.totalRaised / investment.targetAmount) * 100}%` }
-                    ]}
+                    className="h-full bg-purple-600 rounded-full"
+                    style={{ width: `${(investment.totalRaised / investment.targetAmount) * 100}%` }}
                   />
                 </View>
-                <Text style={styles.progressText}>
+                <Text className="text-sm text-gray-600">
                   {formatCurrency(investment.totalRaised)} of {formatCurrency(investment.targetAmount)}
                 </Text>
               </View>
 
-              <View style={styles.investmentFooter}>
-                <Text style={styles.investmentMinAmount}>
+              <View className="flex-row justify-between items-center">
+                <Text className="text-sm text-gray-600">
                   Min: {formatCurrency(investment.minInvestment)}
                 </Text>
-                <Text style={styles.investmentInvestors}>
+                <Text className="text-sm text-gray-600">
                   {investment.investorCount} investors
                 </Text>
               </View>
@@ -225,238 +221,6 @@ const HomeScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.xxxl,
-    paddingTop: SPACING.lg,
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  greeting: {
-    ...TYPOGRAPHY.bodyMedium,
-    color: COLORS.textSecondary,
-    marginBottom: SPACING.xs,
-  },
-  userName: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.textPrimary,
-  },
-  notificationButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: COLORS.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: COLORS.error,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notificationBadgeText: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.white,
-    fontSize: 10,
-    fontWeight: '600',
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: SPACING.xxxl,
-    gap: SPACING.lg,
-  },
-  searchInputContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.surface,
-    borderRadius: BORDER_RADIUS.lg,
-    paddingHorizontal: SPACING.xl,
-    paddingVertical: SPACING.lg,
-    gap: SPACING.lg,
-  },
-  searchInput: {
-    flex: 1,
-    ...TYPOGRAPHY.bodyMedium,
-    color: COLORS.textPrimary,
-    padding: 0,
-  },
-  filterButton: {
-    width: 48,
-    height: 48,
-    borderRadius: BORDER_RADIUS.lg,
-    backgroundColor: COLORS.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  portfolioCard: {
-    marginBottom: SPACING.xxxl,
-  },
-  portfolioHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.xl,
-  },
-  portfolioTitle: {
-    ...TYPOGRAPHY.h5,
-    color: COLORS.textPrimary,
-  },
-  portfolioStats: {
-    gap: SPACING.xl,
-  },
-  portfolioMainStat: {
-    alignItems: 'center',
-    gap: SPACING.md,
-  },
-  portfolioValue: {
-    ...TYPOGRAPHY.h2,
-    color: COLORS.textPrimary,
-  },
-  portfolioReturn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.sm,
-  },
-  portfolioReturnText: {
-    ...TYPOGRAPHY.labelMedium,
-    fontWeight: '600',
-  },
-  portfolioSubStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  portfolioSubStat: {
-    alignItems: 'center',
-    gap: SPACING.sm,
-  },
-  portfolioSubStatValue: {
-    ...TYPOGRAPHY.labelLarge,
-    color: COLORS.textPrimary,
-    fontWeight: '600',
-  },
-  portfolioSubStatLabel: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.textSecondary,
-  },
-  categoriesSection: {
-    marginBottom: SPACING.xxxl,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.xl,
-  },
-  sectionTitle: {
-    ...TYPOGRAPHY.h5,
-    color: COLORS.textPrimary,
-  },
-  seeAllText: {
-    ...TYPOGRAPHY.labelMedium,
-    color: COLORS.primary,
-  },
-  categoriesScroll: {
-    marginHorizontal: -SPACING.xxxxl,
-    paddingHorizontal: SPACING.xxxxl,
-  },
-  categoryCard: {
-    alignItems: 'center',
-    marginRight: SPACING.xl,
-    gap: SPACING.lg,
-  },
-  categoryIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: COLORS.primarySurface,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  categoryName: {
-    ...TYPOGRAPHY.labelMedium,
-    color: COLORS.textPrimary,
-  },
-  investmentsSection: {
-    marginBottom: SPACING.xxxxxxl,
-  },
-  investmentCard: {
-    marginBottom: SPACING.xl,
-  },
-  investmentHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: SPACING.xl,
-  },
-  investmentInfo: {
-    flex: 1,
-    marginRight: SPACING.lg,
-  },
-  investmentTitle: {
-    ...TYPOGRAPHY.labelLarge,
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.sm,
-  },
-  investmentCategory: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.textSecondary,
-  },
-  investmentReturn: {
-    backgroundColor: COLORS.secondaryLight10,
-    paddingHorizontal: SPACING.lg,
-    paddingVertical: SPACING.sm,
-    borderRadius: BORDER_RADIUS.md,
-  },
-  investmentReturnText: {
-    ...TYPOGRAPHY.labelSmall,
-    color: COLORS.secondary,
-    fontWeight: '600',
-  },
-  investmentProgress: {
-    marginBottom: SPACING.xl,
-    gap: SPACING.md,
-  },
-  progressBar: {
-    height: 6,
-    backgroundColor: COLORS.gray200,
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: COLORS.primary,
-    borderRadius: 3,
-  },
-  progressText: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.textSecondary,
-  },
-  investmentFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  investmentMinAmount: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.textSecondary,
-  },
-  investmentInvestors: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.textSecondary,
-  },
-});
+
 
 export default HomeScreen;

@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '@/types';
-import Screen from '@/components/common/Screen';
-import CapiGrowLogo from '@/components/common/CapiGrowLogo';
-import { COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS } from '@/utils/theme';
-import { useLoginMutation } from '@/hooks/useAuthQueries';
-import { useAuthStore } from '@/store/authStore';
-import { formatPhoneNumber, cleanPhoneNumber } from '@/utils/validation';
-// import LinearGradient from 'react-native-linear-gradient';
-import NumericKeypad from '@/components/common/NumericKeypad';
-import { Button } from '@/components/ui';
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, Alert, Dimensions } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@/types";
+import CapiGrowLogo from "@/components/common/CapiGrowLogo";
+import { useLoginMutation } from "@/hooks/useAuthQueries";
+import { formatPhoneNumber, cleanPhoneNumber } from "@/utils/validation";
+import NumericKeypad from "@/components/common/NumericKeypad";
+import { Button } from "@/components/ui";
 
-const { height } = Dimensions.get('window');
+const { height } = Dimensions.get("window");
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+type LoginScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "Login"
+>;
 
 // Zod schema for phone entry validation
 const phoneEntrySchema = z.object({
-  phoneNumber: z.string()
-    .min(9, 'Số điện thoại phải có ít nhất 9 chữ số')
-    .regex(/^[0-9\s]+$/, 'Số điện thoại chỉ được chứa số')
+  phoneNumber: z
+    .string()
+    .min(9, "Số điện thoại phải có ít nhất 9 chữ số")
+    .regex(/^[0-9\s]+$/, "Số điện thoại chỉ được chứa số"),
 });
 
 type PhoneEntryFormData = z.infer<typeof phoneEntrySchema>;
@@ -35,179 +35,202 @@ const LoginScreen: React.FC = () => {
   const loginMutation = useLoginMutation();
 
   const { handleSubmit, setValue, watch } = useForm<PhoneEntryFormData>({
-    defaultValues: { phoneNumber: '' },
-    resolver: zodResolver(phoneEntrySchema)
+    defaultValues: { phoneNumber: "" },
+    resolver: zodResolver(phoneEntrySchema),
   });
 
   const [showKeypad, setShowKeypad] = useState(false);
-  const phoneNumber = watch('phoneNumber');
+  const phoneNumber = watch("phoneNumber");
 
   const onSubmit = async (data: PhoneEntryFormData) => {
     const cleanNumber = cleanPhoneNumber(data.phoneNumber);
-    
+
     try {
       // For phone-based login, we need to send OTP first
       // This is a simplified version - you might need to adjust based on your API
       const response = await loginMutation.mutateAsync({
         email: `${cleanNumber}@phone.login`, // Temporary email format for phone login
-        password: 'phone_login_temp' // This will be replaced with OTP verification
+        password: "phone_login_temp", // This will be replaced with OTP verification
       });
-      
+
       // Navigate to OTP verification with phone number
-      navigation.navigate('OTPVerification', { 
+      navigation.navigate("OTPVerification", {
         phoneNumber: cleanNumber,
-        isLogin: true 
+        isLogin: true,
       });
     } catch (error: any) {
-      Alert.alert('Lỗi', error.message || 'Không thể gửi mã OTP');
+      Alert.alert("Lỗi", error.message || "Không thể gửi mã OTP");
     }
   };
 
-
-
   const handleKeyPress = (key: string) => {
-    const currentClean = phoneNumber.replace(/\s/g, '');
+    const currentClean = phoneNumber.replace(/\s/g, "");
     if (currentClean.length < 9) {
       const newNumber = currentClean + key;
-      setValue('phoneNumber', formatPhoneNumber(newNumber));
+      setValue("phoneNumber", formatPhoneNumber(newNumber));
     }
   };
 
   const handleDelete = () => {
-    const currentClean = phoneNumber.replace(/\s/g, '');
+    const currentClean = phoneNumber.replace(/\s/g, "");
     if (currentClean.length > 0) {
       const newNumber = currentClean.slice(0, -1);
-      setValue('phoneNumber', formatPhoneNumber(newNumber));
+      setValue("phoneNumber", formatPhoneNumber(newNumber));
     }
   };
 
   if (showKeypad) {
     return (
-      <SafeAreaView style={styles.keypadContainer}>
-        <View style={styles.keypadHeader}>
+      <SafeAreaView className="flex-1 bg-white">
+        <View className="px-8 pt-6 pb-6 bg-white">
           <TouchableOpacity
-            style={styles.backButtonKeypad}
+            className="w-10 h-10 justify-center items-start mb-6"
             onPress={() => setShowKeypad(false)}
           >
-            <Text style={styles.backButtonText}>←</Text>
+            <Text className="text-2xl text-gray-900">←</Text>
           </TouchableOpacity>
 
-          <Text style={styles.keypadTitle}>Nhập số điện thoại của bạn để bắt đầu</Text>
+          <Text className="text-lg font-semibold text-gray-900 mb-8">
+            Nhập số điện thoại của bạn để bắt đầu
+          </Text>
 
-          <View style={styles.countryRow}>
-            <Text style={styles.flag}>🇻🇳</Text>
-            <Text style={styles.countryText}>Vietnam (+84)</Text>
+          <View className="flex-row items-center mb-4">
+            <Text className="text-xl mr-4">🇻🇳</Text>
+            <Text className="flex-1 text-base text-gray-900">
+              Vietnam (+84)
+            </Text>
           </View>
 
-          <View style={styles.phoneDisplayContainer}>
-            <Text style={styles.phoneIcon}>📱</Text>
-            <Text style={styles.phoneDisplay}>{phoneNumber || ''}</Text>
+          <View className="flex-row items-center bg-gray-50 border border-gray-200 rounded-lg px-6 py-6 mb-8">
+            <Text className="text-xl mr-4">📱</Text>
+            <Text className="flex-1 text-base text-gray-900">
+              {phoneNumber || ""}
+            </Text>
           </View>
 
-          <Text style={styles.termsTextKeypad}>
-            Bằng việc nhấn tiếp theo, đồng nghĩa với việc bạn đồng ý các{' '}
-            <Text style={styles.linkText}>điều khoản sử dụng và dịch vụ</Text>
+          <Text className="text-xs text-gray-500 leading-4 mb-8">
+            Bằng việc nhấn tiếp theo, đồng nghĩa với việc bạn đồng ý các{" "}
+            <Text className="text-purple-600 font-medium">
+              điều khoản sử dụng và dịch vụ
+            </Text>
           </Text>
 
           <Button
-            className="bg-purple-600 rounded-lg py-4 items-center mb-4"
+            className="bg-purple-600 rounded-lg py-6 items-center mb-6"
             onPress={handleSubmit(onSubmit)}
-            disabled={phoneNumber.replace(/\s/g, '').length < 9 || loginMutation.isPending}
+            disabled={
+              phoneNumber.replace(/\s/g, "").length < 9 ||
+              loginMutation.isPending
+            }
             loading={loginMutation.isPending}
           >
             <Text className="text-white text-base font-semibold">
-              {loginMutation.isPending ? 'Đang xử lý...' : 'Tiếp theo'}
+              {loginMutation.isPending ? "Đang xử lý..." : "Tiếp theo"}
             </Text>
           </Button>
         </View>
 
         {/* Numeric Keypad */}
-        <View style={styles.keypadSection}>
-          <NumericKeypad
-            onKeyPress={handleKeyPress}
-            onDelete={handleDelete}
-          />
+        <View className="flex-1 bg-gray-100 pt-6">
+          <NumericKeypad onKeyPress={handleKeyPress} onDelete={handleDelete} />
         </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.gradient}>
+    <SafeAreaView className="flex-1 bg-white">
+      <View className="flex-1 relative bg-purple-600">
         {/* Radiating lines background effect */}
-        <View style={styles.radiatingLines}>
+        <View className="absolute inset-0 justify-center items-center">
           {Array.from({ length: 16 }).map((_, index) => (
             <View
               key={index}
+              className="absolute w-0.5 bg-white/10"
               style={[
-                styles.radiatingLine,
                 {
-                  transform: [
-                    { rotate: `${(index * 22.5)}deg` },
-                  ],
+                  height: height * 0.6,
+                  transformOrigin: "center bottom",
+                  transform: [{ rotate: `${index * 22.5}deg` }],
                 },
               ]}
             />
           ))}
         </View>
 
-        <View style={styles.content}>
+        <View className="flex-1 justify-center items-center z-10">
           {/* Logo */}
-          <View style={styles.logoContainer}>
-            <CapiGrowLogo size="large" color={COLORS.white} />
+          <View className="items-center justify-center">
+            <CapiGrowLogo size="large" color="#FFFFFF" />
           </View>
         </View>
       </View>
 
       {/* Bottom Form Section */}
-      <View style={styles.formSection}>
-        <View style={styles.formContent}>
-          <Text style={styles.title}>Đăng nhập bằng số điện thoại</Text>
+      <View
+        className="bg-white rounded-t-3xl pt-8"
+        style={{ minHeight: height * 0.45 }}
+      >
+        <View className="px-8">
+          <Text className="text-lg font-semibold text-gray-900 text-left mb-8 leading-6">
+            Đăng nhập bằng số điện thoại
+          </Text>
 
           {/* Country and Phone Input */}
-          <View style={styles.inputRow}>
-            <TouchableOpacity style={styles.countrySelector}>
-              <Text style={styles.flag}>🇻🇳</Text>
-              <Text style={styles.countryText}>Vietnam (+84)</Text>
-              <Text style={styles.dropdownIcon}>▼</Text>
+          <View className="mb-4">
+            <TouchableOpacity className="flex-row items-center bg-gray-50 border border-gray-200 rounded-lg px-6 py-6 mb-4">
+              <Text className="text-xl mr-4">🇻🇳</Text>
+              <Text className="flex-1 text-base text-gray-900">
+                Vietnam (+84)
+              </Text>
+              <Text className="text-xs text-gray-600">▼</Text>
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity
-            style={styles.phoneInputContainer}
+            className="flex-row items-center bg-gray-50 border border-gray-200 rounded-lg px-6 py-6 mb-8"
             onPress={() => setShowKeypad(true)}
           >
-            <Text style={styles.phoneInputIcon}>📱</Text>
-            <Text style={[
-              styles.phoneInputText,
-              { color: phoneNumber ? COLORS.textPrimary : COLORS.textTertiary }
-            ]}>
-              {phoneNumber || 'Nhập số điện thoại'}
+            <Text className="text-xl mr-4">📱</Text>
+            <Text
+              className={`flex-1 text-base ${
+                phoneNumber ? "text-gray-900" : "text-gray-400"
+              }`}
+            >
+              {phoneNumber || "Nhập số điện thoại"}
             </Text>
           </TouchableOpacity>
 
-          <Text style={styles.termsText}>
-            Bằng việc nhấn tiếp theo, đồng nghĩa với việc bạn đồng ý các{' '}
-            <Text style={styles.linkText}>điều khoản sử dụng và dịch vụ</Text>
+          <Text className="text-xs text-gray-500 text-left leading-4 mb-8">
+            Bằng việc nhấn tiếp theo, đồng nghĩa với việc bạn đồng ý các{" "}
+            <Text className="text-purple-600 font-medium">
+              điều khoản sử dụng và dịch vụ
+            </Text>
           </Text>
 
           <Button
-            className="bg-purple-600 rounded-lg py-4 items-center mb-8"
+            className="bg-purple-600 rounded-lg py-6 items-center mb-8"
             onPress={handleSubmit(onSubmit)}
-            disabled={phoneNumber.replace(/\s/g, '').length < 9 || loginMutation.isPending}
+            disabled={
+              phoneNumber.replace(/\s/g, "").length < 9 ||
+              loginMutation.isPending
+            }
             loading={loginMutation.isPending}
           >
             <Text className="text-white text-base font-semibold">
-              {loginMutation.isPending ? 'Đang xử lý...' : 'Đăng nhập →'}
+              {loginMutation.isPending ? "Đang xử lý..." : "Đăng nhập →"}
             </Text>
           </Button>
 
           {/* Alternative Registration */}
-          <View style={styles.alternativeContainer}>
-            <Text style={styles.alternativeText}>Chưa có tài khoản?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('PhoneEntry')}>
-              <Text style={styles.alternativeLink}>Đăng ký ngay</Text>
+          <View className="items-center">
+            <Text className="text-sm text-gray-500 mb-2">
+              Chưa có tài khoản?
+            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("PhoneEntry")}>
+              <Text className="text-sm text-purple-600 font-semibold">
+                Đăng ký ngay
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -215,229 +238,5 @@ const LoginScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  // Main screen styles
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  gradient: {
-    flex: 1,
-    position: 'relative',
-    backgroundColor: '#8B5CF6',
-  },
-  radiatingLines: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  radiatingLine: {
-    position: 'absolute',
-    width: 2,
-    height: height * 0.6,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    transformOrigin: 'center bottom',
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1,
-  },
-  logoContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  // Form section styles
-  formSection: {
-    backgroundColor: COLORS.white,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingTop: SPACING.xxxl,
-    minHeight: height * 0.45,
-  },
-  formContent: {
-    paddingHorizontal: SPACING.xxxxl,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    textAlign: 'left',
-    marginBottom: SPACING.xxxl,
-    lineHeight: 24,
-  },
-
-  // Input styles
-  inputRow: {
-    marginBottom: SPACING.lg,
-  },
-  countrySelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.surface,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: BORDER_RADIUS.lg,
-    paddingHorizontal: SPACING.xl,
-    paddingVertical: SPACING.xl,
-    marginBottom: SPACING.lg,
-  },
-  flag: {
-    fontSize: 20,
-    marginRight: SPACING.md,
-  },
-  countryText: {
-    flex: 1,
-    fontSize: 16,
-    color: COLORS.textPrimary,
-  },
-  dropdownIcon: {
-    fontSize: 12,
-    color: COLORS.textSecondary,
-  },
-  phoneInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.surface,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: BORDER_RADIUS.lg,
-    paddingHorizontal: SPACING.xl,
-    paddingVertical: SPACING.xl,
-    marginBottom: SPACING.xxxl,
-  },
-  phoneInputIcon: {
-    fontSize: 20,
-    marginRight: SPACING.md,
-  },
-  phoneInputText: {
-    flex: 1,
-    fontSize: 16,
-  },
-
-  // Terms and button styles
-  termsText: {
-    fontSize: 12,
-    color: COLORS.textTertiary,
-    textAlign: 'left',
-    lineHeight: 16,
-    marginBottom: SPACING.xxxl,
-  },
-  linkText: {
-    color: '#8B5CF6',
-    fontWeight: '500',
-  },
-  continueButtonMain: {
-    backgroundColor: '#8B5CF6',
-    borderRadius: BORDER_RADIUS.lg,
-    paddingVertical: SPACING.xl,
-    alignItems: 'center',
-    marginBottom: SPACING.xxxxl,
-  },
-  continueButtonMainText: {
-    color: COLORS.white,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-
-  // Alternative options
-  alternativeContainer: {
-    alignItems: 'center',
-  },
-  alternativeText: {
-    fontSize: 14,
-    color: COLORS.textSecondary,
-    marginBottom: SPACING.md,
-  },
-  alternativeLink: {
-    fontSize: 14,
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-
-  // Keypad screen styles
-  keypadContainer: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  keypadHeader: {
-    paddingHorizontal: SPACING.xxxxl,
-    paddingTop: SPACING.xl,
-    paddingBottom: SPACING.xl,
-    backgroundColor: COLORS.white,
-  },
-  backButtonKeypad: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    marginBottom: SPACING.xl,
-  },
-  backButtonText: {
-    fontSize: 24,
-    color: COLORS.textPrimary,
-  },
-  keypadTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.xxxl,
-  },
-  countryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: SPACING.lg,
-  },
-  phoneDisplayContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.surface,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: BORDER_RADIUS.lg,
-    paddingHorizontal: SPACING.xl,
-    paddingVertical: SPACING.xl,
-    marginBottom: SPACING.xxxl,
-  },
-  phoneIcon: {
-    fontSize: 20,
-    marginRight: SPACING.md,
-  },
-  phoneDisplay: {
-    flex: 1,
-    fontSize: 16,
-    color: COLORS.textPrimary,
-  },
-  termsTextKeypad: {
-    fontSize: 12,
-    color: COLORS.textTertiary,
-    lineHeight: 16,
-    marginBottom: SPACING.xxxl,
-  },
-  continueButtonKeypad: {
-    backgroundColor: '#8B5CF6',
-    borderRadius: BORDER_RADIUS.lg,
-    paddingVertical: SPACING.xl,
-    alignItems: 'center',
-    marginBottom: SPACING.xl,
-  },
-  continueButtonKeypadText: {
-    color: COLORS.white,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  keypadSection: {
-    flex: 1,
-    backgroundColor: COLORS.gray100,
-    paddingTop: SPACING.xl,
-  },
-});
 
 export default LoginScreen;

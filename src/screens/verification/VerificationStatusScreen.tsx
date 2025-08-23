@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
@@ -12,7 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types';
 import { useVerificationStore } from '@/store/verificationStore';
-import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES, BORDER_RADIUS } from '@/utils/theme';
+import { COLORS } from '@/utils/theme';
 import { VERIFICATION_STATUS } from '@/utils/constants';
 import { formatDate } from '@/utils/helpers';
 
@@ -71,92 +70,128 @@ const VerificationStatusScreen: React.FC = () => {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
+      <SafeAreaView className="flex-1 bg-white">
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color={COLORS.primary} />
-          <Text style={styles.loadingText}>Loading verification status...</Text>
+          <Text className="mt-4 text-base text-gray-600">
+            Loading verification status...
+          </Text>
         </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.statusContainer}>
-          <View style={[styles.statusIcon, { backgroundColor: statusInfo.color + '20' }]}>
-            <Text style={styles.statusEmoji}>{statusInfo.icon}</Text>
+    <SafeAreaView className="flex-1 bg-white">
+      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 16 }}>
+        <View className="items-center mt-6 mb-6">
+          <View 
+            className="w-24 h-24 rounded-full justify-center items-center mb-4"
+            style={{ backgroundColor: statusInfo.color + '20' }}
+          >
+            <Text className="text-5xl">{statusInfo.icon}</Text>
           </View>
 
-          <Text style={styles.statusTitle}>{statusInfo.title}</Text>
-          <Text style={styles.statusDescription}>{statusInfo.description}</Text>
+          <Text className="text-2xl font-bold text-gray-900 mb-2 text-center">
+            {statusInfo.title}
+          </Text>
+          <Text className="text-base text-gray-600 text-center leading-6">
+            {statusInfo.description}
+          </Text>
         </View>
 
         {verification && (
-          <View style={styles.detailsContainer}>
-            <Text style={styles.detailsTitle}>Verification Details</Text>
+          <View className="bg-gray-100 p-4 rounded-md mb-6">
+            <Text className="text-lg font-semibold text-gray-900 mb-4">
+              Verification Details
+            </Text>
 
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Document Type:</Text>
-              <Text style={styles.detailValue}>
+            <View className="flex-row justify-between items-center mb-2">
+              <Text className="text-sm text-gray-600 flex-1">Document Type:</Text>
+              <Text className="text-sm text-gray-900 font-medium flex-2 text-right">
                 {verification.document_type?.replace('_', ' ').toUpperCase() || 'Not specified'}
               </Text>
             </View>
 
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Submitted:</Text>
-              <Text style={styles.detailValue}>
+            <View className="flex-row justify-between items-center mb-2">
+              <Text className="text-sm text-gray-600 flex-1">Submitted:</Text>
+              <Text className="text-sm text-gray-900 font-medium flex-2 text-right">
                 {formatDate(verification.created_at, 'long')}
               </Text>
             </View>
 
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Status:</Text>
-              <View style={[styles.statusBadge, { backgroundColor: statusInfo.color + '20' }]}>
-                <Text style={[styles.statusBadgeText, { color: statusInfo.color }]}>
+            <View className="flex-row justify-between items-center mb-2">
+              <Text className="text-sm text-gray-600 flex-1">Status:</Text>
+              <View 
+                className="px-2 py-1 rounded"
+                style={{ backgroundColor: statusInfo.color + '20' }}
+              >
+                <Text 
+                  className="text-xs font-semibold"
+                  style={{ color: statusInfo.color }}
+                >
                   {statusInfo.title}
                 </Text>
               </View>
             </View>
 
             {verification.verified_at && (
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Verified:</Text>
-                <Text style={styles.detailValue}>
+              <View className="flex-row justify-between items-center mb-2">
+                <Text className="text-sm text-gray-600 flex-1">Verified:</Text>
+                <Text className="text-sm text-gray-900 font-medium flex-2 text-right">
                   {formatDate(verification.verified_at, 'long')}
                 </Text>
               </View>
             )}
 
             {verification.rejection_reason && (
-              <View style={styles.rejectionContainer}>
-                <Text style={styles.rejectionTitle}>Rejection Reason:</Text>
-                <Text style={styles.rejectionText}>{verification.rejection_reason}</Text>
+              <View className="mt-4 p-4 rounded-md border-l-4" style={{ backgroundColor: COLORS.error + '10', borderLeftColor: COLORS.error }}>
+                <Text className="text-sm font-semibold mb-1" style={{ color: COLORS.error }}>
+                  Rejection Reason:
+                </Text>
+                <Text className="text-sm text-gray-900 leading-5">
+                  {verification.rejection_reason}
+                </Text>
               </View>
             )}
           </View>
         )}
 
-        <View style={styles.actionsContainer}>
+        <View className="flex-1 justify-end pb-6">
           {verification?.status === 'rejected' && (
-            <TouchableOpacity style={styles.retryButton} onPress={handleRetryVerification}>
-              <Text style={styles.retryButtonText}>Retry Verification</Text>
+            <TouchableOpacity 
+              className="bg-blue-600 py-4 rounded-md items-center" 
+              onPress={handleRetryVerification}
+            >
+              <Text className="text-white text-base font-semibold">
+                Retry Verification
+              </Text>
             </TouchableOpacity>
           )}
 
           {verification?.status === 'approved' && (
-            <TouchableOpacity style={styles.continueButton} onPress={handleGoHome}>
-              <Text style={styles.continueButtonText}>Continue to App</Text>
+            <TouchableOpacity 
+              className="bg-green-600 py-4 rounded-md items-center" 
+              onPress={handleGoHome}
+            >
+              <Text className="text-white text-base font-semibold">
+                Continue to App
+              </Text>
             </TouchableOpacity>
           )}
 
           {(!verification || verification.status === 'pending' || verification.status === 'under_review') && (
-            <View style={styles.waitingContainer}>
-              <Text style={styles.waitingText}>
+            <View className="items-center">
+              <Text className="text-sm text-gray-600 text-center leading-5 mb-4">
                 We'll notify you once your verification is complete. This usually takes 1-2 business days.
               </Text>
-              <TouchableOpacity style={styles.homeButton} onPress={handleGoHome}>
-                <Text style={styles.homeButtonText}>Go to Home</Text>
+              <TouchableOpacity 
+                className="bg-gray-600 py-4 px-6 rounded-md items-center" 
+                onPress={handleGoHome}
+              >
+                <Text className="text-white text-base font-semibold">
+                  Go to Home
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -166,161 +201,6 @@ const VerificationStatusScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: SPACING.md,
-    fontSize: FONT_SIZES.md,
-    color: COLORS.textSecondary,
-  },
-  content: {
-    flexGrow: 1,
-    paddingHorizontal: SPACING.lg,
-  },
-  statusContainer: {
-    alignItems: 'center',
-    marginTop: SPACING.xl,
-    marginBottom: SPACING.xl,
-  },
-  statusIcon: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: SPACING.lg,
-  },
-  statusEmoji: {
-    fontSize: 50,
-  },
-  statusTitle: {
-    fontSize: FONT_SIZES.xxl,
-    fontWeight: 'bold',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.sm,
-    textAlign: 'center',
-  },
-  statusDescription: {
-    fontSize: FONT_SIZES.md,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  detailsContainer: {
-    backgroundColor: COLORS.gray100,
-    padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.md,
-    marginBottom: SPACING.xl,
-  },
-  detailsTitle: {
-    fontSize: FONT_SIZES.lg,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.md,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.sm,
-  },
-  detailLabel: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-    flex: 1,
-  },
-  detailValue: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textPrimary,
-    fontWeight: '500',
-    flex: 2,
-    textAlign: 'right',
-  },
-  statusBadge: {
-    paddingHorizontal: SPACING.sm,
-    paddingVertical: SPACING.xs,
-    borderRadius: BORDER_RADIUS.sm,
-  },
-  statusBadgeText: {
-    fontSize: FONT_SIZES.xs,
-    fontWeight: '600',
-  },
-  rejectionContainer: {
-    marginTop: SPACING.md,
-    padding: SPACING.md,
-    backgroundColor: COLORS.error + '10',
-    borderRadius: BORDER_RADIUS.md,
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.error,
-  },
-  rejectionTitle: {
-    fontSize: FONT_SIZES.sm,
-    fontWeight: '600',
-    color: COLORS.error,
-    marginBottom: SPACING.xs,
-  },
-  rejectionText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textPrimary,
-    lineHeight: 20,
-  },
-  actionsContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingBottom: SPACING.xl,
-  },
-  retryButton: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    alignItems: 'center',
-  },
-  retryButtonText: {
-    color: COLORS.white,
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-  },
-  continueButton: {
-    backgroundColor: COLORS.success,
-    paddingVertical: SPACING.md,
-    borderRadius: BORDER_RADIUS.md,
-    alignItems: 'center',
-  },
-  continueButtonText: {
-    color: COLORS.white,
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-  },
-  waitingContainer: {
-    alignItems: 'center',
-  },
-  waitingText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: SPACING.lg,
-  },
-  homeButton: {
-    backgroundColor: COLORS.gray600,
-    paddingVertical: SPACING.md,
-    paddingHorizontal: SPACING.xl,
-    borderRadius: BORDER_RADIUS.md,
-    alignItems: 'center',
-  },
-  homeButtonText: {
-    color: COLORS.white,
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-  },
-});
+
 
 export default VerificationStatusScreen;

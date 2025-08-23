@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   Alert,
   ScrollView
@@ -17,7 +16,6 @@ import { RootStackParamList } from '@/types';
 import Screen from '@/components/common/Screen';
 import { Input, Button } from '@/components/ui';
 import CapiGrowLogo from '@/components/common/CapiGrowLogo';
-import { COLORS, SPACING, TYPOGRAPHY } from '@/utils/theme';
 import { useRegisterMutation } from '@/hooks/useAuthQueries';
 import { useAuthStore } from '@/store/authStore';
 
@@ -99,33 +97,33 @@ const UserRegistrationScreen: React.FC = () => {
   };
   
   return (
-    <Screen style={styles.container}>
+    <Screen style={{ flex: 1, backgroundColor: '#ffffff' }}>
       <KeyboardAwareScrollView
-        style={styles.keyboardAvoid}
-        contentContainerStyle={styles.scrollContent}
+        className="flex-1"
+        contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
         bottomOffset={0}
       >
-          <View style={styles.header}>
+          <View className="flex-row items-center px-4 pt-6 pb-4">
             <TouchableOpacity
               onPress={() => navigation.goBack()}
-              style={styles.backButton}
+              className="w-10 h-10 rounded-full bg-gray-100 items-center justify-center mr-4"
             >
-              <Text style={styles.backButtonText}>←</Text>
+              <Text className="text-xl text-gray-900">←</Text>
             </TouchableOpacity>
             
-            <CapiGrowLogo size="medium" color={COLORS.primary} />
+            <CapiGrowLogo size="medium" color="#8B5CF6" />
           </View>
           
-          <View style={styles.content}>
-            <Text style={styles.title}>Create Your Account</Text>
+          <View className="flex-1 px-4 pt-4">
+            <Text className="text-2xl font-bold text-gray-900 text-center mb-2">Create Your Account</Text>
             
-            <Text style={styles.subtitle}>
+            <Text className="text-base text-gray-600 text-center mb-6 leading-6">
               Please fill in your information to complete registration
             </Text>
             
-            <View style={styles.form}>
-              <View style={styles.nameRow}>
+            <View className="flex-1">
+              <View className="flex-row justify-between mb-4">
                 <Controller
                   control={control}
                   name="firstName"
@@ -137,7 +135,7 @@ const UserRegistrationScreen: React.FC = () => {
                       onChangeText={onChange}
                       onBlur={onBlur}
                       error={errors.firstName?.message}
-                      style={styles.nameInput}
+                      className="flex-1 mx-1"
                     />
                   )}
                 />
@@ -153,7 +151,7 @@ const UserRegistrationScreen: React.FC = () => {
                       onChangeText={onChange}
                       onBlur={onBlur}
                       error={errors.lastName?.message}
-                      style={styles.nameInput}
+                      className="flex-1 mx-1"
                     />
                   )}
                 />
@@ -172,7 +170,7 @@ const UserRegistrationScreen: React.FC = () => {
                     keyboardType="email-address"
                     autoCapitalize="none"
                     error={errors.email?.message}
-                    style={styles.input}
+                    className="mb-4"
                   />
                 )}
               />
@@ -188,7 +186,7 @@ const UserRegistrationScreen: React.FC = () => {
                     onChangeText={onChange}
                     onBlur={onBlur}
                     error={errors.dateOfBirth?.message}
-                    style={styles.input}
+                    className="mb-4"
                   />
                 )}
               />
@@ -205,7 +203,7 @@ const UserRegistrationScreen: React.FC = () => {
                     onBlur={onBlur}
                     secureTextEntry
                     error={errors.password?.message}
-                    style={styles.input}
+                    className="mb-4"
                   />
                 )}
               />
@@ -222,27 +220,27 @@ const UserRegistrationScreen: React.FC = () => {
                     onBlur={onBlur}
                     secureTextEntry
                     error={errors.confirmPassword?.message}
-                    style={styles.input}
+                    className="mb-4"
                   />
                 )}
               />
             </View>
           </View>
         
-        <View style={styles.footer}>
+        <View className="px-4 pb-6 pt-4">
           <Button
             title="Create Account"
             onPress={handleSubmit(onSubmit)}
             disabled={!isValid}
             loading={registerMutation.isPending}
             fullWidth
-            style={styles.createButton}
+            className="mb-4"
           />
           
-          <Text style={styles.termsText}>
+          <Text className="text-sm text-gray-600 text-center leading-5">
             By creating an account, you agree to our{' '}
-            <Text style={styles.termsLink}>Terms of Service</Text> and{' '}
-            <Text style={styles.termsLink}>Privacy Policy</Text>
+            <Text className="text-purple-600 font-semibold">Terms of Service</Text> and{' '}
+            <Text className="text-purple-600 font-semibold">Privacy Policy</Text>
           </Text>
         </View>
       </KeyboardAwareScrollView>
@@ -250,88 +248,6 @@ const UserRegistrationScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  keyboardAvoid: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: SPACING.lg,
-    paddingTop: SPACING.xl,
-    paddingBottom: SPACING.lg,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.gray100,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: SPACING.lg,
-  },
-  backButtonText: {
-    fontSize: 20,
-    color: COLORS.textPrimary,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: SPACING.lg,
-    paddingTop: SPACING.lg,
-  },
-  title: {
-    ...TYPOGRAPHY.h2,
-    color: COLORS.textPrimary,
-    textAlign: 'center',
-    marginBottom: SPACING.md,
-  },
-  subtitle: {
-    ...TYPOGRAPHY.bodyMedium,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    marginBottom: SPACING.xl,
-    lineHeight: 24,
-  },
-  form: {
-    flex: 1,
-  },
-  nameRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: SPACING.lg,
-  },
-  nameInput: {
-    flex: 1,
-    marginHorizontal: SPACING.xs,
-  },
-  input: {
-    marginBottom: SPACING.lg,
-  },
-  footer: {
-    paddingHorizontal: SPACING.lg,
-    paddingBottom: SPACING.xl,
-    paddingTop: SPACING.lg,
-  },
-  createButton: {
-    marginBottom: SPACING.lg,
-  },
-  termsText: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  termsLink: {
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-});
+
 
 export default UserRegistrationScreen;

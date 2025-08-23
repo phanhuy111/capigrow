@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   Alert,
   Switch,
@@ -13,7 +12,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SvgXml } from 'react-native-svg';
 import { RootStackParamList } from '@/types';
 import { useAuthStore } from '@/store/authStore';
-import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '@/utils/theme';
+import { COLORS } from '@/utils/theme';
 import { Icons } from '@/assets';
 import Screen from '@/components/common/Screen';
 import { Card, Button } from '@/components/ui';
@@ -101,8 +100,8 @@ const ProfileScreen: React.FC = () => {
   if (!userProfile) {
     return (
       <Screen>
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Loading profile...</Text>
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-base text-gray-600">Loading profile...</Text>
         </View>
       </Screen>
     );
@@ -115,8 +114,8 @@ const ProfileScreen: React.FC = () => {
     <Screen paddingHorizontal>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.screenTitle}>Profile</Text>
+        <View className="flex-row justify-between items-center mb-8 pt-4">
+          <Text className="text-2xl font-semibold text-gray-900">Profile</Text>
           <Button 
             variant="ghost" 
             size="icon" 
@@ -128,13 +127,13 @@ const ProfileScreen: React.FC = () => {
         </View>
 
         {/* Profile Card */}
-        <Card style={styles.profileCard}>
-          <View style={styles.profileHeader}>
-            <View style={styles.avatarContainer}>
+        <Card className="mb-8">
+          <View className="flex-row items-center gap-6">
+            <View className="relative">
               {userProfile.avatar ? (
-                <Image source={{ uri: userProfile.avatar }} style={styles.avatar} />
+                <Image source={{ uri: userProfile.avatar }} className="w-20 h-20 rounded-full" />
               ) : (
-                <View style={styles.avatarPlaceholder}>
+                <View className="w-20 h-20 rounded-full bg-blue-600 justify-center items-center">
                   <SvgXml xml={Icons.user} width={32} height={32} fill={COLORS.white} />
                 </View>
               )}
@@ -147,19 +146,19 @@ const ProfileScreen: React.FC = () => {
               </Button>
             </View>
 
-            <View style={styles.profileInfo}>
-              <Text style={styles.userName}>
+            <View className="flex-1 gap-2">
+              <Text className="text-xl font-semibold text-gray-900">
                 {userProfile.firstName} {userProfile.lastName}
               </Text>
-              <Text style={styles.userEmail}>{userProfile.email}</Text>
-              <View style={styles.verificationBadge}>
+              <Text className="text-base text-gray-600">{userProfile.email}</Text>
+              <View className="flex-row items-center gap-2">
                 <SvgXml
                   xml={isVerified ? Icons.shieldTickBold : Icons.warning}
                   width={16}
                   height={16}
                   fill={isVerified ? COLORS.success : COLORS.warning}
                 />
-                <Text style={[styles.verificationText, { color: isVerified ? COLORS.success : COLORS.warning }]}>
+                <Text style={[{ fontSize: 12, fontWeight: '500' }, { color: isVerified ? COLORS.success : COLORS.warning }]}>
                   {isVerified ? 'Verified Account' : 'Verification Pending'}
                 </Text>
               </View>
@@ -177,34 +176,34 @@ const ProfileScreen: React.FC = () => {
         </Card>
 
         {/* Quick Stats */}
-        <View style={styles.quickStatsContainer}>
-          <Card style={styles.quickStatCard}>
+        <View className="flex-row gap-4 mb-8">
+          <Card className="flex-1 items-center gap-4 py-6">
             <SvgXml xml={Icons.emptyWallet} width={24} height={24} fill={COLORS.primary} />
-            <Text style={styles.quickStatValue}>125M VND</Text>
-            <Text style={styles.quickStatLabel}>Total Invested</Text>
+            <Text className="text-lg font-semibold text-gray-900">125M VND</Text>
+            <Text className="text-sm text-gray-600 text-center">Total Invested</Text>
           </Card>
-          <Card style={styles.quickStatCard}>
+          <Card className="flex-1 items-center gap-4 py-6">
             <SvgXml xml={Icons.trendUp} width={24} height={24} fill={COLORS.positive} />
-            <Text style={styles.quickStatValue}>+25%</Text>
-            <Text style={styles.quickStatLabel}>Total Return</Text>
+            <Text className="text-lg font-semibold text-gray-900">+25%</Text>
+            <Text className="text-sm text-gray-600 text-center">Total Return</Text>
           </Card>
         </View>
 
         {/* Account Management */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Account Management</Text>
+        <View className="mb-8">
+          <Text className="text-xl font-semibold text-gray-900 mb-6">Account Management</Text>
 
-          <Card style={styles.menuCard}>
+          <Card className="py-2">
             <Button 
               variant="ghost" 
               className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleEditProfile}
             >
-              <View style={styles.menuLeft}>
-                <View style={styles.menuIconContainer}>
+              <View className="flex-row items-center flex-1 gap-4">
+                <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
                   <SvgXml xml={Icons.user} width={20} height={20} fill={COLORS.primary} />
                 </View>
-                <Text style={styles.menuTitle}>Personal Information</Text>
+                <Text className="text-base font-medium text-gray-900">Personal Information</Text>
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
             </Button>
@@ -214,11 +213,11 @@ const ProfileScreen: React.FC = () => {
               className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleBankAccount}
             >
-              <View style={styles.menuLeft}>
-                <View style={styles.menuIconContainer}>
+              <View className="flex-row items-center flex-1 gap-4">
+                <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
                   <SvgXml xml={Icons.bank} width={20} height={20} fill={COLORS.primary} />
                 </View>
-                <Text style={styles.menuTitle}>Bank Account</Text>
+                <Text className="text-base font-medium text-gray-900">Bank Account</Text>
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
             </Button>
@@ -228,20 +227,20 @@ const ProfileScreen: React.FC = () => {
               className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleVerification}
             >
-              <View style={styles.menuLeft}>
-                <View style={styles.menuIconContainer}>
+              <View className="flex-row items-center flex-1 gap-4">
+                <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
                   <SvgXml xml={Icons.shieldTick} width={20} height={20} fill={COLORS.primary} />
                 </View>
-                <View style={styles.menuTextContainer}>
-                  <Text style={styles.menuTitle}>Identity Verification</Text>
-                  <View style={styles.verificationStatusBadge}>
+                <View className="flex-1">
+                  <Text className="text-base font-medium text-gray-900">Identity Verification</Text>
+                  <View className="flex-row items-center gap-1 mt-1">
                     <SvgXml
                       xml={isVerified ? Icons.tick : Icons.warning}
                       width={12}
                       height={12}
                       fill={isVerified ? COLORS.success : COLORS.warning}
                     />
-                    <Text style={[styles.verificationStatusText, { color: isVerified ? COLORS.success : COLORS.warning }]}>
+                    <Text style={[{ fontSize: 11, fontWeight: '500' }, { color: isVerified ? COLORS.success : COLORS.warning }]}>
                       {isVerified ? 'Verified' : 'Pending'}
                     </Text>
                   </View>
@@ -255,11 +254,11 @@ const ProfileScreen: React.FC = () => {
               className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleChangePassword}
             >
-              <View style={styles.menuLeft}>
-                <View style={styles.menuIconContainer}>
+              <View className="flex-row items-center flex-1 gap-4">
+                <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
                   <SvgXml xml={Icons.lock} width={20} height={20} fill={COLORS.primary} />
                 </View>
-                <Text style={styles.menuTitle}>Change Password</Text>
+                <Text className="text-base font-medium text-gray-900">Change Password</Text>
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
             </Button>
@@ -267,22 +266,22 @@ const ProfileScreen: React.FC = () => {
         </View>
 
         {/* Settings */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Settings</Text>
+        <View className="mb-8">
+          <Text className="text-xl font-semibold text-gray-900 mb-6">Settings</Text>
 
-          <Card style={styles.menuCard}>
+          <Card className="py-2">
             <Button 
               variant="ghost" 
               className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleNotificationSettings}
             >
-              <View style={styles.menuLeft}>
-                <View style={styles.menuIconContainer}>
+              <View className="flex-row items-center flex-1 gap-4">
+                <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
                   <SvgXml xml={Icons.notification} width={20} height={20} fill={COLORS.primary} />
                 </View>
-                <Text style={styles.menuTitle}>Notifications</Text>
+                <Text className="text-base font-medium text-gray-900">Notifications</Text>
               </View>
-              <View style={styles.menuRight}>
+              <View className="flex-row items-center gap-4">
                 <Switch
                   value={notificationsEnabled}
                   onValueChange={setNotificationsEnabled}
@@ -297,14 +296,14 @@ const ProfileScreen: React.FC = () => {
               className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleLanguageSettings}
             >
-              <View style={styles.menuLeft}>
-                <View style={styles.menuIconContainer}>
+              <View className="flex-row items-center flex-1 gap-4">
+                <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
                   <SvgXml xml={Icons.global} width={20} height={20} fill={COLORS.primary} />
                 </View>
-                <Text style={styles.menuTitle}>Language</Text>
+                <Text className="text-base font-medium text-gray-900">Language</Text>
               </View>
-              <View style={styles.menuRight}>
-                <Text style={styles.menuValue}>English</Text>
+              <View className="flex-row items-center gap-4">
+                <Text className="text-base text-gray-600">English</Text>
                 <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
               </View>
             </Button>
@@ -314,13 +313,13 @@ const ProfileScreen: React.FC = () => {
               className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleSecurity}
             >
-              <View style={styles.menuLeft}>
-                <View style={styles.menuIconContainer}>
+              <View className="flex-row items-center flex-1 gap-4">
+                <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
                   <SvgXml xml={Icons.lockBold} width={20} height={20} fill={COLORS.primary} />
                 </View>
-                <Text style={styles.menuTitle}>Security</Text>
+                <Text className="text-base font-medium text-gray-900">Security</Text>
               </View>
-              <View style={styles.menuRight}>
+              <View className="flex-row items-center gap-4">
                 <Switch
                   value={biometricEnabled}
                   onValueChange={setBiometricEnabled}
@@ -333,20 +332,20 @@ const ProfileScreen: React.FC = () => {
         </View>
 
         {/* Support */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Support</Text>
+        <View className="mb-8">
+          <Text className="text-xl font-semibold text-gray-900 mb-6">Support</Text>
 
-          <Card style={styles.menuCard}>
+          <Card className="py-2">
             <Button
               variant="ghost"
               onPress={handleSupport}
               className="flex-row justify-between items-center py-4 px-4"
             >
-              <View style={styles.menuLeft}>
-                <View style={styles.menuIconContainer}>
+              <View className="flex-row items-center flex-1 gap-4">
+                <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
                   <SvgXml xml={Icons.infoCircle} width={20} height={20} fill={COLORS.primary} />
                 </View>
-                <Text style={styles.menuTitle}>Help Center</Text>
+                <Text className="text-base font-medium text-gray-900">Help Center</Text>
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
             </Button>
@@ -355,11 +354,11 @@ const ProfileScreen: React.FC = () => {
               variant="ghost"
               className="flex-row justify-between items-center py-4 px-4"
             >
-              <View style={styles.menuLeft}>
-                <View style={styles.menuIconContainer}>
+              <View className="flex-row items-center flex-1 gap-4">
+                <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
                   <SvgXml xml={Icons.note} width={20} height={20} fill={COLORS.primary} />
                 </View>
-                <Text style={styles.menuTitle}>Terms & Conditions</Text>
+                <Text className="text-base font-medium text-gray-900">Terms & Conditions</Text>
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
             </Button>
@@ -368,11 +367,11 @@ const ProfileScreen: React.FC = () => {
               variant="ghost"
               className="flex-row justify-between items-center py-4 px-4"
             >
-              <View style={styles.menuLeft}>
-                <View style={styles.menuIconContainer}>
+              <View className="flex-row items-center flex-1 gap-4">
+                <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
                   <SvgXml xml={Icons.shieldTick} width={20} height={20} fill={COLORS.primary} />
                 </View>
-                <Text style={styles.menuTitle}>Privacy Policy</Text>
+                <Text className="text-base font-medium text-gray-900">Privacy Policy</Text>
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
             </Button>
@@ -380,9 +379,9 @@ const ProfileScreen: React.FC = () => {
         </View>
 
         {/* App Info */}
-        <View style={styles.appInfoContainer}>
-          <Text style={styles.appInfoText}>CapiGrow v1.0.0</Text>
-          <Text style={styles.appInfoText}>
+        <View className="items-center py-8 gap-2">
+          <Text className="text-sm text-gray-400 text-center">CapiGrow v1.0.0</Text>
+          <Text className="text-sm text-gray-400 text-center">
             Member since {formatDate(userProfile.createdAt, 'short')}
           </Text>
         </View>
@@ -394,207 +393,13 @@ const ProfileScreen: React.FC = () => {
           className="flex-row items-center justify-center gap-4 bg-red-50 py-4 rounded-lg mb-8"
         >
           <SvgXml xml={Icons.logout} width={24} height={24} fill={COLORS.error} />
-          <Text style={styles.logoutButtonText}>Logout</Text>
+          <Text className="text-base font-semibold text-red-600">Logout</Text>
         </Button>
       </ScrollView>
     </Screen>
   );
 };
 
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    ...TYPOGRAPHY.bodyMedium,
-    color: COLORS.textSecondary,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.xxxl,
-    paddingTop: SPACING.lg,
-  },
-  screenTitle: {
-    ...TYPOGRAPHY.h3,
-    color: COLORS.textPrimary,
-  },
-  settingsButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: COLORS.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  profileCard: {
-    marginBottom: SPACING.xxxl,
-  },
-  profileHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.xl,
-  },
-  avatarContainer: {
-    position: 'relative',
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-  },
-  avatarPlaceholder: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: COLORS.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  editAvatarButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: COLORS.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: COLORS.white,
-  },
-  profileInfo: {
-    flex: 1,
-    gap: SPACING.sm,
-  },
-  userName: {
-    ...TYPOGRAPHY.h5,
-    color: COLORS.textPrimary,
-  },
-  userEmail: {
-    ...TYPOGRAPHY.bodyMedium,
-    color: COLORS.textSecondary,
-  },
-  verificationBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.sm,
-  },
-  verificationText: {
-    ...TYPOGRAPHY.labelSmall,
-    fontWeight: '500',
-  },
-  editButton: {
-    padding: SPACING.sm,
-  },
-  quickStatsContainer: {
-    flexDirection: 'row',
-    gap: SPACING.lg,
-    marginBottom: SPACING.xxxl,
-  },
-  quickStatCard: {
-    flex: 1,
-    alignItems: 'center',
-    gap: SPACING.lg,
-    paddingVertical: SPACING.xl,
-  },
-  quickStatValue: {
-    ...TYPOGRAPHY.labelLarge,
-    color: COLORS.textPrimary,
-    fontWeight: '600',
-  },
-  quickStatLabel: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-  },
-  sectionContainer: {
-    marginBottom: SPACING.xxxl,
-  },
-  sectionTitle: {
-    ...TYPOGRAPHY.h5,
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.xl,
-  },
-  menuCard: {
-    paddingVertical: SPACING.sm,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: SPACING.xl,
-    paddingHorizontal: SPACING.lg,
-  },
-  menuLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    gap: SPACING.lg,
-  },
-  menuIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.primarySurface,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  menuTextContainer: {
-    flex: 1,
-  },
-  menuTitle: {
-    ...TYPOGRAPHY.labelMedium,
-    color: COLORS.textPrimary,
-  },
-  menuRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.lg,
-  },
-  menuValue: {
-    ...TYPOGRAPHY.bodyMedium,
-    color: COLORS.textSecondary,
-  },
-  verificationStatusBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.xs,
-    marginTop: SPACING.xs,
-  },
-  verificationStatusText: {
-    ...TYPOGRAPHY.caption,
-    fontWeight: '500',
-  },
-  appInfoContainer: {
-    alignItems: 'center',
-    paddingVertical: SPACING.xxxl,
-    gap: SPACING.sm,
-  },
-  appInfoText: {
-    ...TYPOGRAPHY.bodySmall,
-    color: COLORS.textTertiary,
-    textAlign: 'center',
-  },
-  logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: SPACING.lg,
-    backgroundColor: COLORS.errorLight,
-    paddingVertical: SPACING.xl,
-    borderRadius: BORDER_RADIUS.lg,
-    marginBottom: SPACING.xxxxxxl,
-  },
-  logoutButtonText: {
-    ...TYPOGRAPHY.labelMedium,
-    color: COLORS.error,
-    fontWeight: '600',
-  },
-});
+
 
 export default ProfileScreen;

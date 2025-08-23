@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
@@ -13,7 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useTransactionStore } from '@/store';
 import { Transaction, RootStackParamList } from '@/types';
 import Screen from '@/components/common/Screen';
-import { COLORS, SPACING, TYPOGRAPHY, FONT_SIZES, BORDER_RADIUS } from '@/utils/theme';
+import { COLORS } from '@/utils/theme';
 import { TRANSACTION_STATUS } from '@/utils/constants';
 import { formatCurrency, formatDate } from '@/utils/helpers';
 
@@ -73,39 +72,48 @@ const TransactionsScreen: React.FC = () => {
     const isDebit = item.type === 'withdrawal' || item.type === 'fee';
 
     return (
-      <TouchableOpacity style={styles.transactionCard}>
-        <View style={styles.transactionLeft}>
-          <View style={[styles.iconContainer, { backgroundColor: transactionColor + '20' }]}>
+      <TouchableOpacity className="bg-white rounded-lg p-6 mb-4 flex-row justify-between items-center shadow-sm">
+        <View className="flex-row items-center flex-1">
+          <View 
+            className="w-12 h-12 rounded-full justify-center items-center mr-4"
+            style={{ backgroundColor: transactionColor + '20' }}
+          >
             <Icon
               name={getTransactionIcon(item.type)}
               size={24}
               color={transactionColor}
             />
           </View>
-          <View style={styles.transactionInfo}>
-            <Text style={styles.transactionType}>
+          <View className="flex-1">
+            <Text className="text-base font-semibold text-gray-900 mb-1">
               {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
             </Text>
-            <Text style={styles.transactionDate}>
+            <Text className="text-sm text-gray-600 mb-1">
               {formatDate(item.created_at, 'short')}
             </Text>
             {item.description && (
-              <Text style={styles.transactionDescription} numberOfLines={1}>
+              <Text className="text-xs text-gray-600" numberOfLines={1}>
                 {item.description}
               </Text>
             )}
           </View>
         </View>
 
-        <View style={styles.transactionRight}>
-          <Text style={[
-            styles.transactionAmount,
-            { color: isDebit ? COLORS.error : COLORS.success }
-          ]}>
+        <View className="items-end">
+          <Text 
+            className="text-base font-bold mb-1"
+            style={{ color: isDebit ? COLORS.error : COLORS.success }}
+          >
             {isDebit ? '-' : '+'}{formatCurrency(item.amount)}
           </Text>
-          <View style={[styles.statusBadge, { backgroundColor: statusInfo.color + '20' }]}>
-            <Text style={[styles.statusText, { color: statusInfo.color }]}>
+          <View 
+            className="px-3 py-1 rounded"
+            style={{ backgroundColor: statusInfo.color + '20' }}
+          >
+            <Text 
+              className="text-xs font-semibold"
+              style={{ color: statusInfo.color }}
+            >
               {statusInfo.label}
             </Text>
           </View>
@@ -117,17 +125,15 @@ const TransactionsScreen: React.FC = () => {
   const renderFilterButton = (filterType: string, label: string) => (
     <TouchableOpacity
       key={filterType}
-      style={[
-        styles.filterButton,
-        filter === filterType && styles.activeFilterButton,
-      ]}
+      className={`border border-gray-300 rounded px-4 py-2 mr-2 mb-2 ${
+        filter === filterType ? 'bg-blue-600 border-blue-600' : ''
+      }`}
       onPress={() => setFilter(filterType)}
     >
       <Text
-        style={[
-          styles.filterButtonText,
-          filter === filterType && styles.activeFilterButtonText,
-        ]}
+        className={`text-sm font-medium ${
+          filter === filterType ? 'text-white' : 'text-gray-600'
+        }`}
       >
         {label}
       </Text>
@@ -136,22 +142,22 @@ const TransactionsScreen: React.FC = () => {
 
   if (isLoading && transactions.length === 0) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
+      <SafeAreaView className="flex-1 bg-gray-50">
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color={COLORS.primary} />
-          <Text style={styles.loadingText}>Loading transactions...</Text>
+          <Text className="mt-4 text-base text-gray-600">Loading transactions...</Text>
         </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.screenTitle}>Transaction History</Text>
+    <SafeAreaView className="flex-1 bg-gray-50">
+      <View className="bg-white px-6 pt-6 pb-4">
+        <Text className="text-2xl font-bold text-gray-900 mb-6">Transaction History</Text>
 
-        <View style={styles.filtersContainer}>
-          <View style={styles.filtersRow}>
+        <View className="mb-2">
+          <View className="flex-row flex-wrap">
             {renderFilterButton('all', 'All')}
             {renderFilterButton('investment', 'Investments')}
             {renderFilterButton('withdrawal', 'Withdrawals')}
@@ -164,16 +170,16 @@ const TransactionsScreen: React.FC = () => {
         data={filteredTransactions}
         renderItem={renderTransactionItem}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
+        className="px-6 pt-4"
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
+          <View className="flex-1 justify-center items-center py-16">
             <Icon name="receipt-long" size={60} color={COLORS.gray400} />
-            <Text style={styles.emptyTitle}>No Transactions</Text>
-            <Text style={styles.emptyText}>
+            <Text className="text-lg font-semibold text-gray-900 mt-4 mb-2">No Transactions</Text>
+            <Text className="text-sm text-gray-600 text-center px-6">
               {filter === 'all'
                 ? 'Your transaction history will appear here'
                 : `No ${filter} transactions found`}
@@ -185,149 +191,6 @@ const TransactionsScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: SPACING.md,
-    fontSize: FONT_SIZES.md,
-    color: COLORS.textSecondary,
-  },
-  header: {
-    backgroundColor: COLORS.white,
-    paddingHorizontal: SPACING.lg,
-    paddingTop: SPACING.lg,
-    paddingBottom: SPACING.md,
-  },
-  screenTitle: {
-    fontSize: FONT_SIZES.xxl,
-    fontWeight: 'bold',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.lg,
-  },
-  filtersContainer: {
-    marginBottom: SPACING.sm,
-  },
-  filtersRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  filterButton: {
-    borderWidth: 1,
-    borderColor: COLORS.gray300,
-    borderRadius: BORDER_RADIUS.sm,
-    paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.xs,
-    marginRight: SPACING.xs,
-    marginBottom: SPACING.xs,
-  },
-  activeFilterButton: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
-  },
-  filterButtonText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-    fontWeight: '500',
-  },
-  activeFilterButtonText: {
-    color: COLORS.white,
-  },
-  listContainer: {
-    paddingHorizontal: SPACING.lg,
-    paddingTop: SPACING.md,
-  },
-  transactionCard: {
-    backgroundColor: COLORS.white,
-    borderRadius: BORDER_RADIUS.md,
-    padding: SPACING.lg,
-    marginBottom: SPACING.md,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    shadowColor: COLORS.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  transactionLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: SPACING.md,
-  },
-  transactionInfo: {
-    flex: 1,
-  },
-  transactionType: {
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginBottom: SPACING.xs,
-  },
-  transactionDate: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-    marginBottom: SPACING.xs,
-  },
-  transactionDescription: {
-    fontSize: FONT_SIZES.xs,
-    color: COLORS.textSecondary,
-  },
-  transactionRight: {
-    alignItems: 'flex-end',
-  },
-  transactionAmount: {
-    fontSize: FONT_SIZES.md,
-    fontWeight: 'bold',
-    marginBottom: SPACING.xs,
-  },
-  statusBadge: {
-    paddingHorizontal: SPACING.sm,
-    paddingVertical: SPACING.xs,
-    borderRadius: BORDER_RADIUS.sm,
-  },
-  statusText: {
-    fontSize: FONT_SIZES.xs,
-    fontWeight: '600',
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: SPACING.xxl,
-  },
-  emptyTitle: {
-    fontSize: FONT_SIZES.lg,
-    fontWeight: '600',
-    color: COLORS.textPrimary,
-    marginTop: SPACING.md,
-    marginBottom: SPACING.xs,
-  },
-  emptyText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    paddingHorizontal: SPACING.lg,
-  },
-});
+
 
 export default TransactionsScreen;

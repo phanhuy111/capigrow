@@ -3,13 +3,11 @@ import {
   View,
   TextInput,
   Text,
-  StyleSheet,
   ViewStyle,
   TextStyle,
   TouchableOpacity,
 } from 'react-native';
 import { Control, Controller, FieldError } from 'react-hook-form';
-import { COLORS, TYPOGRAPHY, INPUT_STYLES, SPACING } from '@/utils/theme';
 
 interface InputProps {
   label?: string;
@@ -64,67 +62,55 @@ const Input = forwardRef<TextInput, InputProps>((
 ) => {
   const [isFocused, setIsFocused] = useState(false);
 
-  const getContainerStyle = (): ViewStyle => {
-    return {
-      ...styles.container,
-      ...style,
-    };
-  };
-
-  const getInputContainerStyle = (): ViewStyle => {
-    let baseStyle = INPUT_STYLES.default;
+  const getInputContainerClassName = () => {
+    let baseClasses = 'flex-row border rounded-lg px-4 py-3 bg-white';
     
     if (isFocused) {
-      baseStyle = { ...baseStyle, ...INPUT_STYLES.focused };
-    }
-    
-    if (error) {
-      baseStyle = { ...baseStyle, ...INPUT_STYLES.error };
+      baseClasses += ' border-blue-500';
+    } else if (error) {
+      baseClasses += ' border-red-500';
+    } else {
+      baseClasses += ' border-gray-300';
     }
     
     if (disabled) {
-      baseStyle = { ...baseStyle, ...INPUT_STYLES.disabled };
+      baseClasses += ' bg-gray-100';
     }
 
-    return {
-      ...baseStyle,
-      ...(multiline && { height: numberOfLines * 20 + SPACING.xl * 2 }),
-      flexDirection: 'row',
-      alignItems: multiline ? 'flex-start' : 'center',
-    };
-  };
+    if (multiline) {
+      baseClasses += ' items-start';
+    } else {
+      baseClasses += ' items-center';
+    }
 
-  const getInputStyle = (): TextStyle => {
-    return {
-      ...styles.input,
-      ...TYPOGRAPHY.bodyMedium,
-      color: disabled ? COLORS.textDisabled : COLORS.textPrimary,
-      ...(multiline && { textAlignVertical: 'top', paddingTop: SPACING.lg }),
-      ...inputStyle,
-    };
+    return baseClasses;
   };
 
   const renderInput = (inputValue: any, inputOnChangeText: (text: string) => void, inputOnBlur: () => void, inputError?: string | FieldError) => (
-    <View style={getContainerStyle()}>
+    <View className="my-3" style={style}>
       {label && (
-        <Text style={styles.label}>
+        <Text className="text-sm font-medium mb-3 text-gray-900">
           {label}
-          {required && <Text style={{ color: COLORS.error }}> *</Text>}
+          {required && <Text className="text-red-500"> *</Text>}
         </Text>
       )}
       
-      <View style={getInputContainerStyle()}>
+      <View 
+        className={getInputContainerClassName()}
+        style={multiline ? { height: numberOfLines * 20 + 32 } : undefined}
+      >
         {leftIcon && (
-          <View style={styles.leftIcon}>
+          <View className="mr-4 justify-center items-center">
             {leftIcon}
           </View>
         )}
         
         <TextInput
           ref={ref}
-          style={getInputStyle()}
+          className={`flex-1 text-base ${disabled ? 'text-gray-400' : 'text-gray-900'} ${multiline ? 'pt-3' : ''}`}
+          style={[multiline && { textAlignVertical: 'top' }, inputStyle]}
           placeholder={placeholder}
-          placeholderTextColor={COLORS.textTertiary}
+          placeholderTextColor="#9CA3AF"
           value={inputValue}
           onChangeText={inputOnChangeText}
           onBlur={() => {
@@ -142,7 +128,7 @@ const Input = forwardRef<TextInput, InputProps>((
         
         {rightIcon && (
           <TouchableOpacity
-            style={styles.rightIcon}
+            className="ml-4 justify-center items-center"
             onPress={onRightIconPress}
             disabled={!onRightIconPress}
           >
@@ -152,7 +138,7 @@ const Input = forwardRef<TextInput, InputProps>((
       </View>
       
       {(inputError || error) && (
-        <Text style={styles.errorText}>
+        <Text className="text-xs text-red-500 mt-2">
           {typeof inputError === 'string' ? inputError : inputError?.message || (typeof error === 'string' ? error : error?.message)}
         </Text>
       )}
@@ -179,35 +165,6 @@ const Input = forwardRef<TextInput, InputProps>((
 
 Input.displayName = 'Input';
 
-const styles = StyleSheet.create({
-  container: {
-    marginVertical: SPACING.md,
-  },
-  label: {
-    ...TYPOGRAPHY.labelMedium,
-    marginBottom: SPACING.md,
-    color: COLORS.textPrimary,
-  },
-  input: {
-    flex: 1,
-    padding: 0,
-    margin: 0,
-  },
-  leftIcon: {
-    marginRight: SPACING.lg,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  rightIcon: {
-    marginLeft: SPACING.lg,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorText: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.error,
-    marginTop: SPACING.sm,
-  },
-});
+
 
 export default Input;

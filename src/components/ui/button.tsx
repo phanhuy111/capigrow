@@ -1,105 +1,111 @@
-import React from 'react';
-import { Pressable, Text, ActivityIndicator } from 'react-native';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import React, { forwardRef } from 'react';
+import {
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
 
-const buttonVariants = cva(
-  'flex flex-row items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
-  {
-    variants: {
-      variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
-        primary: 'bg-blue-600 text-white hover:bg-blue-700',
-      },
-      size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-md px-3',
-        lg: 'h-11 rounded-md px-8',
-        large: 'h-12 rounded-lg px-8',
-        icon: 'h-10 w-10',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  }
-);
-
-const textVariants = cva(
-  'font-medium text-center',
-  {
-    variants: {
-      variant: {
-        default: 'text-primary-foreground',
-        destructive: 'text-destructive-foreground',
-        outline: 'text-foreground',
-        secondary: 'text-secondary-foreground',
-        ghost: 'text-foreground',
-        link: 'text-primary',
-        primary: 'text-white',
-      },
-      size: {
-        default: 'text-sm',
-        sm: 'text-sm',
-        lg: 'text-base',
-        large: 'text-base',
-        icon: 'text-sm',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  }
-);
-
-export interface ButtonProps
-  extends React.ComponentPropsWithoutRef<typeof Pressable>,
-    VariantProps<typeof buttonVariants> {
+export interface ButtonProps {
+  variant?: 'default' | 'primary' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  size?: 'default' | 'sm' | 'lg' | 'large' | 'icon';
   title?: string;
   loading?: boolean;
   children?: React.ReactNode;
-  textClassName?: string;
+  textStyle?: TextStyle;
+  style?: ViewStyle;
   fullWidth?: boolean;
+  disabled?: boolean;
+  onPress?: () => void;
 }
 
-const Button = React.forwardRef<
-  React.ElementRef<typeof Pressable>,
-  ButtonProps
->(({ className, variant, size, title, loading, children, textClassName, fullWidth, disabled, ...props }, ref) => {
+const Button = forwardRef<React.ElementRef<typeof TouchableOpacity>, ButtonProps>((
+  {
+    variant = 'default',
+    size = 'default',
+    title,
+    loading = false,
+    children,
+    textStyle,
+    style,
+    fullWidth = false,
+    disabled = false,
+    onPress,
+    ...props
+  },
+  ref
+) => {
+  const getButtonClassName = () => {
+    const baseClasses = 'items-center justify-center rounded-lg';
+    
+    const variantClasses = {
+      default: 'bg-blue-600',
+      primary: 'bg-blue-600',
+      destructive: 'bg-red-600',
+      outline: 'border border-blue-600 bg-transparent',
+      secondary: 'bg-gray-200',
+      ghost: 'bg-transparent',
+      link: 'bg-transparent p-0',
+    };
+
+    const sizeClasses = {
+      default: 'py-4 px-8',
+      sm: 'py-3 px-6',
+      lg: 'py-5 px-10',
+      large: 'py-5 px-10',
+      icon: 'w-10 h-10 p-0',
+    };
+
+    const widthClass = fullWidth ? 'w-full' : '';
+    
+    return `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClass}`.trim();
+  };
+
+  const getTextClassName = () => {
+    const baseClasses = 'text-base font-semibold';
+    
+    const variantTextClasses = {
+      default: 'text-white',
+      primary: 'text-white',
+      destructive: 'text-white',
+      outline: 'text-blue-600',
+      secondary: 'text-gray-900',
+      ghost: 'text-blue-600',
+      link: 'text-blue-600 underline',
+    };
+
+    return `${baseClasses} ${variantTextClasses[variant]}`;
+  };
+
   return (
-    <Pressable
-      className={cn(
-        buttonVariants({ variant, size, className }),
-        fullWidth && 'w-full',
-        disabled && 'opacity-50'
-      )}
+    <TouchableOpacity
       ref={ref}
+      className={`${getButtonClassName()} ${disabled ? 'opacity-50' : ''}`}
+      style={style}
+      onPress={onPress}
       disabled={disabled || loading}
+      activeOpacity={0.7}
       {...props}
     >
       {loading ? (
-        <ActivityIndicator size="small" color={variant === 'outline' ? '#000' : '#fff'} />
+        <ActivityIndicator
+          color={variant === 'outline' || variant === 'ghost' ? '#2563eb' : '#ffffff'}
+          size="small"
+        />
       ) : (
         <>
-          {title && (
-            <Text className={cn(textVariants({ variant, size }), textClassName)}>
+          {children || (
+            <Text className={getTextClassName()} style={textStyle}>
               {title}
             </Text>
           )}
-          {children}
         </>
       )}
-    </Pressable>
+    </TouchableOpacity>
   );
 });
 
 Button.displayName = 'Button';
 
-export { Button, buttonVariants };
+export { Button };
