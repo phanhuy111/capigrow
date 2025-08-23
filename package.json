@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "npx react-native run-android",
+    "ios": "npx react-native run-ios",
     "web": "expo start --web",
     "lint": "eslint .",
     "test": "jest"
@@ -70,6 +70,7 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
+    "@react-native-community/cli": "^20.0.1",
     "@react-native/typescript-config": "^0.81.0",
     "@types/jest": "^29.5.13",
     "@types/react": "^19.1.0",

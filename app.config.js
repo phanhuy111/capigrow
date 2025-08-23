@@ -5,10 +5,8 @@ export default ({ config }) => {
     slug: 'capigrow-app',
     version: '1.0.0',
     orientation: 'portrait',
-    icon: './assets/icon.png',
     userInterfaceStyle: 'light',
     splash: {
-      image: './assets/splash.png',
       resizeMode: 'contain',
       backgroundColor: '#8B5CF6',
     },
@@ -25,19 +23,12 @@ export default ({ config }) => {
       },
     },
     android: {
-      adaptiveIcon: {
-        foregroundImage: './assets/adaptive-icon.png',
-        backgroundColor: '#8B5CF6',
-      },
       package: 'com.capigrowapp',
       permissions: [
         'android.permission.RECORD_AUDIO',
         'android.permission.CAMERA',
         'android.permission.READ_EXTERNAL_STORAGE',
       ],
-    },
-    web: {
-      favicon: './assets/favicon.png',
     },
     plugins: [
       'expo-secure-store',
