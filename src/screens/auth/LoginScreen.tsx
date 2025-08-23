@@ -55,7 +55,6 @@ const LoginScreen: React.FC = () => {
       // Navigate to OTP verification with phone number
       navigation.navigate('OTPVerification', { 
         phoneNumber: cleanNumber,
-        sessionId: 'temp_session', // This should come from your phone verification API
         isLogin: true 
       });
     } catch (error: any) {

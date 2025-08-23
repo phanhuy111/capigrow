@@ -83,11 +83,11 @@ const CreatePasswordScreen: React.FC = () => {
 
       // Store authentication data
       if (response.access_token) {
-        setAuthData(
-          response.user,
-          response.access_token,
-          response.refresh_token
-        );
+        setAuthData({
+          user: response.user,
+          access_token: response.access_token,
+          refresh_token: response.refresh_token
+        });
       }
 
       Alert.alert(

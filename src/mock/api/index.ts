@@ -8,7 +8,7 @@ export * from './notifications';
 
 // Mock API delay function
 export const mockDelay = (ms: number = 1000) => 
-  new Promise(resolve => setTimeout(resolve, ms));
+  new Promise<void>(resolve => setTimeout(resolve, ms));
 
 // Mock API response wrapper
 export const mockApiResponse = <T>(data: T, success: boolean = true, message?: string) => ({

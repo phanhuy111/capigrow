@@ -4,11 +4,10 @@ import apiService from '@/services/api';
 import { setToken, setRefreshToken, setUserData, clearAllData } from '@/services/storage';
 
 interface AuthStore extends AuthState {
-  // Actions
   loginUser: (credentials: LoginRequest) => Promise<void>;
   registerUser: (userData: RegisterRequest) => Promise<void>;
   logoutUser: () => Promise<void>;
-  refreshToken: () => Promise<void>;
+  refreshAuthToken: () => Promise<void>;
   getProfile: () => Promise<void>;
   updateProfile: (userData: Partial<User>) => Promise<void>;
   clearError: () => void;
@@ -123,14 +122,14 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     }
   },
 
-  refreshToken: async () => {
+  refreshAuthToken: async () => {
     try {
       const currentState = get();
       if (!currentState.refreshToken) {
         throw new Error('No refresh token available');
       }
 
-      const response = await apiService.refreshToken(currentState.refreshToken);
+      const response = await apiService.refreshToken();
       if (response.error) {
         throw new Error(response.error);
       }

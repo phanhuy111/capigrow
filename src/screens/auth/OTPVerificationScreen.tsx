@@ -105,7 +105,11 @@ const OTPVerificationScreen: React.FC = () => {
         }
         // Store auth data if available
         if (result.token && result.user && result.refreshToken) {
-          setAuthData(result.user, result.token, result.refreshToken);
+          setAuthData({
+            user: result.user,
+            access_token: result.token,
+            refresh_token: result.refreshToken
+          });
         }
       } else {
         Alert.alert('Error', result.message || 'Invalid OTP. Please try again.');

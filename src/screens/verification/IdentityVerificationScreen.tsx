@@ -71,7 +71,7 @@ const IdentityVerificationScreen: React.FC = () => {
   const handleSubmitVerification = async () => {
     try {
       setUploading(true);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise<void>((resolve) => setTimeout(resolve, 2000));
       Alert.alert(
         "Verification Submitted",
         "Your documents have been submitted for review. You will be notified once the verification is complete.",
