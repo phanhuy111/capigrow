@@ -11,12 +11,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
-import { RootState, AppDispatch } from '../../store';
-import { uploadDocument } from '../../store/slices/verificationSlice';
+import { useVerificationStore } from '../../store';
 import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS } from '../../utils/constants';
 
 type VerificationDocumentScreenNavigationProp = NativeStackNavigationProp<
@@ -26,8 +24,7 @@ type VerificationDocumentScreenNavigationProp = NativeStackNavigationProp<
 
 const VerificationDocumentScreen: React.FC = () => {
   const navigation = useNavigation<VerificationDocumentScreenNavigationProp>();
-  const dispatch = useDispatch<AppDispatch>();
-  const { isLoading } = useSelector((state: RootState) => state.verification);
+  const { isLoading, uploadDocument } = useVerificationStore();
 
   const [selectedDocumentType, setSelectedDocumentType] = useState<string>('');
   const [frontImage, setFrontImage] = useState<string | null>(null);
@@ -138,12 +135,12 @@ const VerificationDocumentScreen: React.FC = () => {
         } as any);
       }
 
-      const result = await dispatch(uploadDocument(formData));
-      if (uploadDocument.fulfilled.match(result)) {
+      try {
+        await uploadDocument(formData);
         Alert.alert('Success', 'Document uploaded successfully!', [
           { text: 'Continue', onPress: () => navigation.navigate('VerificationSelfie') },
         ]);
-      } else {
+      } catch (uploadError) {
         Alert.alert('Error', 'Failed to upload document. Please try again.');
       }
     } catch (error) {

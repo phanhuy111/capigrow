@@ -9,27 +9,24 @@ import {
   RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useDispatch, useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { RootState, AppDispatch } from '../../store';
-import { fetchTransactions } from '../../store/slices/transactionSlice';
+import { useTransactionStore } from '../../store';
 import { Transaction } from '../../types';
 import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS, TRANSACTION_STATUS } from '../../utils/constants';
 import { formatCurrency, formatDate } from '../../utils/helpers';
 
 const TransactionsScreen: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { transactions, isLoading } = useSelector((state: RootState) => state.transaction);
+  const { transactions, isLoading, fetchTransactions } = useTransactionStore();
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<string>('all');
 
   useEffect(() => {
-    dispatch(fetchTransactions());
-  }, [dispatch]);
+    fetchTransactions();
+  }, [fetchTransactions]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await dispatch(fetchTransactions());
+    await fetchTransactions();
     setRefreshing(false);
   };
 

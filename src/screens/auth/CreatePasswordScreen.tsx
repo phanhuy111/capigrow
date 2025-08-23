@@ -12,43 +12,65 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../types';
 import { COLORS, SPACING, FONT_SIZES, BORDER_RADIUS } from '../../utils/constants';
-import Input from '../../components/common/Input';
-import Button from '../../components/common/Button';
-import { useCreateAccount } from '../../services/authService';
-import { formSchemas } from '../../utils/validation';
+import { Input, Button } from '@/components/ui';
+import { useRegisterMutation } from '../../hooks/useAuthQueries';
+import { useAuthClientStore } from '../../store/authClientStore';
 
 type CreatePasswordScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CreatePassword'>;
 type CreatePasswordScreenRouteProp = RouteProp<RootStackParamList, 'CreatePassword'>;
+
+// Zod schema for password validation
+const createPasswordSchema = z.object({
+  password: z.string()
+    .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Mật khẩu phải có chữ hoa, chữ thường và số'),
+  confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: 'Mật khẩu xác nhận không khớp',
+  path: ['confirmPassword'],
+});
+
+type CreatePasswordFormData = z.infer<typeof createPasswordSchema>;
 
 const CreatePasswordScreen: React.FC = () => {
   const navigation = useNavigation<CreatePasswordScreenNavigationProp>();
   const route = useRoute<CreatePasswordScreenRouteProp>();
   const { phoneNumber, userInfo } = route.params;
-  const createAccountMutation = useCreateAccount();
+  const { setAuthData } = useAuthClientStore();
+  const registerMutation = useRegisterMutation();
 
-  const { control, handleSubmit, formState: { errors, isValid } } = useForm({
+  const { control, handleSubmit, formState: { errors, isValid } } = useForm<CreatePasswordFormData>({
     defaultValues: {
       password: '',
       confirmPassword: '',
     },
-    resolver: formSchemas.createPassword,
+    resolver: zodResolver(createPasswordSchema),
     mode: 'onChange'
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const onSubmit = async (data: { password: string; confirmPassword: string }) => {
+  const onSubmit = async (data: CreatePasswordFormData) => {
     try {
-      await createAccountMutation.mutateAsync({
-        phoneNumber,
-        ...userInfo,
+      const response = await registerMutation.mutateAsync({
+        phone_number: phoneNumber,
+        first_name: userInfo.firstName,
+        last_name: userInfo.lastName,
+        email: userInfo.email,
         password: data.password,
       });
+
+      // Store authentication data
+      if (response.access_token) {
+        setAuthData(response.user, response.access_token, response.refresh_token);
+      }
 
       Alert.alert(
         'Tạo tài khoản thành công',
@@ -155,13 +177,13 @@ const CreatePasswordScreen: React.FC = () => {
         {/* Footer */}
         <View style={styles.footer}>
           <Button
-            title={createAccountMutation.isPending ? 'Đang tạo tài khoản...' : 'Tạo tài khoản'}
+            title={registerMutation.isPending ? 'Đang tạo tài khoản...' : 'Tạo tài khoản'}
             onPress={handleSubmit(onSubmit)}
             variant="primary"
             size="large"
             fullWidth
-            loading={createAccountMutation.isPending}
-            disabled={createAccountMutation.isPending || !isValid}
+            loading={registerMutation.isPending}
+            disabled={registerMutation.isPending || !isValid}
           />
         </View>
       </KeyboardAvoidingView>

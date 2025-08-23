@@ -2,6 +2,7 @@ import React from 'react';
 import {
   View,
   Text,
+  TextInput,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
@@ -9,15 +10,15 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
-import { RootState } from '../../store';
+import { useInvestmentStore } from '../../store';
 import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS } from '../../utils/constants';
 import { formatCurrency, calculateReturns } from '../../utils/helpers';
-import { formSchemas } from '../../utils/validation';
-import Input from '../../components/common/Input';
+import { Input } from '@/components/ui';
 
 type InvestmentAmountScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -25,14 +26,21 @@ type InvestmentAmountScreenNavigationProp = NativeStackNavigationProp<
 >;
 type InvestmentAmountScreenRouteProp = RouteProp<RootStackParamList, 'InvestmentAmount'>;
 
-interface InvestmentAmountFormData {
-  amount: string;
-}
+// Zod schema for investment amount validation
+const investmentAmountSchema = z.object({
+  amount: z.string()
+    .min(1, 'Vui lòng nhập số tiền đầu tư')
+    .regex(/^\d+$/, 'Số tiền phải là số nguyên dương')
+    .refine((val) => parseInt(val) >= 1000000, 'Số tiền tối thiểu là 1,000,000 VND')
+    .refine((val) => parseInt(val) <= 1000000000, 'Số tiền tối đa là 1,000,000,000 VND'),
+});
+
+type InvestmentAmountFormData = z.infer<typeof investmentAmountSchema>;
 
 const InvestmentAmountScreen: React.FC = () => {
   const navigation = useNavigation<InvestmentAmountScreenNavigationProp>();
   const route = useRoute<InvestmentAmountScreenRouteProp>();
-  const { selectedInvestment } = useSelector((state: RootState) => state.investment);
+  const { selectedInvestment } = useInvestmentStore();
 
   const { investmentId } = route.params;
   const investment = selectedInvestment;
@@ -41,7 +49,7 @@ const InvestmentAmountScreen: React.FC = () => {
     defaultValues: {
       amount: '',
     },
-    resolver: formSchemas.investmentAmount,
+    resolver: zodResolver(investmentAmountSchema),
     mode: 'onChange'
   });
 
@@ -102,19 +110,27 @@ const InvestmentAmountScreen: React.FC = () => {
           <View style={styles.amountInputContainer}>
             <Text style={styles.currencySymbol}>$</Text>
             <Controller
-              control={control}
-              name="amount"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  style={styles.amountInput}
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  placeholder="0.00"
-                  keyboardType="numeric"
-                  autoFocus
-                  error={errors.amount?.message}
-                />
+                  control={control}
+                  name="amount"
+                  rules={{
+                    required: 'Amount is required',
+                    pattern: {
+                      value: /^\d+(\.\d{1,2})?$/,
+                      message: 'Please enter a valid amount',
+                    },
+                    validate: {
+                      positive: (value: string) => parseFloat(value) > 0 || 'Amount must be greater than 0',
+                    },
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      style={styles.amountInput}
+                      value={value}
+                      onChangeText={onChange}
+                      placeholder="0"
+                      keyboardType="numeric"
+                      autoFocus
+                    />
               )}
             />
           </View>

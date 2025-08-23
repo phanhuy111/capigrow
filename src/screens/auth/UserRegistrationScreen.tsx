@@ -12,44 +12,56 @@ import {
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useForm, Controller } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-
-import { AuthStackParamList } from '../../navigation/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { RootStackParamList } from '../../types';
 import Screen from '../../components/common/Screen';
-import Button from '../../components/common/Button';
-import Input from '../../components/common/Input';
+import { Input, Button } from '@/components/ui';
 import CapiGrowLogo from '../../components/common/CapiGrowLogo';
 import { COLORS, SPACING, TYPOGRAPHY } from '../../utils/theme';
-import { useUserRegistration } from '../../services/authService';
-import { formSchemas } from '../../utils/validation';
-import { setAuthData } from '../../store/slices/authSlice';
+import { useRegisterMutation } from '../../hooks/useAuthQueries';
+import { useAuthClientStore } from '../../store/authClientStore';
 
 type UserRegistrationScreenNavigationProp = NativeStackNavigationProp<
-  AuthStackParamList,
+  RootStackParamList,
   'UserRegistration'
 >;
 
 type UserRegistrationScreenRouteProp = RouteProp<
-  AuthStackParamList,
+  RootStackParamList,
   'UserRegistration'
 >;
 
-interface RegistrationFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  dateOfBirth: string;
-  password: string;
-  confirmPassword: string;
-}
+// Zod schema for user registration validation
+const userRegistrationSchema = z.object({
+  firstName: z.string()
+    .min(2, 'First name must be at least 2 characters')
+    .max(50, 'First name must be less than 50 characters'),
+  lastName: z.string()
+    .min(2, 'Last name must be at least 2 characters')
+    .max(50, 'Last name must be less than 50 characters'),
+  email: z.string()
+    .email('Please enter a valid email address'),
+  dateOfBirth: z.string()
+    .regex(/^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/(19|20)\d{2}$/, 'Please enter a valid date (MM/DD/YYYY)'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
+  confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+type RegistrationFormData = z.infer<typeof userRegistrationSchema>;
 
 const UserRegistrationScreen: React.FC = () => {
   const navigation = useNavigation<UserRegistrationScreenNavigationProp>();
   const route = useRoute<UserRegistrationScreenRouteProp>();
-  const dispatch = useDispatch();
+  const { setAuthData } = useAuthClientStore();
   const { phoneNumber, token } = route.params;
   
-  const userRegistrationMutation = useUserRegistration();
+  const registerMutation = useRegisterMutation();
   
   const {
     control,
@@ -65,47 +77,25 @@ const UserRegistrationScreen: React.FC = () => {
       password: '',
       confirmPassword: '',
     },
+    resolver: zodResolver(userRegistrationSchema),
     mode: 'onChange',
   });
   
   const password = watch('password');
   
   const onSubmit = async (data: RegistrationFormData) => {
-    if (data.password !== data.confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
-      return;
-    }
-    
     try {
-      const result = await userRegistrationMutation.mutateAsync({
-        phoneNumber,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        dateOfBirth: data.dateOfBirth,
-        password: data.password,
-        token,
+      const { confirmPassword, ...registerData } = data;
+      await registerMutation.mutateAsync({
+        email: registerData.email,
+        password: registerData.password,
+        first_name: registerData.firstName,
+        last_name: registerData.lastName,
+        phone_number: phoneNumber || '',
       });
-      
-      if (result.success) {
-        // Update auth state with user data
-        dispatch(setAuthData({
-          user: result.user,
-          access_token: result.token,
-          refresh_token: result.refreshToken,
-          expires_at: result.expiresAt,
-        }));
-        
-        // Navigate to main app
-        navigation.navigate('MainApp');
-      } else {
-        Alert.alert('Error', result.message || 'Registration failed. Please try again.');
-      }
-    } catch (error: any) {
-      Alert.alert(
-        'Error',
-        error.response?.data?.message || 'Registration failed. Please try again.'
-      );
+      // Navigation will be handled by the mutation's onSuccess callback
+    } catch (error) {
+      // Error handling is done in the mutation
     }
   };
   
@@ -142,7 +132,6 @@ const UserRegistrationScreen: React.FC = () => {
                 <Controller
                   control={control}
                   name="firstName"
-                  rules={formSchemas.userRegistration.firstName}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input
                       label="First Name"
@@ -150,7 +139,7 @@ const UserRegistrationScreen: React.FC = () => {
                       value={value}
                       onChangeText={onChange}
                       onBlur={onBlur}
-                      error={errors.firstName}
+                      error={errors.firstName?.message}
                       style={styles.nameInput}
                     />
                   )}
@@ -159,7 +148,6 @@ const UserRegistrationScreen: React.FC = () => {
                 <Controller
                   control={control}
                   name="lastName"
-                  rules={formSchemas.userRegistration.lastName}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input
                       label="Last Name"
@@ -167,7 +155,7 @@ const UserRegistrationScreen: React.FC = () => {
                       value={value}
                       onChangeText={onChange}
                       onBlur={onBlur}
-                      error={errors.lastName}
+                      error={errors.lastName?.message}
                       style={styles.nameInput}
                     />
                   )}
@@ -177,7 +165,6 @@ const UserRegistrationScreen: React.FC = () => {
               <Controller
                 control={control}
                 name="email"
-                rules={formSchemas.userRegistration.email}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <Input
                     label="Email Address"
@@ -187,7 +174,7 @@ const UserRegistrationScreen: React.FC = () => {
                     onBlur={onBlur}
                     keyboardType="email-address"
                     autoCapitalize="none"
-                    error={errors.email}
+                    error={errors.email?.message}
                     style={styles.input}
                   />
                 )}
@@ -196,7 +183,6 @@ const UserRegistrationScreen: React.FC = () => {
               <Controller
                 control={control}
                 name="dateOfBirth"
-                rules={formSchemas.userRegistration.dateOfBirth}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <Input
                     label="Date of Birth"
@@ -204,7 +190,7 @@ const UserRegistrationScreen: React.FC = () => {
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
-                    error={errors.dateOfBirth}
+                    error={errors.dateOfBirth?.message}
                     style={styles.input}
                   />
                 )}
@@ -213,7 +199,6 @@ const UserRegistrationScreen: React.FC = () => {
               <Controller
                 control={control}
                 name="password"
-                rules={formSchemas.userRegistration.password}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <Input
                     label="Password"
@@ -222,7 +207,7 @@ const UserRegistrationScreen: React.FC = () => {
                     onChangeText={onChange}
                     onBlur={onBlur}
                     secureTextEntry
-                    error={errors.password}
+                    error={errors.password?.message}
                     style={styles.input}
                   />
                 )}
@@ -231,11 +216,6 @@ const UserRegistrationScreen: React.FC = () => {
               <Controller
                 control={control}
                 name="confirmPassword"
-                rules={{
-                  required: 'Please confirm your password',
-                  validate: (value) =>
-                    value === password || 'Passwords do not match',
-                }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <Input
                     label="Confirm Password"
@@ -244,7 +224,7 @@ const UserRegistrationScreen: React.FC = () => {
                     onChangeText={onChange}
                     onBlur={onBlur}
                     secureTextEntry
-                    error={errors.confirmPassword}
+                    error={errors.confirmPassword?.message}
                     style={styles.input}
                   />
                 )}
@@ -258,7 +238,7 @@ const UserRegistrationScreen: React.FC = () => {
             title="Create Account"
             onPress={handleSubmit(onSubmit)}
             disabled={!isValid}
-            loading={userRegistrationMutation.isPending}
+            loading={registerMutation.isPending}
             fullWidth
             style={styles.createButton}
           />

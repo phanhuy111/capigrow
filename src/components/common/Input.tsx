@@ -16,6 +16,7 @@ interface InputProps {
   placeholder?: string;
   value?: string;
   onChangeText?: (text: string) => void;
+  onBlur?: () => void;
   secureTextEntry?: boolean;
   keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
@@ -41,6 +42,7 @@ const Input = forwardRef<TextInput, InputProps>((
     placeholder,
     value,
     onChangeText,
+    onBlur,
     secureTextEntry = false,
     keyboardType = 'default',
     autoCapitalize = 'none',
@@ -151,7 +153,7 @@ const Input = forwardRef<TextInput, InputProps>((
       
       {(inputError || error) && (
         <Text style={styles.errorText}>
-          {typeof inputError === 'string' ? inputError : inputError?.message || error}
+          {typeof inputError === 'string' ? inputError : inputError?.message || (typeof error === 'string' ? error : error?.message)}
         </Text>
       )}
     </View>
@@ -172,7 +174,7 @@ const Input = forwardRef<TextInput, InputProps>((
   }
 
   // Regular input without form control
-  return renderInput(value, onChangeText || (() => {}), () => {}, error);
+  return renderInput(value, onChangeText || (() => {}), onBlur || (() => {}), error);
 });
 
 Input.displayName = 'Input';

@@ -150,6 +150,7 @@ export type RootStackParamList = {
   OTPVerification: { phoneNumber: string; isLogin?: boolean };
   CreateAccount: { phoneNumber: string };
   CreatePassword: { phoneNumber: string; userInfo: { firstName: string; lastName: string; email: string; dateOfBirth: string } };
+  UserRegistration: { phoneNumber: string; token: string };
   Login: undefined;
   Register: undefined;
   MainTabs: undefined;
@@ -166,6 +167,8 @@ export type RootStackParamList = {
   BankTransferQR: { transactionId: string };
   Profile: undefined;
 };
+
+export type AuthStackParamList = RootStackParamList;
 
 export type MainTabParamList = {
   Home: undefined;

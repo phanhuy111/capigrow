@@ -233,6 +233,18 @@ class ApiService {
     return this.post('/auth/register', userData);
   }
 
+  async verifyOTP(sessionId: string, otp: string): Promise<ApiResponse> {
+    return this.post('/auth/verify-otp', { sessionId, otp });
+  }
+
+  async sendPhoneVerification(phoneNumber: string, countryCode: string): Promise<ApiResponse> {
+    return this.post('/auth/send-otp', { phoneNumber, countryCode });
+  }
+
+  async resendOTP(sessionId: string): Promise<ApiResponse> {
+    return this.post('/auth/resend-otp', { sessionId });
+  }
+
   async refreshToken(): Promise<ApiResponse> {
     const refreshToken = await getRefreshToken();
     if (!refreshToken) {

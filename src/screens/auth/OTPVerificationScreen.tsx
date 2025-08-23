@@ -4,33 +4,38 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { RootStackParamList } from '../../types';
 import { COLORS, SPACING, BORDER_RADIUS } from '../../utils/theme';
-import { useOTPVerification, useResendOTP } from '../../services/authService';
-import { formSchemas } from '../../utils/validation';
-import { setAuthData } from '../../store/slices/authSlice';
+import { useOTPVerificationMutation, useResendOTPMutation } from '../../hooks/useAuthQueries';
+import { useAuthClientStore } from '../../store/authClientStore';
 import NumericKeypad from '../../components/common/NumericKeypad';
 
 type OTPVerificationScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'OTPVerification'>;
 type OTPVerificationScreenRouteProp = RouteProp<RootStackParamList, 'OTPVerification'>;
 
-interface OTPFormData {
-  otp: string;
-}
+// Zod schema for OTP validation
+const otpSchema = z.object({
+  otp: z.string().min(6, 'OTP must be 6 digits').max(6, 'OTP must be 6 digits'),
+});
+
+type OTPFormData = z.infer<typeof otpSchema>;
 
 const OTPVerificationScreen: React.FC = () => {
   const navigation = useNavigation<OTPVerificationScreenNavigationProp>();
   const route = useRoute<OTPVerificationScreenRouteProp>();
-  const dispatch = useDispatch();
-  const { phoneNumber, sessionId, isLogin = false } = route.params;
+  const { setAuthData } = useAuthClientStore();
+  const { phoneNumber, isLogin = false } = route.params;
+  // For demo purposes, using a mock sessionId - in real app this would come from previous screen
+  const sessionId = 'mock-session-id';
 
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
   
-  const otpVerificationMutation = useOTPVerification();
-  const resendOTPMutation = useResendOTP();
+  const otpVerificationMutation = useOTPVerificationMutation();
+  const resendOTPMutation = useResendOTPMutation();
   
   const {
     control,
@@ -42,6 +47,7 @@ const OTPVerificationScreen: React.FC = () => {
       otp: '',
     },
     mode: 'onChange',
+    resolver: zodResolver(otpSchema),
   });
   
   const otp = watch('otp');
@@ -86,21 +92,19 @@ const OTPVerificationScreen: React.FC = () => {
       });
       
       if (result.success) {
-        if (result.isNewUser) {
-          // Navigate to registration screen for new users
-          navigation.navigate('CreateAccount', {
-            phoneNumber,
-            token: result.token,
-          });
-        } else {
-          // For existing users, update auth state and navigate to main app
-          dispatch(setAuthData({
-            user: result.user,
-            access_token: result.token,
-            refresh_token: result.refreshToken,
-            expires_at: result.expiresAt,
-          }));
+        if (isLogin) {
+          // For existing users, navigate to main app
           navigation.navigate('MainTabs');
+        } else {
+          // For new users, navigate to user registration
+          navigation.navigate('UserRegistration', {
+            phoneNumber,
+            token: result.token || 'temp-token',
+          });
+        }
+        // Store auth data if available
+        if (result.token && result.user && result.refreshToken) {
+          setAuthData(result.user, result.token, result.refreshToken);
         }
       } else {
         Alert.alert('Error', result.message || 'Invalid OTP. Please try again.');
@@ -176,7 +180,6 @@ const OTPVerificationScreen: React.FC = () => {
         <Controller
            control={control}
            name="otp"
-           rules={formSchemas.otpVerification.otp}
            render={({ field: { value } }) => (
             <View style={styles.otpContainer}>
               {Array.from({ length: 6 }, (_, index) => (

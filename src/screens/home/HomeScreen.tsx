@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SvgXml } from 'react-native-svg';
-import { RootState, AppDispatch } from '../../store';
+import { useAuthStore } from '../../store';
 import { RootStackParamList } from '../../types';
 import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '../../utils/theme';
 import { Icons } from '../../assets';
 import Screen from '../../components/common/Screen';
-import Card from '../../components/common/Card';
+import { Card } from '@/components/ui';
 import { mockPortfolioApi } from '../../mock/api/portfolio';
 import { mockInvestmentApi } from '../../mock/api/investments';
 import { mockNotificationApi } from '../../mock/api/notifications';
@@ -18,7 +17,7 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user } = useAuthStore();
 
   const [portfolioData, setPortfolioData] = useState<any>(null);
   const [investments, setInvestments] = useState<any[]>([]);

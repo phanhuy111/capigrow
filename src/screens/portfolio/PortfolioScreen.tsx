@@ -11,7 +11,7 @@ import { SvgXml } from 'react-native-svg';
 import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '../../utils/theme';
 import { Icons } from '../../assets';
 import Screen from '../../components/common/Screen';
-import Card from '../../components/common/Card';
+import { Card } from '@/components/ui';
 import { mockPortfolioApi } from '../../mock/api/portfolio';
 import { formatDate } from '../../utils/helpers';
 
@@ -23,10 +23,6 @@ const PortfolioScreen: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<'daily' | 'monthly' | 'yearly'>('monthly');
   const [selectedTab, setSelectedTab] = useState<'overview' | 'investments'>('overview');
-
-  useEffect(() => {
-    loadPortfolioData();
-  }, [loadPortfolioData]);
 
   const loadPortfolioData = useCallback(async () => {
     try {
@@ -45,6 +41,10 @@ const PortfolioScreen: React.FC = () => {
       console.error('Error loading portfolio data:', error);
     }
   }, [selectedPeriod]);
+
+  useEffect(() => {
+    loadPortfolioData();
+  }, [loadPortfolioData]);
 
   const onRefresh = async () => {
     setRefreshing(true);

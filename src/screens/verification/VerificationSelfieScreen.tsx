@@ -11,12 +11,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
-import { RootState, AppDispatch } from '../../store';
-import { uploadSelfie } from '../../store/slices/verificationSlice';
+import { useVerificationStore } from '../../store';
 import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS } from '../../utils/constants';
 
 type VerificationSelfieScreenNavigationProp = NativeStackNavigationProp<
@@ -26,8 +24,7 @@ type VerificationSelfieScreenNavigationProp = NativeStackNavigationProp<
 
 const VerificationSelfieScreen: React.FC = () => {
   const navigation = useNavigation<VerificationSelfieScreenNavigationProp>();
-  const dispatch = useDispatch<AppDispatch>();
-  const { isLoading } = useSelector((state: RootState) => state.verification);
+  const { isLoading, uploadSelfie } = useVerificationStore();
 
   const [selfieImage, setSelfieImage] = useState<string | null>(null);
 
@@ -66,12 +63,12 @@ const VerificationSelfieScreen: React.FC = () => {
         name: 'selfie.jpg',
       } as any);
 
-      const result = await dispatch(uploadSelfie(formData));
-      if (uploadSelfie.fulfilled.match(result)) {
+      try {
+        await uploadSelfie(formData);
         Alert.alert('Success', 'Selfie uploaded successfully!', [
           { text: 'Continue', onPress: () => navigation.navigate('VerificationStatus') },
         ]);
-      } else {
+      } catch (uploadError) {
         Alert.alert('Error', 'Failed to upload selfie. Please try again.');
       }
     } catch (error) {

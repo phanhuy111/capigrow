@@ -1,4 +1,3 @@
-import { useMutation } from '@tanstack/react-query';
 import apiClient from './apiClient';
 import { API_ENDPOINTS } from '../utils/constants';
 
@@ -74,15 +73,15 @@ export interface CreateAccountResponse {
 // API functions
 const authApi = {
   sendPhoneVerification: async (data: PhoneVerificationRequest): Promise<PhoneVerificationResponse> => {
-    return apiClient.post(API_ENDPOINTS.SEND_OTP, data);
+    return apiClient.post(API_ENDPOINTS.PHONE_VERIFICATION, data);
   },
 
   verifyOTP: async (data: OTPVerificationRequest): Promise<OTPVerificationResponse> => {
-    return apiClient.post(API_ENDPOINTS.VERIFY_OTP, data);
+    return apiClient.post(API_ENDPOINTS.OTP_VERIFICATION, data);
   },
 
   registerUser: async (data: UserRegistrationRequest): Promise<UserRegistrationResponse> => {
-    return apiClient.post(API_ENDPOINTS.REGISTER, data);
+    return apiClient.post(API_ENDPOINTS.USER_REGISTRATION, data);
   },
 
   resendOTP: async (sessionId: string): Promise<PhoneVerificationResponse> => {
@@ -94,65 +93,7 @@ const authApi = {
   },
 };
 
-// React Query hooks
-export const usePhoneVerification = () => {
-  return useMutation({
-    mutationFn: authApi.sendPhoneVerification,
-    onSuccess: (data) => {
-      console.log('Phone verification sent:', data.message);
-    },
-    onError: (error: any) => {
-      console.error('Phone verification failed:', error.response?.data?.message || error.message);
-    },
-  });
-};
-
-export const useOTPVerification = () => {
-  return useMutation({
-    mutationFn: authApi.verifyOTP,
-    onSuccess: (data) => {
-      console.log('OTP verification successful:', data.message);
-    },
-    onError: (error: any) => {
-      console.error('OTP verification failed:', error.response?.data?.message || error.message);
-    },
-  });
-};
-
-export const useUserRegistration = () => {
-  return useMutation({
-    mutationFn: authApi.registerUser,
-    onSuccess: (data) => {
-      console.log('User registration successful:', data.message);
-    },
-    onError: (error: any) => {
-      console.error('User registration failed:', error.response?.data?.message || error.message);
-    },
-  });
-};
-
-export const useResendOTP = () => {
-  return useMutation({
-    mutationFn: authApi.resendOTP,
-    onSuccess: (data) => {
-      console.log('OTP resent:', data.message);
-    },
-    onError: (error: any) => {
-      console.error('Resend OTP failed:', error.response?.data?.message || error.message);
-    },
-  });
-};
-
-export const useCreateAccount = () => {
-  return useMutation({
-    mutationFn: authApi.createAccount,
-    onSuccess: (data) => {
-      console.log('Account created successfully:', data.message);
-    },
-    onError: (error: any) => {
-      console.error('Account creation failed:', error.response?.data?.message || error.message);
-    },
-  });
-};
+// Note: React Query hooks have been migrated to useAuthQueries.ts
+// This file now only contains API functions and type definitions
 
 export default authApi;

@@ -9,24 +9,22 @@ import {
   Switch,
   Image,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SvgXml } from 'react-native-svg';
-import { RootState, AppDispatch } from '../../store';
 import { RootStackParamList } from '../../types';
-import { logoutUser } from '../../store/slices/authSlice';
+import { useAuthStore } from '../../store';
 import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '../../utils/theme';
 import { Icons } from '../../assets';
 import Screen from '../../components/common/Screen';
-import Card from '../../components/common/Card';
+import { Card } from '@/components/ui';
 import { mockUserApi } from '../../mock/api/user';
 import { formatDate } from '../../utils/helpers';
 
 type ProfileScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const ProfileScreen: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const { logoutUser } = useAuthStore();
   const navigation = useNavigation<ProfileScreenNavigationProp>();
 
   const [userProfile, setUserProfile] = useState<any>(null);
@@ -54,7 +52,7 @@ const ProfileScreen: React.FC = () => {
       'Are you sure you want to logout?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Logout', onPress: () => dispatch(logoutUser()) },
+        { text: 'Logout', onPress: () => logoutUser() },
       ]
     );
   };

@@ -4,42 +4,42 @@ import { VALIDATION_PATTERNS, ERROR_MESSAGES } from './constants';
 export const validationRules = {
   required: {
     value: true,
-    message: ERROR_MESSAGES.REQUIRED_FIELD,
+    message: 'This field is required',
   },
-  
+
   email: {
     pattern: {
-      value: VALIDATION_PATTERNS.EMAIL,
-      message: ERROR_MESSAGES.INVALID_EMAIL,
+      value: VALIDATION_PATTERNS.email,
+      message: 'Please enter a valid email address',
     },
   },
-  
+
   phone: {
     pattern: {
-      value: VALIDATION_PATTERNS.PHONE,
-      message: ERROR_MESSAGES.INVALID_PHONE,
+      value: VALIDATION_PATTERNS.phone,
+      message: 'Please enter a valid phone number',
     },
     minLength: {
       value: 10,
       message: 'Phone number must be at least 10 digits',
     },
   },
-  
+
   password: {
     minLength: {
       value: 8,
-      message: ERROR_MESSAGES.PASSWORD_TOO_SHORT,
+      message: 'Password must be at least 8 characters',
     },
     pattern: {
-      value: VALIDATION_PATTERNS.PASSWORD,
-      message: ERROR_MESSAGES.INVALID_PASSWORD,
+      value: VALIDATION_PATTERNS.password,
+      message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number',
     },
   },
-  
+
   confirmPassword: (password: string) => ({
     validate: (value: string) => {
       if (value !== password) {
-        return ERROR_MESSAGES.PASSWORD_MISMATCH;
+        return 'Passwords do not match';
       }
       return true;
     },
@@ -83,11 +83,11 @@ export const customValidations = {
   },
   
   isValidEmail: (email: string): boolean => {
-    return VALIDATION_PATTERNS.EMAIL.test(email);
+    return VALIDATION_PATTERNS.email.test(email);
   },
   
   isStrongPassword: (password: string): boolean => {
-    return VALIDATION_PATTERNS.PASSWORD.test(password);
+    return VALIDATION_PATTERNS.password.test(password);
   },
   
   isValidOTP: (otp: string): boolean => {
@@ -108,165 +108,8 @@ export const customValidations = {
   },
 };
 
-// Form validation schemas
-export const formSchemas = {
-  phoneEntry: {
-    phoneNumber: {
-      ...validationRules.required,
-      ...validationRules.phone,
-    },
-  },
-  
-  otpVerification: {
-    otp: {
-      ...validationRules.required,
-      ...validationRules.otp,
-    },
-  },
-  
-  register: {
-    firstName: {
-      ...validationRules.required,
-      minLength: {
-        value: 2,
-        message: 'First name must be at least 2 characters',
-      },
-      pattern: {
-        value: /^[a-zA-Z\s]+$/,
-        message: 'First name can only contain letters and spaces',
-      },
-    },
-    lastName: {
-      ...validationRules.required,
-      minLength: {
-        value: 2,
-        message: 'Last name must be at least 2 characters',
-      },
-      pattern: {
-        value: /^[a-zA-Z\s]+$/,
-        message: 'Last name can only contain letters and spaces',
-      },
-    },
-    email: {
-      ...validationRules.required,
-      ...validationRules.email,
-    },
-    password: {
-      ...validationRules.required,
-      ...validationRules.password,
-    },
-    confirmPassword: {
-      ...validationRules.required,
-    },
-    phoneNumber: {
-      ...validationRules.phone,
-    },
-  },
-  
-  userRegistration: {
-    fullName: {
-      ...validationRules.required,
-      ...validationRules.fullName,
-    },
-    email: {
-      ...validationRules.required,
-      ...validationRules.email,
-    },
-    password: {
-      ...validationRules.required,
-      ...validationRules.password,
-    },
-    confirmPassword: {
-      ...validationRules.required,
-    },
-    dateOfBirth: {
-      ...validationRules.required,
-      validate: {
-        isAdult: (value: string) => customValidations.isAdult(value) || 'You must be at least 18 years old',
-      },
-    },
-    referralCode: {
-      ...validationRules.referralCode,
-    },
-  },
-  
-  investmentAmount: {
-    amount: {
-      ...validationRules.required,
-      pattern: {
-        value: /^\d+(\.\d{1,2})?$/,
-        message: 'Please enter a valid amount',
-      },
-      validate: {
-        positive: (value: string) => parseFloat(value) > 0 || 'Amount must be greater than 0',
-      },
-    },
-  },
-
-  createAccount: {
-    firstName: {
-      ...validationRules.required,
-      minLength: {
-        value: 2,
-        message: 'First name must be at least 2 characters',
-      },
-      pattern: {
-        value: /^[a-zA-Z\s]+$/,
-        message: 'First name can only contain letters and spaces',
-      },
-    },
-    lastName: {
-      ...validationRules.required,
-      minLength: {
-        value: 2,
-        message: 'Last name must be at least 2 characters',
-      },
-      pattern: {
-        value: /^[a-zA-Z\s]+$/,
-        message: 'Last name can only contain letters and spaces',
-      },
-    },
-    email: {
-      ...validationRules.required,
-      ...validationRules.email,
-    },
-    dateOfBirth: {
-      ...validationRules.required,
-      pattern: {
-        value: /^\d{2}\/\d{2}\/\d{4}$/,
-        message: 'Please enter date in DD/MM/YYYY format',
-      },
-      validate: {
-        isAdult: (value: string) => {
-           const [day, month, year] = value.split('/').map(Number);
-           const birthDate = new Date(year, month - 1, day);
-           const today = new Date();
-           let age = today.getFullYear() - birthDate.getFullYear();
-           const monthDiff = today.getMonth() - birthDate.getMonth();
-           if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-             age--;
-           }
-           return age >= 18 || 'You must be at least 18 years old';
-         },
-      },
-    },
-  },
-
-  createPassword: {
-    password: {
-      ...validationRules.required,
-      ...validationRules.password,
-    },
-    confirmPassword: {
-      ...validationRules.required,
-      validate: {
-        matchesPassword: (value: string, { password }: any) => {
-          return value === password || 'Passwords do not match';
-        },
-      },
-    },
-  },
-};
+// Note: Form validation schemas have been migrated to Zod schemas in individual components
+// The validationRules and customValidations above are kept for reference
 
 // Utility functions for form handling
 export const formatPhoneNumber = (phone: string): string => {

@@ -11,30 +11,47 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../types';
-import { COLORS, SPACING } from '../../utils/theme';
-import Input from '../../components/common/Input';
-import Button from '../../components/common/Button';
-import { formSchemas } from '../../utils/validation';
+import { COLORS, SPACING, FONT_SIZES } from '../../utils/theme';
+import { Input, Button } from '@/components/ui';
 
 type CreateAccountScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CreateAccount'>;
 type CreateAccountScreenRouteProp = RouteProp<RootStackParamList, 'CreateAccount'>;
+
+// Zod schema for create account validation
+const createAccountSchema = z.object({
+  firstName: z.string()
+    .min(2, 'Họ phải có ít nhất 2 ký tự')
+    .max(50, 'Họ không được quá 50 ký tự'),
+  lastName: z.string()
+    .min(2, 'Tên phải có ít nhất 2 ký tự')
+    .max(50, 'Tên không được quá 50 ký tự'),
+  email: z.string()
+    .email('Vui lòng nhập email hợp lệ'),
+  dateOfBirth: z.string()
+    .min(1, 'Vui lòng nhập ngày sinh')
+    .regex(/^\d{2}\/\d{2}\/\d{4}$/, 'Định dạng ngày sinh: DD/MM/YYYY'),
+});
+
+type CreateAccountFormData = z.infer<typeof createAccountSchema>;
 
 const CreateAccountScreen: React.FC = () => {
   const navigation = useNavigation<CreateAccountScreenNavigationProp>();
   const route = useRoute<CreateAccountScreenRouteProp>();
   const { phoneNumber } = route.params;
 
-  const { control, handleSubmit, formState: { isValid } } = useForm({
+  const { control, handleSubmit, formState: { isValid } } = useForm<CreateAccountFormData>({
     defaultValues: {
       firstName: '',
       lastName: '',
       email: '',
       dateOfBirth: ''
     },
-    resolver: formSchemas.createAccount,
+    resolver: zodResolver(createAccountSchema),
     mode: 'onChange'
   });
 

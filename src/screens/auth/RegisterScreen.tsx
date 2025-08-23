@@ -11,28 +11,43 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
 import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS } from '../../utils/constants';
-import Input from '../../components/common/Input';
-import Button from '../../components/common/Button';
-import { useCreateAccount } from '../../services/authService';
-import { formSchemas } from '../../utils/validation';
+import { Input, Button } from '@/components/ui';
+import { useRegisterMutation } from '../../hooks/useAuthQueries';
 
 type RegisterScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Register'>;
 
-interface RegisterFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  phoneNumber: string;
-}
+// Zod schema for registration validation
+const registerSchema = z.object({
+  firstName: z.string()
+    .min(2, 'First name must be at least 2 characters')
+    .max(50, 'First name must be less than 50 characters'),
+  lastName: z.string()
+    .min(2, 'Last name must be at least 2 characters')
+    .max(50, 'Last name must be less than 50 characters'),
+  email: z.string()
+    .email('Please enter a valid email address'),
+  phoneNumber: z.string()
+    .optional()
+    .or(z.literal('')),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
+  confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+type RegisterFormData = z.infer<typeof registerSchema>;
 
 const RegisterScreen: React.FC = () => {
   const navigation = useNavigation<RegisterScreenNavigationProp>();
-  const createAccountMutation = useCreateAccount();
+  const registerMutation = useRegisterMutation();
   
   const { control, handleSubmit, formState: { isValid } } = useForm<RegisterFormData>({
     defaultValues: {
@@ -43,18 +58,19 @@ const RegisterScreen: React.FC = () => {
       confirmPassword: '',
       phoneNumber: '',
     },
-    resolver: formSchemas.register,
+    resolver: zodResolver(registerSchema),
     mode: 'onChange'
   });
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
       const { confirmPassword, ...registerData } = data;
-      await createAccountMutation.mutateAsync({
-        ...registerData,
-        phone_number: registerData.phoneNumber,
+      await registerMutation.mutateAsync({
+        email: registerData.email,
+        password: registerData.password,
         first_name: registerData.firstName,
         last_name: registerData.lastName,
+        phone_number: registerData.phoneNumber || '',
       });
       // Navigation will be handled by the mutation's onSuccess callback
     } catch (error) {
@@ -195,10 +211,10 @@ const RegisterScreen: React.FC = () => {
             </View>
 
             <Button
-              title={createAccountMutation.isPending ? 'Creating Account...' : 'Create Account'}
+              title={registerMutation.isPending ? 'Creating Account...' : 'Create Account'}
               onPress={handleSubmit(onSubmit)}
-              disabled={!isValid || createAccountMutation.isPending}
-              loading={createAccountMutation.isPending}
+              disabled={!isValid || registerMutation.isPending}
+              loading={registerMutation.isPending}
             />
           </View>
 

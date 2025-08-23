@@ -4,29 +4,40 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { RootStackParamList } from '../../types';
 import { COLORS, SPACING, BORDER_RADIUS } from '../../utils/theme';
-import { mockAuthApi } from '../../mock/api/auth';
+
 // import LinearGradient from 'react-native-linear-gradient';
 import CapiGrowLogo from '../../components/common/CapiGrowLogo';
 import NumericKeypad from '../../components/common/NumericKeypad';
-import Input from '../../components/common/Input';
-import { usePhoneVerification } from '../../services/authService';
-import { formSchemas, cleanPhoneNumber } from '../../utils/validation';
+import { Input } from '@/components/ui';
+import { usePhoneVerificationMutation } from '../../hooks/useAuthQueries';
+import { cleanPhoneNumber } from '../../utils/validation';
 
 const { height } = Dimensions.get('window');
 
 type PhoneEntryScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'PhoneEntry'>;
 
-interface PhoneFormData {
-  phoneNumber: string;
-}
+// Zod schema for phone validation
+const phoneSchema = z.object({
+  phoneNumber: z.string()
+    .min(1, 'Vui lòng nhập số điện thoại')
+    .regex(/^[0-9\s]+$/, 'Số điện thoại chỉ được chứa số')
+    .refine((val) => {
+      const cleaned = val.replace(/\s/g, '');
+      return cleaned.length >= 9 && cleaned.length <= 10;
+    }, 'Số điện thoại phải có 9-10 chữ số'),
+});
+
+type PhoneFormData = z.infer<typeof phoneSchema>;
 
 const PhoneEntryScreen: React.FC = () => {
   const navigation = useNavigation<PhoneEntryScreenNavigationProp>();
   const [showKeypad, setShowKeypad] = useState(false);
   const [useKeypad, setUseKeypad] = useState(true);
-  const phoneVerificationMutation = usePhoneVerification();
+  const phoneVerificationMutation = usePhoneVerificationMutation();
   
   const {
     control,
@@ -35,6 +46,7 @@ const PhoneEntryScreen: React.FC = () => {
     watch,
     formState: { errors, isValid },
   } = useForm<PhoneFormData>({
+    resolver: zodResolver(phoneSchema),
     defaultValues: {
       phoneNumber: '',
     },
@@ -56,7 +68,6 @@ const PhoneEntryScreen: React.FC = () => {
       if (result.success) {
         navigation.navigate('OTPVerification', {
           phoneNumber: cleanPhone,
-          sessionId: result.sessionId,
         });
       } else {
         Alert.alert('Lỗi', result.message || 'Không thể gửi mã OTP');
@@ -83,7 +94,10 @@ const PhoneEntryScreen: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await mockAuthApi.sendOtp(cleanNumber);
+      const response = await phoneVerificationMutation.mutateAsync({
+          phoneNumber: cleanNumber,
+          countryCode: '+84'
+        });
       if (response.success) {
         navigation.navigate('OTPVerification', { phoneNumber: cleanNumber });
       } else {
@@ -240,7 +254,6 @@ const PhoneEntryScreen: React.FC = () => {
             <Controller
               control={control}
               name="phoneNumber"
-              rules={formSchemas.phoneEntry.phoneNumber}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   label="Số điện thoại"
@@ -254,7 +267,7 @@ const PhoneEntryScreen: React.FC = () => {
                   }}
                   onBlur={onBlur}
                   keyboardType="phone-pad"
-                  error={errors.phoneNumber}
+                  error={errors.phoneNumber?.message}
                   style={styles.phoneInputContainer}
                 />
               )}

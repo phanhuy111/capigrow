@@ -9,11 +9,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
-import { RootState, AppDispatch } from '../../store';
-import { fetchVerificationStatus } from '../../store/slices/verificationSlice';
+import { useVerificationStore } from '../../store';
 import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS, VERIFICATION_STATUS } from '../../utils/constants';
 import { formatDate } from '../../utils/helpers';
 
@@ -24,12 +22,11 @@ type VerificationStatusScreenNavigationProp = NativeStackNavigationProp<
 
 const VerificationStatusScreen: React.FC = () => {
   const navigation = useNavigation<VerificationStatusScreenNavigationProp>();
-  const dispatch = useDispatch<AppDispatch>();
-  const { verification, isLoading } = useSelector((state: RootState) => state.verification);
+  const { verification, isLoading, fetchVerificationStatus } = useVerificationStore();
 
   useEffect(() => {
-    dispatch(fetchVerificationStatus());
-  }, [dispatch]);
+    fetchVerificationStatus();
+  }, [fetchVerificationStatus]);
 
   const getStatusInfo = () => {
     if (!verification) {

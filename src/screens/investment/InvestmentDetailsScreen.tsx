@@ -10,11 +10,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
-import { RootState, AppDispatch } from '../../store';
-import { fetchInvestment } from '../../store/slices/investmentSlice';
+import { useInvestmentStore } from '../../store';
 import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS, RISK_LEVELS } from '../../utils/constants';
 import { formatCurrency, formatPercentage, formatDate } from '../../utils/helpers';
 
@@ -27,14 +25,13 @@ type InvestmentDetailsScreenRouteProp = RouteProp<RootStackParamList, 'Investmen
 const InvestmentDetailsScreen: React.FC = () => {
   const navigation = useNavigation<InvestmentDetailsScreenNavigationProp>();
   const route = useRoute<InvestmentDetailsScreenRouteProp>();
-  const dispatch = useDispatch<AppDispatch>();
-  const { selectedInvestment, isLoading } = useSelector((state: RootState) => state.investment);
+  const { selectedInvestment, isLoading, fetchInvestment } = useInvestmentStore();
 
   const { investmentId } = route.params;
 
   useEffect(() => {
-    dispatch(fetchInvestment(investmentId));
-  }, [dispatch, investmentId]);
+    fetchInvestment(investmentId);
+  }, [fetchInvestment, investmentId]);
 
   const handleInvest = () => {
     if (selectedInvestment) {

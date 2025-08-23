@@ -5,7 +5,7 @@ import { SvgXml } from 'react-native-svg';
 import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '../../utils/theme';
 import { Icons } from '../../assets';
 import Screen from '../../components/common/Screen';
-import Card from '../../components/common/Card';
+import { Card } from '@/components/ui';
 import { mockNotificationApi } from '../../mock/api/notifications';
 import { formatDate } from '../../utils/helpers';
 
