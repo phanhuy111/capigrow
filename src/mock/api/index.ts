@@ -1,0 +1,19 @@
+// Mock API functions
+export * from './auth';
+export * from './user';
+export * from './investments';
+export * from './portfolio';
+export * from './transactions';
+export * from './notifications';
+
+// Mock API delay function
+export const mockDelay = (ms: number = 1000) => 
+  new Promise(resolve => setTimeout(resolve, ms));
+
+// Mock API response wrapper
+export const mockApiResponse = <T>(data: T, success: boolean = true, message?: string) => ({
+  success,
+  data,
+  message: message || (success ? 'Success' : 'Error'),
+  timestamp: new Date().toISOString(),
+});

@@ -1,94 +1,97 @@
-# Expo Clean Architecture Template
+This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-A production-ready Expo template following Domain-Driven Design (DDD) and Clean Architecture principles with functional programming patterns.
+# Getting Started
 
-## 🏗️ Architecture
+> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
 
-This template implements a clean, layered architecture:
+## Step 1: Start Metro
 
-### Domain Layer (`src/domain/`)
-- **Entities**: Core business objects with pure functions
-- **Repositories**: Interfaces defining data access contracts
-- **Use Cases**: Business logic encapsulated in pure functions
+First, you will need to run **Metro**, the JavaScript build tool for React Native.
 
-### Infrastructure Layer (`src/infrastructure/`)
-- **Repositories**: Concrete implementations of domain interfaces
-- **Storage**: MMKV-based storage utilities
-- **DI Container**: Dependency injection using functional composition
+To start the Metro dev server, run the following command from the root of your React Native project:
 
-### Presentation Layer (`src/presentation/`)
-- **Components**: Reusable UI components with animations
-- **Forms**: React Hook Form with Zod validation
-- **Hooks**: React Query hooks for server state
-- **Store**: Zustand for client state with MMKV persistence
+```sh
+# Using npm
+npm start
 
-## 🛠️ Tech Stack
-
-- **Framework**: Expo with React Native
-- **State Management**: Zustand + MMKV persistence
-- **Server State**: React Query (TanStack Query)
-- **Forms**: React Hook Form + Zod validation
-- **Storage**: MMKV for high-performance local storage
-- **Animations**: React Native Reanimated
-- **UI Components**: NativeUI (to be configured)
-- **Styling**: NativeWind (Tailwind CSS for React Native)
-
-## 🔧 Setup
-
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-2. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-## 📁 Project Structure
-
-```
-src/
-├── domain/
-│   ├── entities/          # Business entities with pure functions
-│   ├── repositories/      # Repository interfaces
-│   └── useCases/         # Business logic use cases
-├── infrastructure/
-│   ├── repositories/     # Repository implementations
-│   ├── storage/         # MMKV storage utilities
-│   └── di/             # Dependency injection container
-├── presentation/
-│   ├── components/      # Reusable UI components
-│   ├── forms/          # Form components with validation
-│   ├── hooks/          # React Query hooks
-│   ├── store/          # Zustand stores
-│   └── providers/      # React providers
-└── shared/
-    ├── types/          # Shared TypeScript types
-    └── utils/          # Utility functions
+# OR using Yarn
+yarn start
 ```
 
-## 🎯 Key Features
+## Step 2: Build and run your app
 
-- **Functional Programming**: Pure functions, immutability, composition
-- **Type Safety**: Full TypeScript coverage with Zod validation
-- **Performance**: MMKV storage, React Query caching, Reanimated animations
-- **Developer Experience**: Clean architecture, dependency injection, error boundaries
-- **Production Ready**: Error handling, loading states, responsive design
+With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
 
-## 🧪 Development
+### Android
 
-The template includes:
-- Mock repositories for development
-- Example entities (User, Todo)
-- Form validation examples
-- State management patterns
-- Animation examples
-- Error boundary implementation
+```sh
+# Using npm
+npm run android
 
-## 📚 Next Steps
+# OR using Yarn
+yarn android
+```
 
-1. Configure NativeUI components following their documentation
-2. Replace mock repositories with real API implementations
-3. Add authentication flow
-4. Implement additional features based on your requirements
+### iOS
+
+For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+
+The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+
+```sh
+bundle install
+```
+
+Then, and every time you update your native dependencies, run:
+
+```sh
+bundle exec pod install
+```
+
+For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+
+```sh
+# Using npm
+npm run ios
+
+# OR using Yarn
+yarn ios
+```
+
+If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+
+This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+
+## Step 3: Modify your app
+
+Now that you have successfully run the app, let's make changes!
+
+Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+
+When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+
+- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
+- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+
+## Congratulations! :tada:
+
+You've successfully run and modified your React Native App. :partying_face:
+
+### Now what?
+
+- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
+- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+
+# Troubleshooting
+
+If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+
+# Learn More
+
+To learn more about React Native, take a look at the following resources:
+
+- [React Native Website](https://reactnative.dev) - learn more about React Native.
+- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
+- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
+- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
+- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
