@@ -4377,7 +4377,7 @@ expo-modules-core@2.5.0:
   dependencies:
     invariant "^2.2.4"
 
-expo@*:
+expo@*, expo@^53.0.20:
   version "53.0.20"
   resolved "https://registry.npmjs.org/expo/-/expo-53.0.20.tgz"
   integrity sha512-Nh+HIywVy9KxT/LtH08QcXqrxtUOA9BZhsXn3KCsAYA+kNb80M8VKN8/jfQF+I6CgeKyFKJoPNsWgI0y0VBGrA==

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -26,11 +26,7 @@ const App: React.FC = () => {
       <Provider store={store}>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <SafeAreaProvider>
-            <StatusBar
-              barStyle="dark-content"
-              backgroundColor={COLORS.white}
-              translucent={false}
-            />
+            <StatusBar style="dark" />
             <AppNavigator />
           </SafeAreaProvider>
         </GestureHandlerRootView>

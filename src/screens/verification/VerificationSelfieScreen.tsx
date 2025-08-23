@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { launchCamera, ImagePickerResponse } from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
 import { RootState, AppDispatch } from '../../store';
@@ -31,20 +31,25 @@ const VerificationSelfieScreen: React.FC = () => {
 
   const [selfieImage, setSelfieImage] = useState<string | null>(null);
 
-  const takeSelfie = () => {
-    launchCamera(
-      {
-        mediaType: 'photo',
-        quality: 0.8,
-        includeBase64: false,
-        cameraType: 'front',
-      },
-      (response: ImagePickerResponse) => {
-        if (response.assets && response.assets[0]) {
-          setSelfieImage(response.assets[0].uri || null);
-        }
-      }
-    );
+  const takeSelfie = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    
+    if (permissionResult.granted === false) {
+      Alert.alert('Permission required', 'Camera permission is required to take photos');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [3, 4],
+      quality: 0.8,
+      cameraType: ImagePicker.CameraType.front,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      setSelfieImage(result.assets[0].uri);
+    }
   };
 
   const handleSubmit = async () => {

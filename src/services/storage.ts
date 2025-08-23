@@ -1,17 +1,18 @@
+import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TOKEN_KEY = 'auth_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 const USER_KEY = 'user_data';
 
-// Token storage using AsyncStorage (can be upgraded to Keychain later)
+// Token storage using Expo SecureStore for sensitive data
 export const setToken = async (token: string): Promise<void> => {
   try {
     if (!token) {
       console.error('Cannot store undefined or null token');
       return;
     }
-    await AsyncStorage.setItem(TOKEN_KEY, token);
+    await SecureStore.setItemAsync(TOKEN_KEY, token);
   } catch (error) {
     console.error('Error storing token:', error);
     throw error;
@@ -20,7 +21,7 @@ export const setToken = async (token: string): Promise<void> => {
 
 export const getToken = async (): Promise<string | null> => {
   try {
-    return await AsyncStorage.getItem(TOKEN_KEY);
+    return await SecureStore.getItemAsync(TOKEN_KEY);
   } catch (error) {
     console.error('Error retrieving token:', error);
     return null;
@@ -29,7 +30,7 @@ export const getToken = async (): Promise<string | null> => {
 
 export const removeToken = async (): Promise<void> => {
   try {
-    await AsyncStorage.removeItem(TOKEN_KEY);
+    await SecureStore.deleteItemAsync(TOKEN_KEY);
   } catch (error) {
     console.error('Error removing token:', error);
   }
@@ -41,7 +42,7 @@ export const setRefreshToken = async (refreshToken: string): Promise<void> => {
       console.error('Cannot store undefined or null refresh token');
       return;
     }
-    await AsyncStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+    await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, refreshToken);
   } catch (error) {
     console.error('Error storing refresh token:', error);
     throw error;
@@ -50,7 +51,7 @@ export const setRefreshToken = async (refreshToken: string): Promise<void> => {
 
 export const getRefreshToken = async (): Promise<string | null> => {
   try {
-    return await AsyncStorage.getItem(REFRESH_TOKEN_KEY);
+    return await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
   } catch (error) {
     console.error('Error retrieving refresh token:', error);
     return null;
@@ -59,7 +60,7 @@ export const getRefreshToken = async (): Promise<string | null> => {
 
 export const removeRefreshToken = async (): Promise<void> => {
   try {
-    await AsyncStorage.removeItem(REFRESH_TOKEN_KEY);
+    await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
   } catch (error) {
     console.error('Error removing refresh token:', error);
   }

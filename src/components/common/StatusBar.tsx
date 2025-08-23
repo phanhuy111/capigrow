@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, StatusBar as RNStatusBar } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS, TYPOGRAPHY, SPACING } from '../../utils/theme';
 
@@ -31,11 +32,7 @@ const StatusBar: React.FC<StatusBarProps> = ({
 
   return (
     <>
-      <RNStatusBar
-        backgroundColor={backgroundColor}
-        barStyle={barStyle}
-        translucent={false}
-      />
+      <ExpoStatusBar style={barStyle === 'dark-content' ? 'dark' : 'light'} />
       <View style={[styles.container, { backgroundColor, paddingTop: insets.top }]}>
         <View style={styles.statusContent}>
           {/* Left side - Time */}

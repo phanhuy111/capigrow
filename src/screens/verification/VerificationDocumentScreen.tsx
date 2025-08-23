@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { launchImageLibrary, launchCamera, ImagePickerResponse } from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
 import { RootState, AppDispatch } from '../../store';
@@ -51,44 +51,54 @@ const VerificationDocumentScreen: React.FC = () => {
     );
   };
 
-  const openCamera = (side: 'front' | 'back') => {
-    launchCamera(
-      {
-        mediaType: 'photo',
-        quality: 0.8,
-        includeBase64: false,
-      },
-      (response: ImagePickerResponse) => {
-        if (response.assets && response.assets[0]) {
-          const imageUri = response.assets[0].uri;
-          if (side === 'front') {
-            setFrontImage(imageUri || null);
-          } else {
-            setBackImage(imageUri || null);
-          }
-        }
+  const openCamera = async (side: 'front' | 'back') => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    
+    if (permissionResult.granted === false) {
+      Alert.alert('Permission required', 'Camera permission is required to take photos');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const imageUri = result.assets[0].uri;
+      if (side === 'front') {
+        setFrontImage(imageUri);
+      } else {
+        setBackImage(imageUri);
       }
-    );
+    }
   };
 
-  const openGallery = (side: 'front' | 'back') => {
-    launchImageLibrary(
-      {
-        mediaType: 'photo',
-        quality: 0.8,
-        includeBase64: false,
-      },
-      (response: ImagePickerResponse) => {
-        if (response.assets && response.assets[0]) {
-          const imageUri = response.assets[0].uri;
-          if (side === 'front') {
-            setFrontImage(imageUri || null);
-          } else {
-            setBackImage(imageUri || null);
-          }
-        }
+  const openGallery = async (side: 'front' | 'back') => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (permissionResult.granted === false) {
+      Alert.alert('Permission required', 'Gallery permission is required to select photos');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const imageUri = result.assets[0].uri;
+      if (side === 'front') {
+        setFrontImage(imageUri);
+      } else {
+        setBackImage(imageUri);
       }
-    );
+    }
   };
 
   const handleSubmit = async () => {
