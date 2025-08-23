@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SvgXml } from 'react-native-svg';
 
@@ -41,7 +41,7 @@ const TabBarIcon: React.FC<{
   };
 
   return (
-    <View style={styles.tabIconContainer}>
+    <View className="items-center justify-center">
       <SvgXml
         xml={getIconSource()}
         width={size}
@@ -66,9 +66,32 @@ const MainTabNavigator: React.FC = () => {
         ),
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.textTertiary,
-        tabBarStyle: styles.tabBarStyle,
-        tabBarLabelStyle: styles.tabBarLabelStyle,
-        tabBarItemStyle: styles.tabBarItemStyle,
+        tabBarStyle: {
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 1,
+          borderTopColor: '#F3F4F6',
+          paddingBottom: 16,
+          paddingTop: 16,
+          height: 80,
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+          shadowColor: '#000000',
+          shadowOffset: {
+            width: 0,
+            height: -2,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          elevation: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+          marginTop: 4,
+        },
+        tabBarItemStyle: {
+          paddingVertical: 8,
+        },
         headerShown: false,
       })}
     >
@@ -111,36 +134,6 @@ const MainTabNavigator: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  tabIconContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tabBarStyle: {
-    backgroundColor: COLORS.surface,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.borderLight,
-    paddingBottom: SPACING.md,
-    paddingTop: SPACING.md,
-    height: 80,
-    borderTopLeftRadius: BORDER_RADIUS.xl,
-    borderTopRightRadius: BORDER_RADIUS.xl,
-    shadowColor: COLORS.black,
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  tabBarLabelStyle: {
-    ...TYPOGRAPHY.labelSmall,
-    marginTop: SPACING.xs,
-  },
-  tabBarItemStyle: {
-    paddingVertical: SPACING.sm,
-  },
-});
+
 
 export default MainTabNavigator;

@@ -9,7 +9,6 @@ import { z } from "zod";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "@/types";
-import Screen from "@/components/common/Screen";
 import CapiGrowLogo from "@/components/common/CapiGrowLogo";
 import { Input, Button } from "@/components/ui";
 import { useAuthStore } from "@/store/authStore";
