@@ -14,7 +14,7 @@ import { useAuthStore } from '@/store/authStore';
 // import LinearGradient from 'react-native-linear-gradient';
 import CapiGrowLogo from '@/components/common/CapiGrowLogo';
 import NumericKeypad from '@/components/common/NumericKeypad';
-import { Input } from '@/components/ui';
+import { Input, Button } from '@/components/ui';
 import { usePhoneVerificationMutation } from '@/hooks/useAuthQueries';
 import { cleanPhoneNumber } from '@/utils/validation';
 
@@ -287,18 +287,16 @@ const PhoneEntryScreen: React.FC = () => {
             <Text style={styles.linkText}>điều khoản sử dụng và dịch vụ</Text>
           </Text>
 
-          <TouchableOpacity
-            style={[
-              styles.continueButtonMain,
-              { opacity: (!isValid || phoneNumber.replace(/\s/g, '').length < 9) ? 0.5 : 1 }
-            ]}
+          <Button
+            className="bg-purple-600 rounded-lg py-4 items-center mb-8"
             onPress={handleSubmit(onSubmit)}
             disabled={!isValid || phoneNumber.replace(/\s/g, '').length < 9 || phoneVerificationMutation.isPending}
+            loading={phoneVerificationMutation.isPending}
           >
-            <Text style={styles.continueButtonMainText}>
+            <Text className="text-white text-base font-semibold">
               {phoneVerificationMutation.isPending ? 'Đang xử lý...' : 'Tiếp theo →'}
             </Text>
-          </TouchableOpacity>
+          </Button>
         </View>
       </View>
     </SafeAreaView>

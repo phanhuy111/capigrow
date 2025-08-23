@@ -8,7 +8,7 @@ import { RootStackParamList } from '@/types';
 import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '@/utils/theme';
 import { Icons } from '@/assets';
 import Screen from '@/components/common/Screen';
-import { Card } from '@/components/ui';
+import { Card, Button, Input } from '@/components/ui';
 import { mockPortfolioApi } from '@/mock/api/portfolio';
 import { mockInvestmentApi } from '@/mock/api/investments';
 import { mockNotificationApi } from '@/mock/api/notifications';
@@ -62,36 +62,39 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.greeting}>Good morning,</Text>
             <Text style={styles.userName}>{user?.first_name || 'User'}</Text>
           </View>
-          <TouchableOpacity
-            style={styles.notificationButton}
+          <Button
+            variant="ghost"
             onPress={() => navigation.navigate('Notifications')}
+            className="w-11 h-11 rounded-full bg-gray-100 justify-center items-center relative p-0"
           >
             <SvgXml xml={Icons.notification} width={24} height={24} fill={COLORS.textPrimary} />
             {notifications.filter(n => !n.isRead).length > 0 && (
-              <View style={styles.notificationBadge}>
-                <Text style={styles.notificationBadgeText}>
+              <View className="absolute top-2 right-2 w-4 h-4 rounded-full bg-red-500 justify-center items-center">
+                <Text className="text-white text-xs font-semibold">
                   {notifications.filter(n => !n.isRead).length}
                 </Text>
               </View>
             )}
-          </TouchableOpacity>
+          </Button>
         </View>
 
         {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <View style={styles.searchInputContainer}>
-            <SvgXml xml={Icons.search} width={20} height={20} fill={COLORS.textTertiary} />
-            <TextInput
-              style={styles.searchInput}
+        <View className="flex-row items-center mb-8 gap-4">
+          <View className="flex-1">
+            <Input
               placeholder="Search investments..."
               value={searchQuery}
               onChangeText={setSearchQuery}
-              placeholderTextColor={COLORS.textTertiary}
+              leftIcon={<SvgXml xml={Icons.search} width={20} height={20} fill={COLORS.textTertiary} />}
+              className="bg-gray-100 border-0"
             />
           </View>
-          <TouchableOpacity style={styles.filterButton}>
+          <Button
+            variant="ghost"
+            className="w-12 h-12 rounded-lg bg-gray-100 justify-center items-center p-0"
+          >
             <SvgXml xml={Icons.menuSquare} width={20} height={20} fill={COLORS.textPrimary} />
-          </TouchableOpacity>
+          </Button>
         </View>
 
         {/* Portfolio Overview */}
@@ -99,9 +102,9 @@ const HomeScreen: React.FC = () => {
           <Card style={styles.portfolioCard}>
             <View style={styles.portfolioHeader}>
               <Text style={styles.portfolioTitle}>Portfolio Overview</Text>
-              <TouchableOpacity>
+              <Button variant="ghost" className="p-0">
                 <SvgXml xml={Icons.more} width={20} height={20} fill={COLORS.textSecondary} />
-              </TouchableOpacity>
+              </Button>
             </View>
 
             <View style={styles.portfolioStats}>
@@ -147,14 +150,14 @@ const HomeScreen: React.FC = () => {
         <View style={styles.categoriesSection}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Categories</Text>
-            <TouchableOpacity>
+            <Button variant="ghost" size="sm" className="p-0">
               <Text style={styles.seeAllText}>See all</Text>
-            </TouchableOpacity>
+            </Button>
           </View>
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
             {['Energy', 'Technology', 'Real Estate', 'Healthcare'].map((category, index) => (
-              <TouchableOpacity key={index} style={styles.categoryCard}>
+              <Button key={index} variant="ghost" className="p-0 items-center mr-4 gap-3">
                 <View style={styles.categoryIcon}>
                   <SvgXml
                     xml={index === 0 ? Icons.cup : index === 1 ? Icons.diagram : index === 2 ? Icons.buildings : Icons.health}
@@ -164,7 +167,7 @@ const HomeScreen: React.FC = () => {
                   />
                 </View>
                 <Text style={styles.categoryName}>{category}</Text>
-              </TouchableOpacity>
+              </Button>
             ))}
           </ScrollView>
         </View>
@@ -173,9 +176,9 @@ const HomeScreen: React.FC = () => {
         <View style={styles.investmentsSection}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Featured Investments</Text>
-            <TouchableOpacity>
+            <Button variant="ghost" size="sm" className="p-0">
               <Text style={styles.seeAllText}>See all</Text>
-            </TouchableOpacity>
+            </Button>
           </View>
 
           {investments.map((investment, index) => (

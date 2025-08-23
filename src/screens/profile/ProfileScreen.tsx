@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
   Alert,
   Switch,
   Image,
@@ -17,7 +16,7 @@ import { useAuthStore } from '@/store/authStore';
 import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '@/utils/theme';
 import { Icons } from '@/assets';
 import Screen from '@/components/common/Screen';
-import { Card } from '@/components/ui';
+import { Card, Button } from '@/components/ui';
 import { mockUserApi } from '@/mock/api/user';
 import { formatDate } from '@/utils/helpers';
 
@@ -118,9 +117,14 @@ const ProfileScreen: React.FC = () => {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.screenTitle}>Profile</Text>
-          <TouchableOpacity style={styles.settingsButton} onPress={handleNotificationSettings}>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="w-11 h-11 rounded-full bg-gray-100" 
+            onPress={handleNotificationSettings}
+          >
             <SvgXml xml={Icons.menuSquare} width={24} height={24} fill={COLORS.textPrimary} />
-          </TouchableOpacity>
+          </Button>
         </View>
 
         {/* Profile Card */}
@@ -134,9 +138,13 @@ const ProfileScreen: React.FC = () => {
                   <SvgXml xml={Icons.user} width={32} height={32} fill={COLORS.white} />
                 </View>
               )}
-              <TouchableOpacity style={styles.editAvatarButton}>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-purple-600 border-2 border-white"
+              >
                 <SvgXml xml={Icons.camera} width={16} height={16} fill={COLORS.white} />
-              </TouchableOpacity>
+              </Button>
             </View>
 
             <View style={styles.profileInfo}>
@@ -157,9 +165,14 @@ const ProfileScreen: React.FC = () => {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="p-2" 
+              onPress={handleEditProfile}
+            >
               <SvgXml xml={Icons.edit} width={20} height={20} fill={COLORS.textSecondary} />
-            </TouchableOpacity>
+            </Button>
           </View>
         </Card>
 
@@ -182,7 +195,11 @@ const ProfileScreen: React.FC = () => {
           <Text style={styles.sectionTitle}>Account Management</Text>
 
           <Card style={styles.menuCard}>
-            <TouchableOpacity style={styles.menuItem} onPress={handleEditProfile}>
+            <Button 
+              variant="ghost" 
+              className="flex-row justify-between items-center py-5 px-4" 
+              onPress={handleEditProfile}
+            >
               <View style={styles.menuLeft}>
                 <View style={styles.menuIconContainer}>
                   <SvgXml xml={Icons.user} width={20} height={20} fill={COLORS.primary} />
@@ -190,9 +207,13 @@ const ProfileScreen: React.FC = () => {
                 <Text style={styles.menuTitle}>Personal Information</Text>
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
-            </TouchableOpacity>
+            </Button>
 
-            <TouchableOpacity style={styles.menuItem} onPress={handleBankAccount}>
+            <Button 
+              variant="ghost" 
+              className="flex-row justify-between items-center py-5 px-4" 
+              onPress={handleBankAccount}
+            >
               <View style={styles.menuLeft}>
                 <View style={styles.menuIconContainer}>
                   <SvgXml xml={Icons.bank} width={20} height={20} fill={COLORS.primary} />
@@ -200,9 +221,13 @@ const ProfileScreen: React.FC = () => {
                 <Text style={styles.menuTitle}>Bank Account</Text>
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
-            </TouchableOpacity>
+            </Button>
 
-            <TouchableOpacity style={styles.menuItem} onPress={handleVerification}>
+            <Button 
+              variant="ghost" 
+              className="flex-row justify-between items-center py-5 px-4" 
+              onPress={handleVerification}
+            >
               <View style={styles.menuLeft}>
                 <View style={styles.menuIconContainer}>
                   <SvgXml xml={Icons.shieldTick} width={20} height={20} fill={COLORS.primary} />
@@ -223,9 +248,13 @@ const ProfileScreen: React.FC = () => {
                 </View>
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
-            </TouchableOpacity>
+            </Button>
 
-            <TouchableOpacity style={styles.menuItem} onPress={handleChangePassword}>
+            <Button 
+              variant="ghost" 
+              className="flex-row justify-between items-center py-5 px-4" 
+              onPress={handleChangePassword}
+            >
               <View style={styles.menuLeft}>
                 <View style={styles.menuIconContainer}>
                   <SvgXml xml={Icons.lock} width={20} height={20} fill={COLORS.primary} />
@@ -233,7 +262,7 @@ const ProfileScreen: React.FC = () => {
                 <Text style={styles.menuTitle}>Change Password</Text>
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
-            </TouchableOpacity>
+            </Button>
           </Card>
         </View>
 
@@ -242,7 +271,11 @@ const ProfileScreen: React.FC = () => {
           <Text style={styles.sectionTitle}>Settings</Text>
 
           <Card style={styles.menuCard}>
-            <TouchableOpacity style={styles.menuItem} onPress={handleNotificationSettings}>
+            <Button 
+              variant="ghost" 
+              className="flex-row justify-between items-center py-5 px-4" 
+              onPress={handleNotificationSettings}
+            >
               <View style={styles.menuLeft}>
                 <View style={styles.menuIconContainer}>
                   <SvgXml xml={Icons.notification} width={20} height={20} fill={COLORS.primary} />
@@ -257,9 +290,13 @@ const ProfileScreen: React.FC = () => {
                   thumbColor={notificationsEnabled ? COLORS.primary : COLORS.gray400}
                 />
               </View>
-            </TouchableOpacity>
+            </Button>
 
-            <TouchableOpacity style={styles.menuItem} onPress={handleLanguageSettings}>
+            <Button 
+              variant="ghost" 
+              className="flex-row justify-between items-center py-5 px-4" 
+              onPress={handleLanguageSettings}
+            >
               <View style={styles.menuLeft}>
                 <View style={styles.menuIconContainer}>
                   <SvgXml xml={Icons.global} width={20} height={20} fill={COLORS.primary} />
@@ -270,9 +307,13 @@ const ProfileScreen: React.FC = () => {
                 <Text style={styles.menuValue}>English</Text>
                 <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
               </View>
-            </TouchableOpacity>
+            </Button>
 
-            <TouchableOpacity style={styles.menuItem} onPress={handleSecurity}>
+            <Button 
+              variant="ghost" 
+              className="flex-row justify-between items-center py-5 px-4" 
+              onPress={handleSecurity}
+            >
               <View style={styles.menuLeft}>
                 <View style={styles.menuIconContainer}>
                   <SvgXml xml={Icons.lockBold} width={20} height={20} fill={COLORS.primary} />
@@ -287,7 +328,7 @@ const ProfileScreen: React.FC = () => {
                   thumbColor={biometricEnabled ? COLORS.primary : COLORS.gray400}
                 />
               </View>
-            </TouchableOpacity>
+            </Button>
           </Card>
         </View>
 
@@ -296,7 +337,11 @@ const ProfileScreen: React.FC = () => {
           <Text style={styles.sectionTitle}>Support</Text>
 
           <Card style={styles.menuCard}>
-            <TouchableOpacity style={styles.menuItem} onPress={handleSupport}>
+            <Button
+              variant="ghost"
+              onPress={handleSupport}
+              className="flex-row justify-between items-center py-4 px-4"
+            >
               <View style={styles.menuLeft}>
                 <View style={styles.menuIconContainer}>
                   <SvgXml xml={Icons.infoCircle} width={20} height={20} fill={COLORS.primary} />
@@ -304,9 +349,12 @@ const ProfileScreen: React.FC = () => {
                 <Text style={styles.menuTitle}>Help Center</Text>
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
-            </TouchableOpacity>
+            </Button>
 
-            <TouchableOpacity style={styles.menuItem}>
+            <Button
+              variant="ghost"
+              className="flex-row justify-between items-center py-4 px-4"
+            >
               <View style={styles.menuLeft}>
                 <View style={styles.menuIconContainer}>
                   <SvgXml xml={Icons.note} width={20} height={20} fill={COLORS.primary} />
@@ -314,9 +362,12 @@ const ProfileScreen: React.FC = () => {
                 <Text style={styles.menuTitle}>Terms & Conditions</Text>
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
-            </TouchableOpacity>
+            </Button>
 
-            <TouchableOpacity style={styles.menuItem}>
+            <Button
+              variant="ghost"
+              className="flex-row justify-between items-center py-4 px-4"
+            >
               <View style={styles.menuLeft}>
                 <View style={styles.menuIconContainer}>
                   <SvgXml xml={Icons.shieldTick} width={20} height={20} fill={COLORS.primary} />
@@ -324,7 +375,7 @@ const ProfileScreen: React.FC = () => {
                 <Text style={styles.menuTitle}>Privacy Policy</Text>
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
-            </TouchableOpacity>
+            </Button>
           </Card>
         </View>
 
@@ -337,10 +388,14 @@ const ProfileScreen: React.FC = () => {
         </View>
 
         {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Button 
+          variant="destructive" 
+          onPress={handleLogout}
+          className="flex-row items-center justify-center gap-4 bg-red-50 py-4 rounded-lg mb-8"
+        >
           <SvgXml xml={Icons.logout} width={24} height={24} fill={COLORS.error} />
           <Text style={styles.logoutButtonText}>Logout</Text>
-        </TouchableOpacity>
+        </Button>
       </ScrollView>
     </Screen>
   );

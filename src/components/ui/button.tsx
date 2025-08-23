@@ -1,133 +1,105 @@
-import React, { forwardRef } from 'react';
-import {
-  TouchableOpacity,
-  TouchableOpacityProps,
-  Text,
-  StyleSheet,
-  ViewStyle,
-  TextStyle,
-  ActivityIndicator,
-} from 'react-native';
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from '@/utils/theme';
+import React from 'react';
+import { Pressable, Text, ActivityIndicator } from 'react-native';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 
-export interface ButtonProps extends TouchableOpacityProps {
+const buttonVariants = cva(
+  'flex flex-row items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        link: 'text-primary underline-offset-4 hover:underline',
+        primary: 'bg-blue-600 text-white hover:bg-blue-700',
+      },
+      size: {
+        default: 'h-10 px-4 py-2',
+        sm: 'h-9 rounded-md px-3',
+        lg: 'h-11 rounded-md px-8',
+        large: 'h-12 rounded-lg px-8',
+        icon: 'h-10 w-10',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+    },
+  }
+);
+
+const textVariants = cva(
+  'font-medium text-center',
+  {
+    variants: {
+      variant: {
+        default: 'text-primary-foreground',
+        destructive: 'text-destructive-foreground',
+        outline: 'text-foreground',
+        secondary: 'text-secondary-foreground',
+        ghost: 'text-foreground',
+        link: 'text-primary',
+        primary: 'text-white',
+      },
+      size: {
+        default: 'text-sm',
+        sm: 'text-sm',
+        lg: 'text-base',
+        large: 'text-base',
+        icon: 'text-sm',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+    },
+  }
+);
+
+export interface ButtonProps
+  extends React.ComponentPropsWithoutRef<typeof Pressable>,
+    VariantProps<typeof buttonVariants> {
   title?: string;
-  onPress?: () => void;
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'primary';
-  size?: 'default' | 'sm' | 'lg' | 'large' | 'icon';
-  disabled?: boolean;
   loading?: boolean;
   children?: React.ReactNode;
-  textStyle?: TextStyle;
+  textClassName?: string;
   fullWidth?: boolean;
 }
 
-export const Button = forwardRef<React.ElementRef<typeof TouchableOpacity>, ButtonProps>((
-  {
-    title,
-    onPress,
-    variant = 'default',
-    size = 'default',
-    disabled = false,
-    loading = false,
-    children,
-    style,
-    textStyle,
-    fullWidth = false,
-    ...props
-  },
-  ref
-) => {
-  const getButtonStyle = () => {
-    const baseStyle = {
-      alignItems: 'center' as const,
-      justifyContent: 'center' as const,
-      borderRadius: BORDER_RADIUS.lg,
-      paddingVertical: SPACING.xl,
-      paddingHorizontal: SPACING.xxxl,
-    };
-
-    const variantStyles = {
-      default: { backgroundColor: COLORS.primary },
-      primary: { backgroundColor: COLORS.primary },
-      destructive: { backgroundColor: COLORS.error },
-      outline: { borderWidth: 1, borderColor: COLORS.primary, backgroundColor: 'transparent' },
-      secondary: { backgroundColor: COLORS.secondary },
-      ghost: { backgroundColor: 'transparent' },
-      link: { backgroundColor: 'transparent', paddingVertical: 0, paddingHorizontal: 0 },
-    };
-
-    const sizeStyles = {
-      default: { paddingVertical: SPACING.xl, paddingHorizontal: SPACING.xxxl },
-      sm: { paddingVertical: SPACING.lg, paddingHorizontal: SPACING.xxl },
-      lg: { paddingVertical: SPACING.xxl, paddingHorizontal: SPACING.xxxxl },
-      large: { paddingVertical: SPACING.xxl, paddingHorizontal: SPACING.xxxxl },
-      icon: { width: 40, height: 40, paddingVertical: 0, paddingHorizontal: 0 },
-    };
-
-    return {
-      ...baseStyle,
-      ...variantStyles[variant],
-      ...sizeStyles[size],
-      ...(fullWidth && { width: '100%' as const }),
-    } as ViewStyle;
-  };
-
-  const getTextStyle = () => {
-    const baseStyle = {
-      ...TYPOGRAPHY.buttonMedium,
-      textAlign: 'center' as const,
-    };
-
-    const variantStyles = {
-      default: { color: COLORS.white },
-      primary: { color: COLORS.white },
-      destructive: { color: COLORS.white },
-      outline: { color: COLORS.primary },
-      secondary: { color: COLORS.textPrimary },
-      ghost: { color: COLORS.primary },
-      link: { color: COLORS.primary, textDecorationLine: 'underline' as const },
-    };
-
-    return {
-      ...baseStyle,
-      ...variantStyles[variant],
-    };
-  };
-
+const Button = React.forwardRef<
+  React.ElementRef<typeof Pressable>,
+  ButtonProps
+>(({ className, variant, size, title, loading, children, textClassName, fullWidth, disabled, ...props }, ref) => {
   return (
-    <TouchableOpacity
+    <Pressable
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        fullWidth && 'w-full',
+        disabled && 'opacity-50'
+      )}
       ref={ref}
-      style={[
-        getButtonStyle(),
-        disabled && styles.disabled,
-        style,
-      ]}
-      onPress={onPress}
       disabled={disabled || loading}
-      activeOpacity={0.7}
       {...props}
     >
       {loading ? (
-        <ActivityIndicator
-          color={variant === 'outline' || variant === 'ghost' ? COLORS.primary : COLORS.white}
-          size="small"
-        />
+        <ActivityIndicator size="small" color={variant === 'outline' ? '#000' : '#fff'} />
       ) : (
         <>
-          {children || (
-            <Text style={[getTextStyle(), textStyle]}>
+          {title && (
+            <Text className={cn(textVariants({ variant, size }), textClassName)}>
               {title}
             </Text>
           )}
+          {children}
         </>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 });
 
-const styles = StyleSheet.create({
-  disabled: {
-    opacity: 0.5,
-  },
-});
+Button.displayName = 'Button';
+
+export { Button, buttonVariants };

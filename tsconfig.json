@@ -16,5 +16,10 @@
       "@/navigation/*": ["src/navigation/*"],
       "@/providers/*": ["src/providers/*"]
     }
-  }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "nativewind-env.d.ts"
+  ]
 }

@@ -15,6 +15,7 @@ import { useAuthStore } from '@/store/authStore';
 import { formatPhoneNumber, cleanPhoneNumber } from '@/utils/validation';
 // import LinearGradient from 'react-native-linear-gradient';
 import NumericKeypad from '@/components/common/NumericKeypad';
+import { Button } from '@/components/ui';
 
 const { height } = Dimensions.get('window');
 
@@ -108,18 +109,16 @@ const LoginScreen: React.FC = () => {
             <Text style={styles.linkText}>điều khoản sử dụng và dịch vụ</Text>
           </Text>
 
-          <TouchableOpacity
-            style={[
-              styles.continueButtonKeypad,
-              { opacity: phoneNumber.replace(/\s/g, '').length >= 9 ? 1 : 0.5 }
-            ]}
+          <Button
+            className="bg-purple-600 rounded-lg py-4 items-center mb-4"
             onPress={handleSubmit(onSubmit)}
             disabled={phoneNumber.replace(/\s/g, '').length < 9 || loginMutation.isPending}
+            loading={loginMutation.isPending}
           >
-            <Text style={styles.continueButtonKeypadText}>
+            <Text className="text-white text-base font-semibold">
               {loginMutation.isPending ? 'Đang xử lý...' : 'Tiếp theo'}
             </Text>
-          </TouchableOpacity>
+          </Button>
         </View>
 
         {/* Numeric Keypad */}
@@ -193,18 +192,16 @@ const LoginScreen: React.FC = () => {
             <Text style={styles.linkText}>điều khoản sử dụng và dịch vụ</Text>
           </Text>
 
-          <TouchableOpacity
-            style={[
-              styles.continueButtonMain,
-              { opacity: phoneNumber.replace(/\s/g, '').length >= 9 ? 1 : 0.5 }
-            ]}
+          <Button
+            className="bg-purple-600 rounded-lg py-4 items-center mb-8"
             onPress={handleSubmit(onSubmit)}
             disabled={phoneNumber.replace(/\s/g, '').length < 9 || loginMutation.isPending}
+            loading={loginMutation.isPending}
           >
-            <Text style={styles.continueButtonMainText}>
+            <Text className="text-white text-base font-semibold">
               {loginMutation.isPending ? 'Đang xử lý...' : 'Đăng nhập →'}
             </Text>
-          </TouchableOpacity>
+          </Button>
 
           {/* Alternative Registration */}
           <View style={styles.alternativeContainer}>

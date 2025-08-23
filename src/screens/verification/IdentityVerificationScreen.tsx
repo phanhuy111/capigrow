@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
   Alert,
   Image,
 } from "react-native";
@@ -141,9 +140,10 @@ const IdentityVerificationScreen: React.FC = () => {
 
       <View style={styles.uploadSection}>
         <Text style={styles.uploadLabel}>Front of ID</Text>
-        <TouchableOpacity
-          style={styles.uploadCard}
+        <Button
+          variant="outline"
           onPress={() => handleDocumentUpload("idFront")}
+          className="border-2 border-dashed border-gray-300 rounded-lg p-8 mb-6 items-center"
         >
           {documents.idFront ? (
             <View style={styles.uploadedContent}>
@@ -167,12 +167,13 @@ const IdentityVerificationScreen: React.FC = () => {
               <Text style={styles.uploadSubtext}>JPG, PNG up to 10MB</Text>
             </View>
           )}
-        </TouchableOpacity>
+        </Button>
 
         <Text style={styles.uploadLabel}>Back of ID</Text>
-        <TouchableOpacity
-          style={styles.uploadCard}
+        <Button
+          variant="outline"
           onPress={() => handleDocumentUpload("idBack")}
+          className="border-2 border-dashed border-gray-300 rounded-lg p-8 mb-6 items-center"
         >
           {documents.idBack ? (
             <View style={styles.uploadedContent}>
@@ -196,7 +197,7 @@ const IdentityVerificationScreen: React.FC = () => {
               <Text style={styles.uploadSubtext}>JPG, PNG up to 10MB</Text>
             </View>
           )}
-        </TouchableOpacity>
+        </Button>
       </View>
 
       <Button
@@ -217,9 +218,10 @@ const IdentityVerificationScreen: React.FC = () => {
       </Text>
 
       <View style={styles.selfieSection}>
-        <TouchableOpacity
-          style={styles.selfieCard}
+        <Button
+          variant="outline"
           onPress={() => handleDocumentUpload("selfie")}
+          className="border-2 border-dashed border-gray-300 rounded-lg p-12 items-center"
         >
           {documents.selfie ? (
             <View style={styles.uploadedContent}>
@@ -245,7 +247,7 @@ const IdentityVerificationScreen: React.FC = () => {
               </Text>
             </View>
           )}
-        </TouchableOpacity>
+        </Button>
       </View>
 
       <View style={styles.buttonRow}>
@@ -365,9 +367,11 @@ const IdentityVerificationScreen: React.FC = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
+          <Button
+            variant="ghost"
+            size="icon"
             onPress={() => navigation.goBack()}
+            className="w-11 h-11 rounded-full bg-gray-100 justify-center items-center"
           >
             <SvgXml
               xml={Icons.arrowLeft}
@@ -375,7 +379,7 @@ const IdentityVerificationScreen: React.FC = () => {
               height={24}
               fill={COLORS.textPrimary}
             />
-          </TouchableOpacity>
+          </Button>
           <Text style={styles.screenTitle}>Identity Verification</Text>
           <View style={styles.placeholder} />
         </View>

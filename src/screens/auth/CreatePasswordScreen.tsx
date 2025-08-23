@@ -113,15 +113,16 @@ const CreatePasswordScreen: React.FC = () => {
         bottomOffset={0}
       >
         {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
+        <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-200">
+          <Button
+            variant="ghost"
             onPress={() => navigation.goBack()}
+            className="w-10 h-10 justify-center items-center p-0"
           >
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Tạo mật khẩu</Text>
-          <View style={styles.headerRight} />
+            <Text className="text-xl text-gray-900">←</Text>
+          </Button>
+          <Text className="text-lg font-semibold text-gray-900">Tạo mật khẩu</Text>
+          <View className="w-10" />
         </View>
 
         <ScrollView
@@ -196,33 +197,32 @@ const CreatePasswordScreen: React.FC = () => {
               />
 
               {/* Password Requirements */}
-              <View style={styles.requirementsContainer}>
-                <Text style={styles.requirementsTitle}>Yêu cầu mật khẩu:</Text>
-                <Text style={styles.requirementItem}>• Ít nhất 8 ký tự</Text>
-                <Text style={styles.requirementItem}>
+              <View className="bg-gray-50 p-4 rounded-lg mt-4">
+                <Text className="text-base font-medium text-gray-900 mb-3">Yêu cầu mật khẩu:</Text>
+                <Text className="text-sm text-gray-600 mb-1">• Ít nhất 8 ký tự</Text>
+                <Text className="text-sm text-gray-600 mb-1">
                   • Có chữ hoa và chữ thường
                 </Text>
-                <Text style={styles.requirementItem}>• Có ít nhất 1 số</Text>
+                <Text className="text-sm text-gray-600 mb-1">• Có ít nhất 1 số</Text>
               </View>
             </View>
           </View>
         </ScrollView>
 
         {/* Footer */}
-        <View style={styles.footer}>
+        <View className="px-6 py-4 border-t border-gray-200 bg-white">
           <Button
-            title={
-              registerMutation.isPending
-                ? "Đang tạo tài khoản..."
-                : "Tạo tài khoản"
-            }
             onPress={handleSubmit(onSubmit)}
-            variant="primary"
-            size="large"
-            fullWidth
             loading={registerMutation.isPending}
             disabled={registerMutation.isPending || !isValid}
-          />
+            className="bg-purple-600 py-4 rounded-lg items-center w-full"
+          >
+            <Text className="text-white text-base font-semibold">
+              {registerMutation.isPending
+                ? "Đang tạo tài khoản..."
+                : "Tạo tài khoản"}
+            </Text>
+          </Button>
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>

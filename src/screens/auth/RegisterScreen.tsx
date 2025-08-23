@@ -220,11 +220,15 @@ const RegisterScreen: React.FC = () => {
             />
           </View>
 
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>Already have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-              <Text style={styles.signInText}>Sign In</Text>
-            </TouchableOpacity>
+          <View className="flex-row justify-center items-center pb-4">
+            <Text className="text-sm text-gray-600">Already have an account? </Text>
+            <Button
+              variant="ghost"
+              onPress={() => navigation.navigate('Login')}
+              className="p-0"
+            >
+              <Text className="text-sm text-purple-600 font-semibold">Sign In</Text>
+            </Button>
           </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>

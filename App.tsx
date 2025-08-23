@@ -6,6 +6,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { QueryProvider } from './src/providers/QueryProvider';
 import AppNavigator from './src/navigation/AppNavigator';
 import { COLORS } from './src/utils/constants';
+import './global.css';
 
 const App: React.FC = () => {
   return (

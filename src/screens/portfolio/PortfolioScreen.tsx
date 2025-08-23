@@ -4,14 +4,13 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
   RefreshControl,
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '@/utils/theme';
 import { Icons } from '@/assets';
 import Screen from '@/components/common/Screen';
-import { Card } from '@/components/ui';
+import { Card, Button } from '@/components/ui';
 import { mockPortfolioApi } from '@/mock/api/portfolio';
 import { formatDate } from '@/utils/helpers';
 
@@ -94,9 +93,9 @@ const PortfolioScreen: React.FC = () => {
               </Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.moreButton}>
+          <Button variant="ghost" size="icon" className="p-2">
             <SvgXml xml={Icons.more} width={20} height={20} fill={COLORS.textSecondary} />
-          </TouchableOpacity>
+          </Button>
         </View>
 
         <View style={styles.investmentStats}>
@@ -154,18 +153,22 @@ const PortfolioScreen: React.FC = () => {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.screenTitle}>Portfolio</Text>
-          <TouchableOpacity style={styles.notificationButton}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="w-11 h-11 rounded-full bg-gray-50"
+          >
             <SvgXml xml={Icons.notification} width={24} height={24} fill={COLORS.textPrimary} />
-          </TouchableOpacity>
+          </Button>
         </View>
 
         {/* Portfolio Summary */}
         <Card style={styles.summaryCard}>
           <View style={styles.summaryHeader}>
             <Text style={styles.summaryLabel}>Total Portfolio Value</Text>
-            <TouchableOpacity>
+            <Button variant="ghost" size="icon" className="w-8 h-8">
               <SvgXml xml={Icons.more} width={20} height={20} fill={COLORS.textSecondary} />
-            </TouchableOpacity>
+            </Button>
           </View>
 
           <View style={styles.summaryMain}>
@@ -207,15 +210,17 @@ const PortfolioScreen: React.FC = () => {
           <Text style={styles.sectionTitle}>Performance</Text>
           <View style={styles.periodButtons}>
             {(['daily', 'monthly', 'yearly'] as const).map((period) => (
-              <TouchableOpacity
+              <Button
                 key={period}
-                style={[styles.periodButton, selectedPeriod === period && styles.activePeriodButton]}
+                variant={selectedPeriod === period ? "default" : "ghost"}
+                size="sm"
+                className={`px-4 py-2 rounded-md ${selectedPeriod === period ? 'bg-blue-600' : 'bg-transparent'}`}
                 onPress={() => setSelectedPeriod(period)}
               >
                 <Text style={[styles.periodButtonText, selectedPeriod === period && styles.activePeriodButtonText]}>
                   {period.charAt(0).toUpperCase() + period.slice(1)}
                 </Text>
-              </TouchableOpacity>
+              </Button>
             ))}
           </View>
         </View>
@@ -233,22 +238,26 @@ const PortfolioScreen: React.FC = () => {
 
         {/* Tab Navigation */}
         <View style={styles.tabContainer}>
-          <TouchableOpacity
-            style={[styles.tab, selectedTab === 'overview' && styles.activeTab]}
+          <Button
+            variant={selectedTab === 'overview' ? "default" : "ghost"}
+            size="sm"
+            className={`flex-1 py-2 rounded-sm ${selectedTab === 'overview' ? 'bg-blue-600' : 'bg-transparent'}`}
             onPress={() => setSelectedTab('overview')}
           >
             <Text style={[styles.tabText, selectedTab === 'overview' && styles.activeTabText]}>
               Overview
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, selectedTab === 'investments' && styles.activeTab]}
+          </Button>
+          <Button
+            variant={selectedTab === 'investments' ? "default" : "ghost"}
+            size="sm"
+            className={`flex-1 py-2 rounded-sm ${selectedTab === 'investments' ? 'bg-blue-600' : 'bg-transparent'}`}
             onPress={() => setSelectedTab('investments')}
           >
             <Text style={[styles.tabText, selectedTab === 'investments' && styles.activeTabText]}>
               My Investments
             </Text>
-          </TouchableOpacity>
+          </Button>
         </View>
 
         {/* Tab Content */}
