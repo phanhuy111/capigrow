@@ -3,10 +3,11 @@ export default ({ config }) => {
     ...config,
     name: 'CapigrowApp',
     slug: 'capigrow-app',
-    version: '1.0.0',
+    version: '1.0.1',
     orientation: 'portrait',
     userInterfaceStyle: 'light',
     splash: {
+      image: './assets/splash-logo.png',
       resizeMode: 'contain',
       backgroundColor: '#8B5CF6',
     },
@@ -45,15 +46,15 @@ export default ({ config }) => {
     ],
     extra: {
       eas: {
-        projectId: '92a503ce-ae2f-4278-84a4-a0693ef189fc',
+        projectId: '654acd6d-830a-4f40-bb94-6e4966dfa313',
       },
       // Environment variables
       apiUrl: process.env.EXPO_PUBLIC_API_URL || 'https://api.capigrow.com',
       environment: process.env.EXPO_PUBLIC_ENVIRONMENT || 'development',
     },
-    updates: {
-      url: 'https://u.expo.dev/92a503ce-ae2f-4278-84a4-a0693ef189fc',
-    },
+    // updates: {
+    //   url: 'will be configured after project creation'
+    // },
     runtimeVersion: {
       policy: 'sdkVersion',
     },
