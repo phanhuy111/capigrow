@@ -9,7 +9,12 @@ const queryClient = new QueryClient({
       gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
       retry: (failureCount, error: Error & { status?: number }) => {
         // Don't retry on 4xx errors except 408, 429
-        if (error?.status && error.status >= 400 && error.status < 500 && ![408, 429].includes(error.status)) {
+        if (
+          error?.status &&
+          error.status >= 400 &&
+          error.status < 500 &&
+          ![408, 429].includes(error.status)
+        ) {
           return false;
         }
         // Retry up to 3 times for other errors

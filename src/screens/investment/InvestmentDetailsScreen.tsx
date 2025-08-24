@@ -4,7 +4,7 @@ import type React from "react";
 import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useInvestmentQuery } from "@/hooks/useInvestmentQueries";
-import type { RootStackParamList } from "@/types";
+import type { Investment, RootStackParamList } from "@/types";
 import { RISK_LEVELS } from "@/utils/constants";
 import { formatCurrency, formatDate, formatPercentage } from "@/utils/helpers";
 import { COLORS } from "@/utils/theme";
@@ -23,7 +23,14 @@ const InvestmentDetailsScreen: React.FC = () => {
   const { data: selectedInvestment, isLoading } = useInvestmentQuery(investmentId);
 
   // Type assertion to handle mock data structure mismatch
-  const investment = selectedInvestment as any;
+  const investment = selectedInvestment as Investment & {
+    totalRaised?: number;
+    targetAmount?: number;
+    images?: string[];
+    documents?: string[];
+    minInvestment?: number;
+    maxInvestment?: number;
+  };
 
   const handleInvest = () => {
     navigation.navigate("InvestmentAmount", { investmentId });
@@ -42,7 +49,7 @@ const InvestmentDetailsScreen: React.FC = () => {
 
   const normalizedRiskLevel = investment.riskLevel.toLowerCase() as keyof typeof RISK_LEVELS;
   const riskInfo = RISK_LEVELS[normalizedRiskLevel] || RISK_LEVELS.medium;
-  const progressPercentage = (investment.totalRaised / investment.targetAmount) * 100;
+  const progressPercentage = ((investment.totalRaised ?? 0) / (investment.targetAmount ?? 1)) * 100;
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -83,7 +90,7 @@ const InvestmentDetailsScreen: React.FC = () => {
           </View>
           <View className="bg-gray-100 p-3 rounded-lg items-center flex-1 mx-1">
             <Text className="text-lg font-bold text-blue-600 mb-1">
-              {formatCurrency(investment.minInvestment)}
+              {formatCurrency(investment.minInvestment ?? 0)}
             </Text>
             <Text className="text-xs text-gray-600 text-center">Min Investment</Text>
           </View>
@@ -104,10 +111,10 @@ const InvestmentDetailsScreen: React.FC = () => {
           </View>
           <View className="flex-row justify-between">
             <Text className="text-sm text-gray-600">
-              {formatCurrency(investment.totalRaised)} raised
+              {formatCurrency(investment.totalRaised ?? 0)} raised
             </Text>
             <Text className="text-sm text-gray-600">
-              of {formatCurrency(investment.targetAmount)}
+              of {formatCurrency(investment.targetAmount ?? 0)}
             </Text>
           </View>
         </View>
@@ -132,8 +139,8 @@ const InvestmentDetailsScreen: React.FC = () => {
           <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
             <Text className="text-sm text-gray-600 flex-1">Investment Range:</Text>
             <Text className="text-sm text-gray-900 font-medium flex-1 text-right">
-              {formatCurrency(investment.minInvestment)} -{" "}
-              {formatCurrency(investment.maxInvestment || investment.minInvestment * 10)}
+              {formatCurrency(investment.minInvestment ?? 0)} -{" "}
+              {formatCurrency(investment.maxInvestment ?? (investment.minInvestment ?? 0) * 10)}
             </Text>
           </View>
 

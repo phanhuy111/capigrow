@@ -1,5 +1,5 @@
 // API Response Types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data?: T;
   error?: string;
   message?: string;
@@ -185,7 +185,7 @@ export interface FormField {
   type: "text" | "email" | "password" | "number" | "phone" | "date" | "select";
   placeholder?: string;
   required?: boolean;
-  validation?: any;
+  validation?: Record<string, unknown>;
   options?: { label: string; value: string }[];
 }
 
@@ -231,9 +231,16 @@ export interface InvestmentState {
   error: string | null;
 }
 
+export interface PerformanceData {
+  totalReturn: number;
+  returnPercentage: number;
+  periodReturns: { period: string; return: number }[];
+  riskMetrics?: Record<string, number>;
+}
+
 export interface PortfolioState {
   portfolio: Portfolio | null;
-  performance: any;
+  performance: PerformanceData | null;
   isLoading: boolean;
   error: string | null;
 }

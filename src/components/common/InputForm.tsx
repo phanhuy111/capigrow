@@ -1,6 +1,12 @@
 import type React from "react";
 import { forwardRef, useState } from "react";
-import { type Control, Controller, type FieldError, type FieldValues, type RegisterOptions } from "react-hook-form";
+import {
+  type Control,
+  Controller,
+  type FieldError,
+  type FieldValues,
+  type RegisterOptions,
+} from "react-hook-form";
 import {
   Text,
   TextInput,

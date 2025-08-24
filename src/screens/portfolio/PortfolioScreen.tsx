@@ -6,6 +6,7 @@ import { Icons } from "@/assets";
 import Screen from "@/components/common/Screen";
 import { Button, Card } from "@/components/ui";
 import { usePortfolioPerformanceQuery, usePortfolioQuery } from "@/hooks/usePortfolioQueries";
+import type { UserInvestment } from "@/types";
 import { formatDate } from "@/utils/helpers";
 import { COLORS } from "@/utils/theme";
 
@@ -54,7 +55,9 @@ const PortfolioScreen: React.FC = () => {
     }
   };
 
-  const renderInvestmentItem = (item: any) => {
+  const renderInvestmentItem = (
+    item: UserInvestment & { title?: string; investedAt?: string; expectedMaturity?: string }
+  ) => {
     const returnAmount = item.currentValue - item.amount;
     const returnPercentage = item.amount > 0 ? (returnAmount / item.amount) * 100 : 0;
     const isPositive = returnAmount >= 0;
@@ -305,7 +308,15 @@ const PortfolioScreen: React.FC = () => {
         ) : (
           <View className="px-6">
             {portfolioData.investments && portfolioData.investments.length > 0 ? (
-              portfolioData.investments.map((investment: any) => renderInvestmentItem(investment))
+              portfolioData.investments.map(
+                (
+                  investment: UserInvestment & {
+                    title?: string;
+                    investedAt?: string;
+                    expectedMaturity?: string;
+                  }
+                ) => renderInvestmentItem(investment)
+              )
             ) : (
               <View className="items-center py-20">
                 <SvgXml xml={Icons.cup} width={60} height={60} fill={COLORS.textTertiary} />

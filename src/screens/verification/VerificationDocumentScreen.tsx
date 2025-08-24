@@ -118,19 +118,21 @@ const VerificationDocumentScreen: React.FC = () => {
       formData.append("document_type", selectedDocumentType);
 
       if (frontImage) {
-        formData.append("document_front", {
+        const frontFile = {
           uri: frontImage,
           type: "image/jpeg",
           name: "document_front.jpg",
-        } as any);
+        } as unknown as Blob;
+        formData.append("document_front", frontFile);
       }
 
       if (backImage) {
-        formData.append("document_back", {
+        const backFile = {
           uri: backImage,
           type: "image/jpeg",
           name: "document_back.jpg",
-        } as any);
+        } as unknown as Blob;
+        formData.append("document_back", backFile);
       }
 
       try {

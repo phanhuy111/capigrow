@@ -38,9 +38,11 @@ export function cva(
         (acc, compoundVariant: Record<string, unknown> & { class: ClassValue }) => {
           const { class: cvClass, ...compoundVariantOptions } = compoundVariant;
 
-          if (Object.entries(compoundVariantOptions).every(([key, value]) => {
-            return Array.isArray(value) ? value.includes(props?.[key]) : props?.[key] === value;
-          })) {
+          if (
+            Object.entries(compoundVariantOptions).every(([key, value]) => {
+              return Array.isArray(value) ? value.includes(props?.[key]) : props?.[key] === value;
+            })
+          ) {
             acc.push(cvClass);
           }
           return acc;

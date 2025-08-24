@@ -143,7 +143,7 @@ const InvestmentAmountScreen: React.FC = () => {
         <View className="mb-6">
           <Text className="text-sm font-semibold text-gray-900 mb-2">Quick Amounts</Text>
           <View className="flex-row flex-wrap justify-between">
-            {quickAmounts.map((quickAmount, index) => (
+            {quickAmounts.map((quickAmount, _index) => (
               <TouchableOpacity
                 key={`quick-amount-${quickAmount}`}
                 className="bg-gray-100 py-2 px-3 rounded-lg mb-2 min-w-[48%] items-center"

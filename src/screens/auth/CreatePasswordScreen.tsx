@@ -96,7 +96,7 @@ const CreatePasswordScreen: React.FC = () => {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         };
-        
+
         setAuthData(user, response.access_token, response.refresh_token);
       }
 

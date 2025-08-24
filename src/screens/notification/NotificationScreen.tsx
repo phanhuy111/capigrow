@@ -74,7 +74,7 @@ const NotificationScreen: React.FC = () => {
     }
   };
 
-  const renderNotificationItem = (item: any) => {
+  const renderNotificationItem = (item: Notification) => {
     const priorityColor = getPriorityColor(item.priority);
 
     return (

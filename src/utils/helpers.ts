@@ -137,7 +137,7 @@ export const generateId = (): string => {
 };
 
 // Debounce function
-export const debounce = <T extends (...args: any[]) => any>(
+export const debounce = <T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number
 ): ((...args: Parameters<T>) => void) => {
@@ -149,7 +149,7 @@ export const debounce = <T extends (...args: any[]) => any>(
 };
 
 // Throttle function
-export const throttle = <T extends (...args: any[]) => any>(
+export const throttle = <T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number
 ): ((...args: Parameters<T>) => void) => {
@@ -204,7 +204,7 @@ export const truncateText = (text: string, maxLength: number): string => {
 };
 
 // Check if object is empty
-export const isEmpty = (obj: any): boolean => {
+export const isEmpty = (obj: unknown): boolean => {
   if (obj === null || obj === undefined) {
     return true;
   }
@@ -233,12 +233,12 @@ export const isImageFile = (filename: string): boolean => {
 };
 
 // Generate QR code data
-export const generateQRData = (data: any): string => {
+export const generateQRData = (data: unknown): string => {
   return JSON.stringify(data);
 };
 
 // Parse QR code data
-export const parseQRData = (qrString: string): any => {
+export const parseQRData = (qrString: string): unknown => {
   try {
     return JSON.parse(qrString);
   } catch (_error) {

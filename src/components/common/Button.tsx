@@ -1,5 +1,11 @@
 import type React from "react";
-import { ActivityIndicator, Text, TouchableOpacity, type ViewStyle, type TextStyle } from "react-native";
+import {
+  ActivityIndicator,
+  Text,
+  type TextStyle,
+  TouchableOpacity,
+  type ViewStyle,
+} from "react-native";
 
 interface ButtonProps {
   title: string;

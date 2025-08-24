@@ -280,7 +280,13 @@ const ProfileScreen: React.FC = () => {
             <Button
               variant="ghost"
               onPress={handleSupport}
-              style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 16, paddingHorizontal: 16 }}
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingVertical: 16,
+                paddingHorizontal: 16,
+              }}
             >
               <View className="flex-row items-center flex-1 gap-4">
                 <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
@@ -291,7 +297,16 @@ const ProfileScreen: React.FC = () => {
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
             </Button>
 
-            <Button variant="ghost" style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 16, paddingHorizontal: 16 }}>
+            <Button
+              variant="ghost"
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingVertical: 16,
+                paddingHorizontal: 16,
+              }}
+            >
               <View className="flex-row items-center flex-1 gap-4">
                 <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
                   <SvgXml xml={Icons.note} width={20} height={20} fill={COLORS.primary} />
@@ -301,7 +316,16 @@ const ProfileScreen: React.FC = () => {
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
             </Button>
 
-            <Button variant="ghost" style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 16, paddingHorizontal: 16 }}>
+            <Button
+              variant="ghost"
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingVertical: 16,
+                paddingHorizontal: 16,
+              }}
+            >
               <View className="flex-row items-center flex-1 gap-4">
                 <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
                   <SvgXml xml={Icons.shieldTick} width={20} height={20} fill={COLORS.primary} />

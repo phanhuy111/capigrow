@@ -10,7 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { z } from "zod";
 import { useOTPVerificationMutation, useResendOTPMutation } from "@/hooks/useAuthQueries";
 import { useAuthClientStore } from "@/store/authClientStore";
-import type { RootStackParamList, User } from "@/types";
+import type { RootStackParamList } from "@/types";
 
 type OTPVerificationScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -116,7 +116,7 @@ const OTPVerificationScreen: React.FC = () => {
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           };
-          
+
           setAuthData(user, result.access_token, result.refresh_token);
         }
 
@@ -133,7 +133,8 @@ const OTPVerificationScreen: React.FC = () => {
         Alert.alert("Lỗi", result.message || "Mã OTP không đúng. Vui lòng thử lại.");
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Xác thực thất bại. Vui lòng thử lại.";
+      const errorMessage =
+        error instanceof Error ? error.message : "Xác thực thất bại. Vui lòng thử lại.";
       Alert.alert("Lỗi", errorMessage);
     }
   };
@@ -153,7 +154,8 @@ const OTPVerificationScreen: React.FC = () => {
         Alert.alert("Error", result.message || "Failed to resend OTP.");
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to resend OTP. Please try again.";
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to resend OTP. Please try again.";
       Alert.alert("Error", errorMessage);
     }
   };
@@ -204,13 +206,13 @@ const OTPVerificationScreen: React.FC = () => {
             name="otp"
             render={({ field: { value } }) => (
               <View className="flex-row justify-center mb-12 gap-4">
-                {Array.from({ length: 6 }, (_, index) => (
+                {[0, 1, 2, 3, 4, 5].map((digitIndex) => (
                   <View
-                    key={`otp-digit-${index}`}
+                    key={`otp-position-${digitIndex}`}
                     className="w-15 h-15 border border-gray-200 rounded-lg bg-gray-50 justify-center items-center"
                   >
                     <Text className="text-2xl font-semibold text-gray-900">
-                      {value[index] || ""}
+                      {value[digitIndex] || ""}
                     </Text>
                   </View>
                 ))}

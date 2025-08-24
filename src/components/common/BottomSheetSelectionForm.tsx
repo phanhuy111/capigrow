@@ -2,7 +2,13 @@ import { BottomSheetModal, BottomSheetScrollView, BottomSheetView } from "@gorho
 import { Check, ChevronDown } from "lucide-react-native";
 import type React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { type Control, Controller, type FieldError, type FieldPath, type FieldValues } from "react-hook-form";
+import {
+  type Control,
+  Controller,
+  type FieldError,
+  type FieldPath,
+  type FieldValues,
+} from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
 import { cn } from "@/components/lib/utils";
 

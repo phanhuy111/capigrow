@@ -59,11 +59,12 @@ const VerificationSelfieScreen: React.FC = () => {
 
     try {
       const formData = new FormData();
-      formData.append("selfie", {
+      const selfieFile = {
         uri: selfieImage,
         type: "image/jpeg",
         name: "selfie.jpg",
-      } as any);
+      } as unknown as Blob;
+      formData.append("selfie", selfieFile);
 
       try {
         setIsUploading(true);

@@ -2,20 +2,13 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type React from "react";
 import { useState } from "react";
-import {
-  RefreshControl,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { Icons } from "@/assets";
 import Screen from "@/components/common/Screen";
 import { Card } from "@/components/ui/card";
 import { useInvestmentCategoriesQuery, useInvestmentsQuery } from "@/hooks/useInvestmentQueries";
-import type { RootStackParamList } from "@/types";
+import type { Investment, RootStackParamList } from "@/types";
 import { formatCurrency } from "@/utils/helpers";
 import { COLORS } from "@/utils/theme";
 
@@ -43,16 +36,25 @@ const InvestmentsScreen: React.FC = () => {
     await Promise.all([refetchInvestments(), refetchCategories()]);
   };
 
-  const filteredInvestments = investments.filter((investment: any) => {
-    const matchesSearch =
-      investment.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      investment.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = !selectedCategory || investment.category === selectedCategory;
-    const matchesRisk = !selectedRiskLevel || investment.riskLevel === selectedRiskLevel;
-    const matchesStatus = investment.status === "active";
+  const filteredInvestments = investments.filter(
+    (
+      investment: Investment & {
+        totalRaised?: number;
+        targetAmount?: number;
+        minInvestment?: number;
+        investorCount?: number;
+      }
+    ) => {
+      const matchesSearch =
+        investment.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        investment.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = !selectedCategory || investment.category === selectedCategory;
+      const matchesRisk = !selectedRiskLevel || investment.riskLevel === selectedRiskLevel;
+      const matchesStatus = investment.status === "active";
 
-    return matchesSearch && matchesCategory && matchesRisk && matchesStatus;
-  });
+      return matchesSearch && matchesCategory && matchesRisk && matchesStatus;
+    }
+  );
 
   const _formatCurrencyVND = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -93,8 +95,15 @@ const InvestmentsScreen: React.FC = () => {
     }
   };
 
-  const renderInvestmentCard = (item: any) => {
-    const progressPercentage = (item.totalRaised / item.targetAmount) * 100;
+  const renderInvestmentCard = (
+    item: Investment & {
+      totalRaised?: number;
+      targetAmount?: number;
+      minInvestment?: number;
+      investorCount?: number;
+    }
+  ) => {
+    const progressPercentage = ((item.totalRaised ?? 0) / (item.targetAmount ?? 1)) * 100;
     const riskColor = getRiskColor(item.riskLevel);
 
     return (
@@ -140,7 +149,7 @@ const InvestmentsScreen: React.FC = () => {
             <View className="flex-row items-center gap-2">
               <SvgXml xml={Icons.emptyWallet} width={16} height={16} fill={COLORS.textSecondary} />
               <Text className="text-sm text-gray-600 font-medium">
-                {formatCurrency(item.minInvestment)}
+                {formatCurrency(item.minInvestment ?? 0)}
               </Text>
             </View>
           </View>
@@ -160,9 +169,9 @@ const InvestmentsScreen: React.FC = () => {
             </View>
             <View className="flex-row justify-between">
               <Text className="text-sm text-gray-600">
-                {formatCurrency(item.totalRaised)} raised
+                {formatCurrency(item.totalRaised ?? 0)} raised
               </Text>
-              <Text className="text-sm text-gray-600">{item.investorCount} investors</Text>
+              <Text className="text-sm text-gray-600">{item.investorCount ?? 0} investors</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -170,7 +179,7 @@ const InvestmentsScreen: React.FC = () => {
     );
   };
 
-  const renderCategoryFilter = (category: any) => (
+  const renderCategoryFilter = (category: { id: string; name: string; color: string }) => (
     <TouchableOpacity
       key={category.id}
       className="items-center mr-6 gap-4"

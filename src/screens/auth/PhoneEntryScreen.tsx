@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Globe, Smartphone } from "lucide-react-native";
 import type React from "react";
-import { useForm } from "react-hook-form";
+import { type Control, useForm } from "react-hook-form";
 import { Alert, Dimensions, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -70,7 +70,8 @@ const PhoneEntryScreen: React.FC = () => {
         });
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Đã xảy ra lỗi. Vui lòng thử lại.";
+      const errorMessage =
+        error instanceof Error ? error.message : "Đã xảy ra lỗi. Vui lòng thử lại.";
       Alert.alert("Lỗi", errorMessage);
     }
   };
@@ -121,7 +122,7 @@ const PhoneEntryScreen: React.FC = () => {
                 label="Quốc gia"
                 placeholder="Chọn quốc gia"
                 name="country"
-                control={control as any}
+                control={control as Control<PhoneFormData>}
                 options={[
                   { label: "🇻🇳 Vietnam (+84)", value: "VN" },
                   { label: "🇺🇸 United States (+1)", value: "US" },
