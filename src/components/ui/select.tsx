@@ -85,7 +85,16 @@ function SelectContent({
   return (
     <SelectPrimitive.Portal hostName={portalHost}>
       <FullWindowOverlay>
-        <SelectPrimitive.Overlay style={Platform.select({ native: StyleSheet.absoluteFill })}>
+        <SelectPrimitive.Overlay 
+          style={Platform.select({ 
+            native: StyleSheet.absoluteFill,
+            web: StyleSheet.absoluteFill 
+          })}
+          className={Platform.select({
+            native: 'bg-black/50',
+            web: undefined
+          })}
+        >
           <TextClassContext.Provider value="text-popover-foreground">
             <NativeOnlyAnimatedView className="z-50" entering={FadeIn} exiting={FadeOut}>
               <SelectPrimitive.Content
@@ -97,7 +106,7 @@ function SelectContent({
                       props.side === 'bottom' && 'slide-in-from-top-2',
                       props.side === 'top' && 'slide-in-from-bottom-2'
                     ),
-                    native: 'p-1',
+                    native: 'p-1 mx-4 my-auto max-h-96',
                   }),
                   position === 'popper' &&
                     Platform.select({
@@ -154,9 +163,10 @@ function SelectItem({
   return (
     <SelectPrimitive.Item
       className={cn(
-        'active:bg-accent group relative flex w-full flex-row items-center gap-2 rounded-sm py-2 pl-2 pr-8 sm:py-1.5',
+        'active:bg-accent group relative flex w-full flex-row items-center gap-2 rounded-sm py-3 pl-3 pr-8',
         Platform.select({
-          web: 'focus:bg-accent focus:text-accent-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 cursor-default outline-none data-[disabled]:pointer-events-none [&_svg]:pointer-events-none',
+          web: 'focus:bg-accent focus:text-accent-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 cursor-default outline-none data-[disabled]:pointer-events-none [&_svg]:pointer-events-none sm:py-1.5',
+          native: 'min-h-[44px]', // Ensure minimum touch target size for mobile
         }),
         props.disabled && 'opacity-50',
         className
