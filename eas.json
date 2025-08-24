@@ -46,10 +46,9 @@
   "submit": {
     "preview": {
       "ios": {
-        "appleId": "your-apple-id@example.com",
-        "ascAppId": "your-app-store-connect-app-id",
-        "appleTeamId": "your-apple-team-id",
-        "submitToTestflight": true
+        "appleId": "phanhuypy.1999@gmail.com",
+        "ascAppId": "6751463343",
+        "appleTeamId": "4YYC9C23H7"
       },
       "android": {
         "serviceAccountKeyPath": "./google-service-account.json",
@@ -58,14 +57,9 @@
     },
     "production": {
       "ios": {
-        "appleId": "your-apple-id@example.com",
-        "ascAppId": "your-app-store-connect-app-id",
-        "appleTeamId": "your-apple-team-id",
-        "submitToTestflight": true,
-        "releaseType": "AFTER_APPROVAL",
-        "copyright": "© 2024 Capigrow App",
-        "primaryCategory": "FINANCE",
-        "secondaryCategory": "BUSINESS"
+        "appleId": "phanhuypy.1999@gmail.com",
+        "ascAppId": "6751463343",
+        "appleTeamId": "4YYC9C23H7"
       },
       "android": {
         "serviceAccountKeyPath": "./google-service-account.json",
