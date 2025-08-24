@@ -1,19 +1,13 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  Alert,
-  Image,
-} from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import type React from "react";
+import { useState } from "react";
+import { Alert, ScrollView, Text, View } from "react-native";
 import { SvgXml } from "react-native-svg";
-import { COLORS } from "@/utils/theme";
 import { Icons } from "@/assets";
 import Screen from "@/components/common/Screen";
-import { Card } from "@/components/ui";
-import { Button } from "@/components/ui";
+import { Button, Card } from "@/components/ui";
 import { useUploadDocumentMutation } from "@/hooks/useVerificationQueries";
+import { COLORS } from "@/utils/theme";
 
 const IdentityVerificationScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -56,12 +50,12 @@ const IdentityVerificationScreen: React.FC = () => {
       setUploading(true);
       // Create FormData for document upload
       const formData = new FormData();
-      formData.append('documentType', type);
-      
+      formData.append("documentType", type);
+
       const response = await uploadDocument.mutateAsync(formData);
-      setDocuments((prev) => ({ ...prev, [type]: response.url || 'uploaded' }));
+      setDocuments((prev) => ({ ...prev, [type]: response.url || "uploaded" }));
       Alert.alert("Success", "Document uploaded successfully");
-    } catch (error) {
+    } catch (_error) {
       Alert.alert("Error", "Failed to upload document");
     } finally {
       setUploading(false);
@@ -82,7 +76,7 @@ const IdentityVerificationScreen: React.FC = () => {
           },
         ]
       );
-    } catch (error) {
+    } catch (_error) {
       Alert.alert("Error", "Failed to submit verification");
     } finally {
       setUploading(false);
@@ -103,18 +97,9 @@ const IdentityVerificationScreen: React.FC = () => {
             }`}
           >
             {currentStep > step.id ? (
-              <SvgXml
-                xml={Icons.tick}
-                width={16}
-                height={16}
-                fill={COLORS.white}
-              />
+              <SvgXml xml={Icons.tick} width={16} height={16} fill={COLORS.white} />
             ) : (
-              <Text
-                className="text-xs text-white font-semibold"
-              >
-                {step.id}
-              </Text>
+              <Text className="text-xs text-white font-semibold">{step.id}</Text>
             )}
           </View>
           {index < steps.length - 1 && (
@@ -135,14 +120,12 @@ const IdentityVerificationScreen: React.FC = () => {
         Upload Identity Document
       </Text>
       <Text className="text-base text-gray-600 text-center leading-6 mb-10">
-        Please upload clear photos of the front and back of your
-        government-issued ID card or passport.
+        Please upload clear photos of the front and back of your government-issued ID card or
+        passport.
       </Text>
 
       <View className="mb-10">
-        <Text className="text-sm font-medium text-gray-900 mb-4">
-          Front of ID
-        </Text>
+        <Text className="text-sm font-medium text-gray-900 mb-4">Front of ID</Text>
         <Button
           variant="outline"
           onPress={() => handleDocumentUpload("idFront")}
@@ -150,37 +133,19 @@ const IdentityVerificationScreen: React.FC = () => {
         >
           {documents.idFront ? (
             <View className="items-center gap-4">
-              <SvgXml
-                xml={Icons.tick}
-                width={24}
-                height={24}
-                fill={COLORS.success}
-              />
-              <Text className="text-sm font-medium text-green-600">
-                Document uploaded
-              </Text>
+              <SvgXml xml={Icons.tick} width={24} height={24} fill={COLORS.success} />
+              <Text className="text-sm font-medium text-green-600">Document uploaded</Text>
             </View>
           ) : (
             <View className="items-center gap-4">
-              <SvgXml
-                xml={Icons.camera}
-                width={32}
-                height={32}
-                fill={COLORS.primary}
-              />
-              <Text className="text-sm font-medium text-gray-900">
-                Tap to upload front of ID
-              </Text>
-              <Text className="text-xs text-gray-500">
-                JPG, PNG up to 10MB
-              </Text>
+              <SvgXml xml={Icons.camera} width={32} height={32} fill={COLORS.primary} />
+              <Text className="text-sm font-medium text-gray-900">Tap to upload front of ID</Text>
+              <Text className="text-xs text-gray-500">JPG, PNG up to 10MB</Text>
             </View>
           )}
         </Button>
 
-        <Text className="text-sm font-medium text-gray-900 mb-4">
-          Back of ID
-        </Text>
+        <Text className="text-sm font-medium text-gray-900 mb-4">Back of ID</Text>
         <Button
           variant="outline"
           onPress={() => handleDocumentUpload("idBack")}
@@ -188,30 +153,14 @@ const IdentityVerificationScreen: React.FC = () => {
         >
           {documents.idBack ? (
             <View className="items-center gap-4">
-              <SvgXml
-                xml={Icons.tick}
-                width={24}
-                height={24}
-                fill={COLORS.success}
-              />
-              <Text className="text-sm font-medium text-green-600">
-                Document uploaded
-              </Text>
+              <SvgXml xml={Icons.tick} width={24} height={24} fill={COLORS.success} />
+              <Text className="text-sm font-medium text-green-600">Document uploaded</Text>
             </View>
           ) : (
             <View className="items-center gap-4">
-              <SvgXml
-                xml={Icons.camera}
-                width={32}
-                height={32}
-                fill={COLORS.primary}
-              />
-              <Text className="text-sm font-medium text-gray-900">
-                Tap to upload back of ID
-              </Text>
-              <Text className="text-xs text-gray-500">
-                JPG, PNG up to 10MB
-              </Text>
+              <SvgXml xml={Icons.camera} width={32} height={32} fill={COLORS.primary} />
+              <Text className="text-sm font-medium text-gray-900">Tap to upload back of ID</Text>
+              <Text className="text-xs text-gray-500">JPG, PNG up to 10MB</Text>
             </View>
           )}
         </Button>
@@ -228,12 +177,9 @@ const IdentityVerificationScreen: React.FC = () => {
 
   const renderSelfieVerification = () => (
     <View className="mb-12">
-      <Text className="text-xl font-semibold text-gray-900 text-center mb-4">
-        Take a Selfie
-      </Text>
+      <Text className="text-xl font-semibold text-gray-900 text-center mb-4">Take a Selfie</Text>
       <Text className="text-base text-gray-600 text-center leading-6 mb-10">
-        Take a clear selfie to verify your identity matches the uploaded
-        document.
+        Take a clear selfie to verify your identity matches the uploaded document.
       </Text>
 
       <View className="mb-10">
@@ -244,27 +190,13 @@ const IdentityVerificationScreen: React.FC = () => {
         >
           {documents.selfie ? (
             <View className="items-center gap-4">
-              <SvgXml
-                xml={Icons.tick}
-                width={32}
-                height={32}
-                fill={COLORS.success}
-              />
-              <Text className="text-sm font-medium text-green-600">
-                Selfie captured
-              </Text>
+              <SvgXml xml={Icons.tick} width={32} height={32} fill={COLORS.success} />
+              <Text className="text-sm font-medium text-green-600">Selfie captured</Text>
             </View>
           ) : (
             <View className="items-center gap-6">
-              <SvgXml
-                xml={Icons.camera}
-                width={48}
-                height={48}
-                fill={COLORS.primary}
-              />
-              <Text className="text-lg font-medium text-gray-900">
-                Tap to take selfie
-              </Text>
+              <SvgXml xml={Icons.camera} width={48} height={48} fill={COLORS.primary} />
+              <Text className="text-lg font-medium text-gray-900">Tap to take selfie</Text>
               <Text className="text-base text-gray-500 text-center">
                 Make sure your face is clearly visible
               </Text>
@@ -292,76 +224,39 @@ const IdentityVerificationScreen: React.FC = () => {
 
   const renderReviewSubmit = () => (
     <View className="mb-12">
-      <Text className="text-xl font-semibold text-gray-900 text-center mb-4">
-        Review & Submit
-      </Text>
+      <Text className="text-xl font-semibold text-gray-900 text-center mb-4">Review & Submit</Text>
       <Text className="text-base text-gray-600 text-center leading-6 mb-10">
-        Please review your uploaded documents before submitting for
-        verification.
+        Please review your uploaded documents before submitting for verification.
       </Text>
 
       <View className="mb-10">
         <Card className="mb-4">
           <View className="flex-row items-center gap-4">
-            <SvgXml
-              xml={Icons.cardPos}
-              width={24}
-              height={24}
-              fill={COLORS.primary}
-            />
+            <SvgXml xml={Icons.cardPos} width={24} height={24} fill={COLORS.primary} />
             <View className="flex-1">
-              <Text className="text-sm font-medium text-gray-900 mb-1">
-                Identity Document
-              </Text>
-              <Text className="text-xs text-gray-600">
-                Front and back uploaded
-              </Text>
+              <Text className="text-sm font-medium text-gray-900 mb-1">Identity Document</Text>
+              <Text className="text-xs text-gray-600">Front and back uploaded</Text>
             </View>
-            <SvgXml
-              xml={Icons.tick}
-              width={20}
-              height={20}
-              fill={COLORS.success}
-            />
+            <SvgXml xml={Icons.tick} width={20} height={20} fill={COLORS.success} />
           </View>
         </Card>
 
         <Card className="mb-4">
           <View className="flex-row items-center gap-4">
-            <SvgXml
-              xml={Icons.camera}
-              width={24}
-              height={24}
-              fill={COLORS.primary}
-            />
+            <SvgXml xml={Icons.camera} width={24} height={24} fill={COLORS.primary} />
             <View className="flex-1">
-              <Text className="text-sm font-medium text-gray-900 mb-1">
-                Selfie Verification
-              </Text>
-              <Text className="text-xs text-gray-600">
-                Photo captured
-              </Text>
+              <Text className="text-sm font-medium text-gray-900 mb-1">Selfie Verification</Text>
+              <Text className="text-xs text-gray-600">Photo captured</Text>
             </View>
-            <SvgXml
-              xml={Icons.tick}
-              width={20}
-              height={20}
-              fill={COLORS.success}
-            />
+            <SvgXml xml={Icons.tick} width={20} height={20} fill={COLORS.success} />
           </View>
         </Card>
       </View>
 
       <View className="flex-row items-start gap-4 bg-blue-50 p-6 rounded-lg mb-10">
-        <SvgXml
-          xml={Icons.infoCircle}
-          width={20}
-          height={20}
-          fill={COLORS.info}
-        />
+        <SvgXml xml={Icons.infoCircle} width={20} height={20} fill={COLORS.info} />
         <Text className="text-base text-blue-800 flex-1 leading-5">
-          Verification typically takes 1-2 business days. You'll be notified
-          once complete.
+          Verification typically takes 1-2 business days. You'll be notified once complete.
         </Text>
       </View>
 
@@ -406,16 +301,9 @@ const IdentityVerificationScreen: React.FC = () => {
             onPress={() => navigation.goBack()}
             className="w-11 h-11 rounded-full bg-gray-100 justify-center items-center"
           >
-            <SvgXml
-              xml={Icons.arrowLeft}
-              width={24}
-              height={24}
-              fill={COLORS.textPrimary}
-            />
+            <SvgXml xml={Icons.arrowLeft} width={24} height={24} fill={COLORS.textPrimary} />
           </Button>
-          <Text className="text-xl font-semibold text-gray-900">
-            Identity Verification
-          </Text>
+          <Text className="text-xl font-semibold text-gray-900">Identity Verification</Text>
           <View className="w-11" />
         </View>
 
@@ -428,7 +316,5 @@ const IdentityVerificationScreen: React.FC = () => {
     </Screen>
   );
 };
-
-
 
 export default IdentityVerificationScreen;

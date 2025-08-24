@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface VerificationClientState {
   // UI state
@@ -8,7 +8,7 @@ interface VerificationClientState {
   selfieImage: string | null;
   isUploading: boolean;
   uploadProgress: number;
-  
+
   // Actions
   setSelectedDocumentType: (type: string) => void;
   setFrontImage: (image: string | null) => void;
@@ -22,7 +22,7 @@ interface VerificationClientState {
 
 export const useVerificationClientStore = create<VerificationClientState>((set) => ({
   // Initial state
-  selectedDocumentType: '',
+  selectedDocumentType: "",
   frontImage: null,
   backImage: null,
   selfieImage: null,
@@ -36,19 +36,21 @@ export const useVerificationClientStore = create<VerificationClientState>((set) 
   setSelfieImage: (image: string | null) => set({ selfieImage: image }),
   setIsUploading: (uploading: boolean) => set({ isUploading: uploading }),
   setUploadProgress: (progress: number) => set({ uploadProgress: progress }),
-  
-  clearImages: () => set({
-    frontImage: null,
-    backImage: null,
-    selfieImage: null,
-  }),
-  
-  reset: () => set({
-    selectedDocumentType: '',
-    frontImage: null,
-    backImage: null,
-    selfieImage: null,
-    isUploading: false,
-    uploadProgress: 0,
-  }),
+
+  clearImages: () =>
+    set({
+      frontImage: null,
+      backImage: null,
+      selfieImage: null,
+    }),
+
+  reset: () =>
+    set({
+      selectedDocumentType: "",
+      frontImage: null,
+      backImage: null,
+      selfieImage: null,
+      isUploading: false,
+      uploadProgress: 0,
+    }),
 }));

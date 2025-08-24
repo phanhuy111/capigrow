@@ -1,23 +1,18 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { RootStackParamList } from '@/types';
-import { COLORS } from '@/utils/theme';
-import { formatCurrency, formatDate } from '@/utils/helpers';
+import { type RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type React from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import type { RootStackParamList } from "@/types";
+import { formatCurrency, formatDate } from "@/utils/helpers";
+import { COLORS } from "@/utils/theme";
 
 type PaymentConfirmationScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'PaymentConfirmation'
+  "PaymentConfirmation"
 >;
-type PaymentConfirmationScreenRouteProp = RouteProp<RootStackParamList, 'PaymentConfirmation'>;
+type PaymentConfirmationScreenRouteProp = RouteProp<RootStackParamList, "PaymentConfirmation">;
 
 const PaymentConfirmationScreen: React.FC = () => {
   const navigation = useNavigation<PaymentConfirmationScreenNavigationProp>();
@@ -29,20 +24,20 @@ const PaymentConfirmationScreen: React.FC = () => {
   const transaction = {
     id: transactionId,
     amount: 5000,
-    investment_title: 'Green Energy Fund',
-    payment_method: 'Bank Transfer',
-    reference_number: 'TXN-' + Date.now().toString().slice(-8),
-    status: 'completed',
+    investment_title: "Green Energy Fund",
+    payment_method: "Bank Transfer",
+    reference_number: `TXN-${Date.now().toString().slice(-8)}`,
+    status: "completed",
     created_at: new Date().toISOString(),
-    estimated_completion: '2-3 business days',
+    estimated_completion: "2-3 business days",
   };
 
   const handleViewTransaction = () => {
-    navigation.navigate('MainTabs');
+    navigation.navigate("MainTabs");
   };
 
   const handleNewInvestment = () => {
-    navigation.navigate('MainTabs');
+    navigation.navigate("MainTabs");
   };
 
   return (
@@ -72,7 +67,7 @@ const PaymentConfirmationScreen: React.FC = () => {
 
           <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
             <Text className="text-sm text-gray-600 flex-1">Amount:</Text>
-            <Text 
+            <Text
               className="text-base font-bold flex-1 text-right"
               style={{ color: COLORS.primary }}
             >
@@ -97,7 +92,7 @@ const PaymentConfirmationScreen: React.FC = () => {
           <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
             <Text className="text-sm text-gray-600 flex-1">Date & Time:</Text>
             <Text className="text-sm text-gray-900 font-medium flex-1 text-right">
-              {formatDate(transaction.created_at, 'long')}
+              {formatDate(transaction.created_at, "long")}
             </Text>
           </View>
 
@@ -105,10 +100,7 @@ const PaymentConfirmationScreen: React.FC = () => {
             <Text className="text-sm text-gray-600 flex-1">Status:</Text>
             <View className="flex-row items-center flex-1 justify-end">
               <Icon name="check-circle" size={16} color={COLORS.success} />
-              <Text 
-                className="text-sm font-medium ml-1"
-                style={{ color: COLORS.success }}
-              >
+              <Text className="text-sm font-medium ml-1" style={{ color: COLORS.success }}>
                 Completed
               </Text>
             </View>
@@ -116,23 +108,23 @@ const PaymentConfirmationScreen: React.FC = () => {
         </View>
 
         <View className="mb-6">
-          <View 
+          <View
             className="flex-row p-4 rounded-md border-l-4"
-            style={{ backgroundColor: COLORS.info + '10', borderLeftColor: COLORS.info }}
+            style={{ backgroundColor: `${COLORS.info}10`, borderLeftColor: COLORS.info }}
           >
             <Icon name="info" size={24} color={COLORS.info} />
             <View className="flex-1 ml-2">
               <Text className="text-sm font-semibold text-gray-900 mb-1">What's Next?</Text>
               <Text className="text-sm text-gray-600 leading-5">
-                Your investment will be processed within {transaction.estimated_completion}.
-                You'll receive a confirmation email and can track your investment in the Portfolio section.
+                Your investment will be processed within {transaction.estimated_completion}. You'll
+                receive a confirmation email and can track your investment in the Portfolio section.
               </Text>
             </View>
           </View>
         </View>
 
         <View className="mb-6">
-          <TouchableOpacity 
+          <TouchableOpacity
             className="py-4 rounded-md items-center mb-4"
             style={{ backgroundColor: COLORS.primary }}
             onPress={handleViewTransaction}
@@ -140,7 +132,7 @@ const PaymentConfirmationScreen: React.FC = () => {
             <Text className="text-white text-base font-semibold">View Portfolio</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             className="border py-4 rounded-md items-center"
             style={{ borderColor: COLORS.primary }}
             onPress={handleNewInvestment}
@@ -152,15 +144,10 @@ const PaymentConfirmationScreen: React.FC = () => {
         </View>
 
         <View className="items-center pb-6">
-          <Text className="text-sm text-gray-600 mb-2">
-            Need help? Contact our support team
-          </Text>
+          <Text className="text-sm text-gray-600 mb-2">Need help? Contact our support team</Text>
           <TouchableOpacity className="flex-row items-center">
             <Icon name="support-agent" size={16} color={COLORS.primary} />
-            <Text 
-              className="text-sm font-medium ml-1"
-              style={{ color: COLORS.primary }}
-            >
+            <Text className="text-sm font-medium ml-1" style={{ color: COLORS.primary }}>
               Get Support
             </Text>
           </TouchableOpacity>
@@ -169,7 +156,5 @@ const PaymentConfirmationScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-
 
 export default PaymentConfirmationScreen;

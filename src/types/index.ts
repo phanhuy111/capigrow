@@ -17,9 +17,9 @@ export interface User {
   profile_image_url?: string;
   is_active: boolean;
   is_verified: boolean;
-  verification_status: 'pending' | 'verified' | 'rejected';
-  investor_type?: 'retail' | 'accredited' | 'institutional';
-  risk_tolerance?: 'low' | 'medium' | 'high';
+  verification_status: "pending" | "verified" | "rejected";
+  investor_type?: "retail" | "accredited" | "institutional";
+  risk_tolerance?: "low" | "medium" | "high";
   investment_goals?: string[];
   annual_income?: number;
   net_worth?: number;
@@ -64,9 +64,9 @@ export interface Investment {
   target_amount: number;
   current_amount: number;
   expected_return: number;
-  risk_level: 'low' | 'medium' | 'high';
+  risk_level: "low" | "medium" | "high";
   duration: number;
-  status: 'draft' | 'active' | 'paused' | 'closed' | 'completed';
+  status: "draft" | "active" | "paused" | "closed" | "completed";
   start_date?: string;
   end_date?: string;
   maturity_date?: string;
@@ -88,7 +88,7 @@ export interface UserInvestment {
   amount: number;
   shares: number;
   price_per_share: number;
-  status: 'pending' | 'confirmed' | 'active' | 'completed' | 'cancelled';
+  status: "pending" | "confirmed" | "active" | "completed" | "cancelled";
   investment_date: string;
   maturity_date?: string;
   current_value: number;
@@ -116,9 +116,9 @@ export interface Transaction {
   id: string;
   user_id: string;
   investment_id?: string;
-  type: 'investment' | 'withdrawal' | 'dividend' | 'fee';
+  type: "investment" | "withdrawal" | "dividend" | "fee";
   amount: number;
-  status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
+  status: "pending" | "processing" | "completed" | "failed" | "cancelled";
   payment_method?: string;
   reference_number?: string;
   description?: string;
@@ -130,12 +130,12 @@ export interface Transaction {
 export interface IdentityVerification {
   id: string;
   user_id: string;
-  document_type: 'passport' | 'national_id' | 'drivers_license';
+  document_type: "passport" | "national_id" | "drivers_license";
   document_number?: string;
   document_front_url?: string;
   document_back_url?: string;
   selfie_url?: string;
-  status: 'pending' | 'under_review' | 'approved' | 'rejected';
+  status: "pending" | "under_review" | "approved" | "rejected";
   rejection_reason?: string;
   verified_at?: string;
   created_at: string;
@@ -148,7 +148,10 @@ export type RootStackParamList = {
   Welcome: { phoneNumber?: string };
   PhoneEntry: undefined;
   OTPVerification: { phoneNumber: string; isLogin?: boolean };
-  CreatePassword: { phoneNumber: string; userInfo: { firstName: string; lastName: string; email: string; dateOfBirth: string } };
+  CreatePassword: {
+    phoneNumber: string;
+    userInfo: { firstName: string; lastName: string; email: string; dateOfBirth: string };
+  };
   MainTabs: undefined;
   Notifications: undefined;
   IdentityVerification: undefined;
@@ -179,7 +182,7 @@ export type MainTabParamList = {
 export interface FormField {
   name: string;
   label: string;
-  type: 'text' | 'email' | 'password' | 'number' | 'phone' | 'date' | 'select';
+  type: "text" | "email" | "password" | "number" | "phone" | "date" | "select";
   placeholder?: string;
   required?: boolean;
   validation?: any;
@@ -190,8 +193,8 @@ export interface FormField {
 export interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'small' | 'medium' | 'large';
+  variant?: "primary" | "secondary" | "outline" | "ghost";
+  size?: "small" | "medium" | "large";
   disabled?: boolean;
   loading?: boolean;
   icon?: string;
@@ -203,7 +206,7 @@ export interface InputProps {
   value: string;
   onChangeText: (text: string) => void;
   secureTextEntry?: boolean;
-  keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
+  keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
   error?: string;
   disabled?: boolean;
   multiline?: boolean;

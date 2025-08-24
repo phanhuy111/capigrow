@@ -1,12 +1,11 @@
-import apiClient from '@/services/apiClient';
-import { API_ENDPOINTS } from '@/utils/constants';
-import { ApiResponse } from '@/types';
+import apiClient from "@/services/apiClient";
+import { API_ENDPOINTS } from "@/utils/constants";
 
 // Types for verification operations
 export interface VerificationDocument {
   id: string;
-  type: 'id_card' | 'passport' | 'driver_license' | 'utility_bill' | 'bank_statement';
-  status: 'pending' | 'under_review' | 'approved' | 'rejected';
+  type: "id_card" | "passport" | "driver_license" | "utility_bill" | "bank_statement";
+  status: "pending" | "under_review" | "approved" | "rejected";
   fileName: string;
   fileUrl: string;
   uploadedAt: string;
@@ -15,10 +14,10 @@ export interface VerificationDocument {
 }
 
 export interface VerificationStatus {
-  overall: 'pending' | 'under_review' | 'approved' | 'rejected';
-  identity: 'pending' | 'under_review' | 'approved' | 'rejected';
-  address: 'pending' | 'under_review' | 'approved' | 'rejected';
-  selfie: 'pending' | 'under_review' | 'approved' | 'rejected';
+  overall: "pending" | "under_review" | "approved" | "rejected";
+  identity: "pending" | "under_review" | "approved" | "rejected";
+  address: "pending" | "under_review" | "approved" | "rejected";
+  selfie: "pending" | "under_review" | "approved" | "rejected";
   documents: VerificationDocument[];
   completedSteps: number;
   totalSteps: number;
@@ -50,7 +49,7 @@ const verificationService = {
   uploadDocument: async (formData: FormData): Promise<DocumentUploadResponse> => {
     return apiClient.post(API_ENDPOINTS.VERIFICATION.DOCUMENTS, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
   },
@@ -59,7 +58,7 @@ const verificationService = {
   uploadSelfie: async (formData: FormData): Promise<SelfieUploadResponse> => {
     return apiClient.post(API_ENDPOINTS.VERIFICATION.SELFIE, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
   },

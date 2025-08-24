@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, ActivityIndicator, Text } from 'react-native';
-import { COLORS } from '@/utils/theme';
+import type React from "react";
+import { ActivityIndicator, Text, View } from "react-native";
+import { COLORS } from "@/utils/theme";
 
 const LoadingScreen: React.FC = () => {
   return (
@@ -10,7 +10,5 @@ const LoadingScreen: React.FC = () => {
     </View>
   );
 };
-
-
 
 export default LoadingScreen;

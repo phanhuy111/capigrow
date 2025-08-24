@@ -1,6 +1,5 @@
-import apiClient from '@/services/apiClient';
-import { API_ENDPOINTS } from '@/utils/constants';
-import { ApiResponse } from '@/types';
+import apiClient from "@/services/apiClient";
+import { API_ENDPOINTS } from "@/utils/constants";
 
 // Types for investment operations
 export interface Investment {
@@ -8,11 +7,11 @@ export interface Investment {
   name: string;
   description: string;
   category: string;
-  riskLevel: 'low' | 'medium' | 'high';
+  riskLevel: "low" | "medium" | "high";
   minimumAmount: number;
   expectedReturn: number;
   duration: number;
-  status: 'draft' | 'active' | 'paused' | 'closed' | 'completed';
+  status: "draft" | "active" | "paused" | "closed" | "completed";
   totalRaised: number;
   targetAmount: number;
   investorCount: number;
@@ -79,19 +78,19 @@ const investmentService = {
     status?: string;
   }): Promise<InvestmentListResponse> => {
     const queryParams = new URLSearchParams();
-    if (params?.page) queryParams.append('page', params.page.toString());
-    if (params?.limit) queryParams.append('limit', params.limit.toString());
-    if (params?.category) queryParams.append('category', params.category);
-    if (params?.riskLevel) queryParams.append('riskLevel', params.riskLevel);
-    if (params?.status) queryParams.append('status', params.status);
-    
-    const url = `${API_ENDPOINTS.INVESTMENTS.LIST}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    if (params?.page) queryParams.append("page", params.page.toString());
+    if (params?.limit) queryParams.append("limit", params.limit.toString());
+    if (params?.category) queryParams.append("category", params.category);
+    if (params?.riskLevel) queryParams.append("riskLevel", params.riskLevel);
+    if (params?.status) queryParams.append("status", params.status);
+
+    const url = `${API_ENDPOINTS.INVESTMENTS.LIST}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
     return apiClient.get(url);
   },
 
   // Get investment details
   getInvestment: async (id: string): Promise<InvestmentDetailResponse> => {
-    const url = API_ENDPOINTS.INVESTMENTS.DETAILS.replace(':id', id);
+    const url = API_ENDPOINTS.INVESTMENTS.DETAILS.replace(":id", id);
     return apiClient.get(url);
   },
 
@@ -101,8 +100,11 @@ const investmentService = {
   },
 
   // Register for investment
-  registerInvestment: async (id: string, data: InvestmentRegistrationRequest): Promise<InvestmentRegistrationResponse> => {
-    const url = API_ENDPOINTS.INVESTMENTS.REGISTER.replace(':id', id);
+  registerInvestment: async (
+    id: string,
+    data: InvestmentRegistrationRequest
+  ): Promise<InvestmentRegistrationResponse> => {
+    const url = API_ENDPOINTS.INVESTMENTS.REGISTER.replace(":id", id);
     return apiClient.post(url, data);
   },
 };

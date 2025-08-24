@@ -1,8 +1,14 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { Control, Controller, FieldError, FieldValues, FieldPath } from "react-hook-form";
-import { Checkbox } from "@/components/ui/checkbox";
+import {
+  type Control,
+  Controller,
+  type FieldError,
+  type FieldPath,
+  type FieldValues,
+  type RegisterOptions,
+} from "react-hook-form";
+import { Text, TouchableOpacity, View } from "react-native";
 import { cn } from "@/components/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface CheckboxFormProps<T extends FieldValues> {
   control?: Control<T>;
@@ -18,7 +24,7 @@ interface CheckboxFormProps<T extends FieldValues> {
   labelClassName?: string;
   descriptionClassName?: string;
   checkboxClassName?: string;
-  rules?: any;
+  rules?: RegisterOptions<T>;
 }
 
 export function CheckboxForm<T extends FieldValues>({
@@ -47,12 +53,9 @@ export function CheckboxForm<T extends FieldValues>({
         checked={checkboxValue}
         onCheckedChange={checkboxOnChange}
         disabled={disabled}
-        className={cn(
-          checkboxError && "border-red-500",
-          checkboxClassName
-        )}
+        className={cn(checkboxError && "border-red-500", checkboxClassName)}
       />
-      
+
       <View className="flex-1">
         {label && (
           <TouchableOpacity
@@ -71,7 +74,7 @@ export function CheckboxForm<T extends FieldValues>({
             </Text>
           </TouchableOpacity>
         )}
-        
+
         {description && (
           <Text
             className={cn(
@@ -83,13 +86,12 @@ export function CheckboxForm<T extends FieldValues>({
             {description}
           </Text>
         )}
-        
+
         {(checkboxError || error) && (
           <Text className="text-xs text-red-500 mt-1">
             {typeof checkboxError === "string"
               ? checkboxError
-              : checkboxError?.message ||
-                (typeof error === "string" ? error : error?.message)}
+              : checkboxError?.message || (typeof error === "string" ? error : error?.message)}
           </Text>
         )}
       </View>
@@ -112,11 +114,7 @@ export function CheckboxForm<T extends FieldValues>({
   }
 
   // Regular checkbox without form control
-  return renderCheckbox(
-    value || false,
-    onChange || (() => {}),
-    error
-  );
+  return renderCheckbox(value || false, onChange || (() => {}), error);
 }
 
 export default CheckboxForm;

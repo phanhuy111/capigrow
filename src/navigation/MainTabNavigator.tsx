@@ -1,18 +1,16 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { SvgXml } from 'react-native-svg';
-
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import type React from "react";
+import { View } from "react-native";
+import { SvgXml } from "react-native-svg";
+import { Icons } from "@/assets";
 // Import screens
-import HomeScreen from '@/screens/home/HomeScreen';
-import InvestmentsScreen from '@/screens/investment/InvestmentsScreen';
-import PortfolioScreen from '@/screens/portfolio/PortfolioScreen';
-import TransactionsScreen from '@/screens/transaction/TransactionsScreen';
-import ProfileScreen from '@/screens/profile/ProfileScreen';
-
-import { MainTabParamList } from '@/types';
-import { COLORS, TYPOGRAPHY, SPACING, BORDER_RADIUS } from '@/utils/theme';
-import { Icons } from '@/assets';
+import HomeScreen from "@/screens/home/HomeScreen";
+import InvestmentsScreen from "@/screens/investment/InvestmentsScreen";
+import PortfolioScreen from "@/screens/portfolio/PortfolioScreen";
+import ProfileScreen from "@/screens/profile/ProfileScreen";
+import TransactionsScreen from "@/screens/transaction/TransactionsScreen";
+import type { MainTabParamList } from "@/types";
+import { COLORS } from "@/utils/theme";
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -25,15 +23,15 @@ const TabBarIcon: React.FC<{
 }> = ({ route, focused, color, size }) => {
   const getIconSource = () => {
     switch (route) {
-      case 'Home':
+      case "Home":
         return focused ? Icons.home : Icons.homeOutline;
-      case 'Investments':
+      case "Investments":
         return Icons.explore;
-      case 'Portfolio':
+      case "Portfolio":
         return Icons.portfolio;
-      case 'Transactions':
+      case "Transactions":
         return Icons.graph;
-      case 'Profile':
+      case "Profile":
         return Icons.profile;
       default:
         return Icons.home;
@@ -42,12 +40,7 @@ const TabBarIcon: React.FC<{
 
   return (
     <View className="items-center justify-center">
-      <SvgXml
-        xml={getIconSource()}
-        width={size}
-        height={size}
-        fill={color}
-      />
+      <SvgXml xml={getIconSource()} width={size} height={size} fill={color} />
     </View>
   );
 };
@@ -56,26 +49,21 @@ const MainTabNavigator: React.FC = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => (
-          <TabBarIcon
-            route={route.name}
-            focused={focused}
-            color={color}
-            size={24}
-          />
+        tabBarIcon: ({ focused, color }) => (
+          <TabBarIcon route={route.name} focused={focused} color={color} size={24} />
         ),
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.textTertiary,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: "#FFFFFF",
           borderTopWidth: 1,
-          borderTopColor: '#F3F4F6',
+          borderTopColor: "#F3F4F6",
           paddingBottom: 16,
           paddingTop: 16,
           height: 80,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
-          shadowColor: '#000000',
+          shadowColor: "#000000",
           shadowOffset: {
             width: 0,
             height: -2,
@@ -86,7 +74,7 @@ const MainTabNavigator: React.FC = () => {
         },
         tabBarLabelStyle: {
           fontSize: 12,
-          fontWeight: '500',
+          fontWeight: "500",
           marginTop: 4,
         },
         tabBarItemStyle: {
@@ -99,41 +87,39 @@ const MainTabNavigator: React.FC = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarLabel: 'Home',
+          tabBarLabel: "Home",
         }}
       />
       <Tab.Screen
         name="Investments"
         component={InvestmentsScreen}
         options={{
-          tabBarLabel: 'Explore',
+          tabBarLabel: "Explore",
         }}
       />
       <Tab.Screen
         name="Portfolio"
         component={PortfolioScreen}
         options={{
-          tabBarLabel: 'Portfolio',
+          tabBarLabel: "Portfolio",
         }}
       />
       <Tab.Screen
         name="Transactions"
         component={TransactionsScreen}
         options={{
-          tabBarLabel: 'History',
+          tabBarLabel: "History",
         }}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarLabel: 'Profile',
+          tabBarLabel: "Profile",
         }}
       />
     </Tab.Navigator>
   );
 };
-
-
 
 export default MainTabNavigator;

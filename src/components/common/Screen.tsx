@@ -1,6 +1,6 @@
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ViewStyle } from 'react-native';
+import type React from "react";
+import type { ViewStyle } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface ScreenProps {
   children: React.ReactNode;
@@ -9,15 +9,15 @@ interface ScreenProps {
   className?: string;
 }
 
-const Screen: React.FC<ScreenProps> = ({ 
-  children, 
-  paddingHorizontal = false, 
+const Screen: React.FC<ScreenProps> = ({
+  children,
+  paddingHorizontal = false,
   style,
-  className 
+  className,
 }) => {
-  const baseClasses = 'flex-1 bg-white';
-  const paddingClasses = paddingHorizontal ? ' px-6' : '';
-  const combinedClasses = `${baseClasses}${paddingClasses} ${className || ''}`;
+  const baseClasses = "flex-1 bg-white";
+  const paddingClasses = paddingHorizontal ? " px-6" : "";
+  const combinedClasses = `${baseClasses}${paddingClasses} ${className || ""}`;
 
   return (
     <SafeAreaView className={combinedClasses} style={style}>

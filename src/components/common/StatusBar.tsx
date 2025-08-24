@@ -1,19 +1,19 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+import type React from "react";
+import { Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface StatusBarProps {
   backgroundColor?: string;
-  barStyle?: 'default' | 'light-content' | 'dark-content';
+  barStyle?: "default" | "light-content" | "dark-content";
   showTime?: boolean;
   showBattery?: boolean;
   showSignal?: boolean;
 }
 
 const StatusBar: React.FC<StatusBarProps> = ({
-  backgroundColor = '#ffffff',
-  barStyle = 'dark-content',
+  backgroundColor = "#ffffff",
+  barStyle = "dark-content",
   showTime = true,
   showBattery = true,
   showSignal = true,
@@ -22,16 +22,16 @@ const StatusBar: React.FC<StatusBarProps> = ({
 
   const getCurrentTime = () => {
     const now = new Date();
-    return now.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
+    return now.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
       hour12: false,
     });
   };
 
   return (
     <>
-      <ExpoStatusBar style={barStyle === 'dark-content' ? 'dark' : 'light'} />
+      <ExpoStatusBar style={barStyle === "dark-content" ? "dark" : "light"} />
       <View className="px-6 pb-2" style={{ backgroundColor, paddingTop: insets.top }}>
         <View className="flex-row justify-between items-center h-5">
           {/* Left side - Time */}
@@ -76,7 +76,5 @@ const StatusBar: React.FC<StatusBarProps> = ({
     </>
   );
 };
-
-
 
 export default StatusBar;

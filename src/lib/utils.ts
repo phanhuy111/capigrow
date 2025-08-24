@@ -1,5 +1,5 @@
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -10,14 +10,14 @@ export function cva(
   config?: {
     variants?: Record<string, Record<string, ClassValue>>;
     compoundVariants?: Array<
-      Record<string, any> & {
+      Record<string, unknown> & {
         class: ClassValue;
       }
     >;
-    defaultVariants?: Record<string, any>;
+    defaultVariants?: Record<string, unknown>;
   }
 ) {
-  return (props?: Record<string, any>) => {
+  return (props?: Record<string, unknown>) => {
     if (config?.variants == null) return cn(base);
 
     const { variants, defaultVariants } = config;
@@ -35,18 +35,15 @@ export function cva(
 
     const compoundVariants =
       config?.compoundVariants?.reduce(
-        (acc, compoundVariant: Record<string, any> & { class: ClassValue }) => {
+        (acc, compoundVariant: Record<string, unknown> & { class: ClassValue }) => {
           const { class: cvClass, ...compoundVariantOptions } = compoundVariant;
 
-          return Object.entries(compoundVariantOptions).every(
-            ([key, value]) => {
-              return Array.isArray(value)
-                ? value.includes(props?.[key])
-                : props?.[key] === value;
-            }
-          )
-            ? [...acc, cvClass]
-            : acc;
+          if (Object.entries(compoundVariantOptions).every(([key, value]) => {
+            return Array.isArray(value) ? value.includes(props?.[key]) : props?.[key] === value;
+          })) {
+            acc.push(cvClass);
+          }
+          return acc;
         },
         [] as ClassValue[]
       ) ?? [];

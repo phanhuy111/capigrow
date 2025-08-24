@@ -1,13 +1,13 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface TransactionClientState {
   // UI state
-  selectedTransactionType: 'deposit' | 'withdrawal' | 'investment' | null;
+  selectedTransactionType: "deposit" | "withdrawal" | "investment" | null;
   amount: string;
   selectedPaymentMethod: string;
   isProcessing: boolean;
   showConfirmation: boolean;
-  
+
   // Filter state
   dateFilter: {
     startDate: Date | null;
@@ -15,9 +15,9 @@ interface TransactionClientState {
   };
   typeFilter: string[];
   statusFilter: string[];
-  
+
   // Actions
-  setSelectedTransactionType: (type: 'deposit' | 'withdrawal' | 'investment' | null) => void;
+  setSelectedTransactionType: (type: "deposit" | "withdrawal" | "investment" | null) => void;
   setAmount: (amount: string) => void;
   setSelectedPaymentMethod: (method: string) => void;
   setIsProcessing: (processing: boolean) => void;
@@ -32,8 +32,8 @@ interface TransactionClientState {
 export const useTransactionClientStore = create<TransactionClientState>((set) => ({
   // Initial state
   selectedTransactionType: null,
-  amount: '',
-  selectedPaymentMethod: '',
+  amount: "",
+  selectedPaymentMethod: "",
   isProcessing: false,
   showConfirmation: false,
   dateFilter: {
@@ -49,28 +49,31 @@ export const useTransactionClientStore = create<TransactionClientState>((set) =>
   setSelectedPaymentMethod: (method) => set({ selectedPaymentMethod: method }),
   setIsProcessing: (processing) => set({ isProcessing: processing }),
   setShowConfirmation: (show) => set({ showConfirmation: show }),
-  
-  setDateFilter: (startDate, endDate) => set({
-    dateFilter: { startDate, endDate }
-  }),
-  
+
+  setDateFilter: (startDate, endDate) =>
+    set({
+      dateFilter: { startDate, endDate },
+    }),
+
   setTypeFilter: (types) => set({ typeFilter: types }),
   setStatusFilter: (statuses) => set({ statusFilter: statuses }),
-  
-  clearFilters: () => set({
-    dateFilter: { startDate: null, endDate: null },
-    typeFilter: [],
-    statusFilter: [],
-  }),
-  
-  reset: () => set({
-    selectedTransactionType: null,
-    amount: '',
-    selectedPaymentMethod: '',
-    isProcessing: false,
-    showConfirmation: false,
-    dateFilter: { startDate: null, endDate: null },
-    typeFilter: [],
-    statusFilter: [],
-  }),
+
+  clearFilters: () =>
+    set({
+      dateFilter: { startDate: null, endDate: null },
+      typeFilter: [],
+      statusFilter: [],
+    }),
+
+  reset: () =>
+    set({
+      selectedTransactionType: null,
+      amount: "",
+      selectedPaymentMethod: "",
+      isProcessing: false,
+      showConfirmation: false,
+      dateFilter: { startDate: null, endDate: null },
+      typeFilter: [],
+      statusFilter: [],
+    }),
 }));

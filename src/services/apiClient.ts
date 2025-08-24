@@ -1,7 +1,7 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { API_ENDPOINTS } from '@/utils/constants';
-import { getToken, removeToken } from '@/services/storage';
-import { MockInterceptor } from './mockInterceptor';
+import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from "axios";
+import { getToken, removeToken } from "@/services/storage";
+import { API_ENDPOINTS } from "@/utils/constants";
+import { MockInterceptor } from "./mockInterceptor";
 
 class ApiClient {
   private instance: AxiosInstance;
@@ -11,7 +11,7 @@ class ApiClient {
       baseURL: API_ENDPOINTS.BASE_URL,
       timeout: 10000,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -43,7 +43,7 @@ class ApiClient {
         if (error.isMockResponse) {
           return Promise.resolve(error.response);
         }
-        
+
         // Handle common errors
         if (error.response?.status === 401) {
           // Handle unauthorized access
@@ -64,7 +64,7 @@ class ApiClient {
 
   private async handleUnauthorized() {
     await removeToken();
-    console.log('Unauthorized access - token removed');
+    console.log("Unauthorized access - token removed");
   }
 
   // Generic request method
@@ -75,22 +75,22 @@ class ApiClient {
 
   // GET request
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    return this.request<T>({ ...config, method: 'GET', url });
+    return this.request<T>({ ...config, method: "GET", url });
   }
 
   // POST request
   async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    return this.request<T>({ ...config, method: 'POST', url, data });
+    return this.request<T>({ ...config, method: "POST", url, data });
   }
 
   // PUT request
   async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    return this.request<T>({ ...config, method: 'PUT', url, data });
+    return this.request<T>({ ...config, method: "PUT", url, data });
   }
 
   // DELETE request
   async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    return this.request<T>({ ...config, method: 'DELETE', url });
+    return this.request<T>({ ...config, method: "DELETE", url });
   }
 }
 

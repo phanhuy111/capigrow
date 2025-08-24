@@ -1,24 +1,33 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Transaction } from '@/types';
-import transactionService from '@/services/transactionService';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import transactionService, { type PaymentRequest } from "@/services/transactionService";
+
+// Types
+interface TransactionFilters {
+  page?: number;
+  limit?: number;
+  type?: string;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+}
 
 // Query keys
 export const transactionKeys = {
-  all: ['transactions'] as const,
-  lists: () => [...transactionKeys.all, 'list'] as const,
-  list: (filters: string) => [...transactionKeys.lists(), { filters }] as const,
-  details: () => [...transactionKeys.all, 'detail'] as const,
+  all: ["transactions"] as const,
+  lists: () => [...transactionKeys.all, "list"] as const,
+  list: (filters?: TransactionFilters) => [...transactionKeys.lists(), { filters }] as const,
+  details: () => [...transactionKeys.all, "detail"] as const,
   detail: (id: string) => [...transactionKeys.details(), id] as const,
 };
 
 // Get transactions query
-export const useTransactionsQuery = (filters?: any) => {
+export const useTransactionsQuery = (filters?: TransactionFilters) => {
   return useQuery({
     queryKey: transactionKeys.list(filters),
     queryFn: async () => {
       const response = await transactionService.getTransactions(filters);
       if (!response.success) {
-        throw new Error(response.message || 'Failed to get transactions');
+        throw new Error(response.message || "Failed to get transactions");
       }
       return response.transactions;
     },
@@ -33,7 +42,7 @@ export const useTransactionQuery = (id: string) => {
     queryFn: async () => {
       const response = await transactionService.getTransaction(id);
       if (!response.success) {
-        throw new Error(response.message || 'Failed to get transaction');
+        throw new Error(response.message || "Failed to get transaction");
       }
       return response.transaction;
     },
@@ -47,10 +56,10 @@ export const useProcessPaymentMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (paymentData: any) => {
+    mutationFn: async (paymentData: PaymentRequest) => {
       const response = await transactionService.processPayment(paymentData);
       if (!response.success) {
-        throw new Error(response.message || 'Failed to process payment');
+        throw new Error(response.message || "Failed to process payment");
       }
       return response;
     },

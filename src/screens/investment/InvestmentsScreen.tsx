@@ -1,66 +1,73 @@
-import React, { useState } from 'react';
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type React from "react";
+import { useState } from "react";
 import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
   RefreshControl,
-  Dimensions,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { SvgXml } from 'react-native-svg';
-import { RootStackParamList } from '@/types';
-import { COLORS } from '@/utils/theme';
-import { Icons } from '@/assets';
-import Screen from '@/components/common/Screen';
-import { Card } from '@/components/ui/card';
-import { useInvestmentsQuery, useInvestmentCategoriesQuery } from '@/hooks/useInvestmentQueries';
-import { formatCurrency, formatPercentage } from '@/utils/helpers';
-
-const { width } = Dimensions.get('window');
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SvgXml } from "react-native-svg";
+import { Icons } from "@/assets";
+import Screen from "@/components/common/Screen";
+import { Card } from "@/components/ui/card";
+import { useInvestmentCategoriesQuery, useInvestmentsQuery } from "@/hooks/useInvestmentQueries";
+import type { RootStackParamList } from "@/types";
+import { formatCurrency } from "@/utils/helpers";
+import { COLORS } from "@/utils/theme";
 
 type InvestmentsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const InvestmentsScreen: React.FC = () => {
   const navigation = useNavigation<InvestmentsScreenNavigationProp>();
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [selectedRiskLevel, setSelectedRiskLevel] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedRiskLevel, setSelectedRiskLevel] = useState<string>("");
 
-  const { data: investments = [], isLoading: investmentsLoading, refetch: refetchInvestments } = useInvestmentsQuery();
-  const { data: categories = [], isLoading: categoriesLoading, refetch: refetchCategories } = useInvestmentCategoriesQuery();
+  const {
+    data: investments = [],
+    isLoading: investmentsLoading,
+    refetch: refetchInvestments,
+  } = useInvestmentsQuery();
+  const {
+    data: categories = [],
+    isLoading: categoriesLoading,
+    refetch: refetchCategories,
+  } = useInvestmentCategoriesQuery();
 
   const onRefresh = async () => {
     await Promise.all([refetchInvestments(), refetchCategories()]);
   };
 
   const filteredInvestments = investments.filter((investment: any) => {
-    const matchesSearch = investment.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const matchesSearch =
+      investment.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       investment.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = !selectedCategory || investment.category === selectedCategory;
     const matchesRisk = !selectedRiskLevel || investment.riskLevel === selectedRiskLevel;
-    const matchesStatus = investment.status === 'active';
-    
+    const matchesStatus = investment.status === "active";
+
     return matchesSearch && matchesCategory && matchesRisk && matchesStatus;
   });
 
-  const formatCurrencyVND = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
+  const _formatCurrencyVND = (amount: number) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
     }).format(amount);
   };
 
   const getRiskColor = (riskLevel: string) => {
     switch (riskLevel.toLowerCase()) {
-      case 'low':
+      case "low":
         return COLORS.success;
-      case 'medium':
+      case "medium":
         return COLORS.warning;
-      case 'high':
+      case "high":
         return COLORS.error;
       default:
         return COLORS.textTertiary;
@@ -69,17 +76,17 @@ const InvestmentsScreen: React.FC = () => {
 
   const getCategoryIcon = (category: string) => {
     switch (category.toLowerCase()) {
-      case 'energy':
+      case "energy":
         return Icons.cup;
-      case 'technology':
+      case "technology":
         return Icons.diagram;
-      case 'real estate':
+      case "real estate":
         return Icons.buildings;
-      case 'healthcare':
+      case "healthcare":
         return Icons.health;
-      case 'agriculture':
+      case "agriculture":
         return Icons.global;
-      case 'finance':
+      case "finance":
         return Icons.bank;
       default:
         return Icons.cup;
@@ -93,7 +100,7 @@ const InvestmentsScreen: React.FC = () => {
     return (
       <Card key={item.id} className="mb-6">
         <TouchableOpacity
-          onPress={() => navigation.navigate('InvestmentDetails', { investmentId: item.id })}
+          onPress={() => navigation.navigate("InvestmentDetails", { investmentId: item.id })}
         >
           <View className="flex-row justify-between items-start mb-6">
             <View className="flex-row items-center flex-1 gap-4">
@@ -110,7 +117,7 @@ const InvestmentsScreen: React.FC = () => {
                 <Text className="text-sm text-gray-600">{item.category}</Text>
               </View>
             </View>
-            <View className="px-3 py-1 rounded-md" style={{ backgroundColor: riskColor + '20' }}>
+            <View className="px-3 py-1 rounded-md" style={{ backgroundColor: `${riskColor}20` }}>
               <Text className="text-xs font-semibold" style={{ color: riskColor }}>
                 {item.riskLevel.toUpperCase()}
               </Text>
@@ -132,7 +139,9 @@ const InvestmentsScreen: React.FC = () => {
             </View>
             <View className="flex-row items-center gap-2">
               <SvgXml xml={Icons.emptyWallet} width={16} height={16} fill={COLORS.textSecondary} />
-              <Text className="text-sm text-gray-600 font-medium">{formatCurrency(item.minInvestment)}</Text>
+              <Text className="text-sm text-gray-600 font-medium">
+                {formatCurrency(item.minInvestment)}
+              </Text>
             </View>
           </View>
 
@@ -153,9 +162,7 @@ const InvestmentsScreen: React.FC = () => {
               <Text className="text-sm text-gray-600">
                 {formatCurrency(item.totalRaised)} raised
               </Text>
-              <Text className="text-sm text-gray-600">
-                {item.investorCount} investors
-              </Text>
+              <Text className="text-sm text-gray-600">{item.investorCount} investors</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -167,9 +174,12 @@ const InvestmentsScreen: React.FC = () => {
     <TouchableOpacity
       key={category.id}
       className="items-center mr-6 gap-4"
-      onPress={() => setSelectedCategory(selectedCategory === category.name ? '' : category.name)}
+      onPress={() => setSelectedCategory(selectedCategory === category.name ? "" : category.name)}
     >
-      <View className="w-14 h-14 rounded-full justify-center items-center" style={{ backgroundColor: category.color + '20' }}>
+      <View
+        className="w-14 h-14 rounded-full justify-center items-center"
+        style={{ backgroundColor: `${category.color}20` }}
+      >
         <SvgXml
           xml={getCategoryIcon(category.name)}
           width={20}
@@ -177,7 +187,9 @@ const InvestmentsScreen: React.FC = () => {
           fill={selectedCategory === category.name ? COLORS.white : category.color}
         />
       </View>
-      <Text className={`text-sm text-gray-900 ${selectedCategory === category.name ? 'text-blue-600 font-semibold' : ''}`}>
+      <Text
+        className={`text-sm text-gray-900 ${selectedCategory === category.name ? "text-blue-600 font-semibold" : ""}`}
+      >
         {category.name}
       </Text>
     </TouchableOpacity>
@@ -186,10 +198,12 @@ const InvestmentsScreen: React.FC = () => {
   const renderRiskFilter = (riskLevel: string) => (
     <TouchableOpacity
       key={riskLevel}
-      className={`px-6 py-4 rounded-lg border ${selectedRiskLevel === riskLevel ? 'bg-blue-600 border-blue-600' : 'bg-gray-50 border-gray-200'}`}
-      onPress={() => setSelectedRiskLevel(selectedRiskLevel === riskLevel ? '' : riskLevel)}
+      className={`px-6 py-4 rounded-lg border ${selectedRiskLevel === riskLevel ? "bg-blue-600 border-blue-600" : "bg-gray-50 border-gray-200"}`}
+      onPress={() => setSelectedRiskLevel(selectedRiskLevel === riskLevel ? "" : riskLevel)}
     >
-      <Text className={`text-sm ${selectedRiskLevel === riskLevel ? 'text-white' : 'text-gray-600'}`}>
+      <Text
+        className={`text-sm ${selectedRiskLevel === riskLevel ? "text-white" : "text-gray-600"}`}
+      >
         {riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)}
       </Text>
     </TouchableOpacity>
@@ -199,7 +213,12 @@ const InvestmentsScreen: React.FC = () => {
     <Screen paddingHorizontal>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={investmentsLoading || categoriesLoading} onRefresh={onRefresh} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={investmentsLoading || categoriesLoading}
+            onRefresh={onRefresh}
+          />
+        }
       >
         {/* Header */}
         <View className="flex-row justify-between items-center mb-8 pt-4">
@@ -243,16 +262,15 @@ const InvestmentsScreen: React.FC = () => {
         {/* Risk Level Filters */}
         <View className="mb-8">
           <Text className="text-xl font-semibold text-gray-900 mb-6">Risk Level</Text>
-          <View className="flex-row gap-4">
-            {['low', 'medium', 'high'].map(renderRiskFilter)}
-          </View>
+          <View className="flex-row gap-4">{["low", "medium", "high"].map(renderRiskFilter)}</View>
         </View>
 
         {/* Investment Results */}
         <View className="mb-16">
           <View className="flex-row justify-between items-center mb-6">
             <Text className="text-xl font-semibold text-gray-900">
-              {filteredInvestments.length} Investment{filteredInvestments.length !== 1 ? 's' : ''} Found
+              {filteredInvestments.length} Investment{filteredInvestments.length !== 1 ? "s" : ""}{" "}
+              Found
             </Text>
             <TouchableOpacity className="flex-row items-center gap-2">
               <SvgXml xml={Icons.arrowDown} width={16} height={16} fill={COLORS.textSecondary} />
@@ -276,7 +294,5 @@ const InvestmentsScreen: React.FC = () => {
     </Screen>
   );
 };
-
-
 
 export default InvestmentsScreen;

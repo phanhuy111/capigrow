@@ -1,8 +1,14 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { Control, Controller, FieldError, FieldValues, FieldPath } from "react-hook-form";
-import { Switch } from "@/components/ui/switch";
+import {
+  type Control,
+  Controller,
+  type FieldError,
+  type FieldPath,
+  type FieldValues,
+  type RegisterOptions,
+} from "react-hook-form";
+import { Text, TouchableOpacity, View } from "react-native";
 import { cn } from "@/components/lib/utils";
+import { Switch } from "@/components/ui/switch";
 
 interface SwitchFormProps<T extends FieldValues> {
   control?: Control<T>;
@@ -18,7 +24,7 @@ interface SwitchFormProps<T extends FieldValues> {
   labelClassName?: string;
   descriptionClassName?: string;
   switchClassName?: string;
-  rules?: any;
+  rules?: RegisterOptions<T>;
 }
 
 export function SwitchForm<T extends FieldValues>({
@@ -61,7 +67,7 @@ export function SwitchForm<T extends FieldValues>({
             </Text>
           </TouchableOpacity>
         )}
-        
+
         {description && (
           <Text
             className={cn(
@@ -73,25 +79,21 @@ export function SwitchForm<T extends FieldValues>({
             {description}
           </Text>
         )}
-        
+
         {(switchError || error) && (
           <Text className="text-xs text-red-500 mt-1">
             {typeof switchError === "string"
               ? switchError
-              : switchError?.message ||
-                (typeof error === "string" ? error : error?.message)}
+              : switchError?.message || (typeof error === "string" ? error : error?.message)}
           </Text>
         )}
       </View>
-      
+
       <Switch
         checked={switchValue}
         onCheckedChange={switchOnChange}
         disabled={disabled}
-        className={cn(
-          switchError && "border-red-500",
-          switchClassName
-        )}
+        className={cn(switchError && "border-red-500", switchClassName)}
       />
     </View>
   );
@@ -112,11 +114,7 @@ export function SwitchForm<T extends FieldValues>({
   }
 
   // Regular switch without form control
-  return renderSwitch(
-    value || false,
-    onChange || (() => {}),
-    error
-  );
+  return renderSwitch(value || false, onChange || (() => {}), error);
 }
 
 export default SwitchForm;

@@ -1,16 +1,15 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Investment, UserInvestment } from '@/types';
-import investmentService from '@/services/investmentService';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import investmentService from "@/services/investmentService";
 
 // Query keys
 export const investmentKeys = {
-  all: ['investments'] as const,
-  lists: () => [...investmentKeys.all, 'list'] as const,
+  all: ["investments"] as const,
+  lists: () => [...investmentKeys.all, "list"] as const,
   list: (filters: string) => [...investmentKeys.lists(), { filters }] as const,
-  details: () => [...investmentKeys.all, 'detail'] as const,
+  details: () => [...investmentKeys.all, "detail"] as const,
   detail: (id: string) => [...investmentKeys.details(), id] as const,
-  userInvestments: () => [...investmentKeys.all, 'user'] as const,
-  categories: () => [...investmentKeys.all, 'categories'] as const,
+  userInvestments: () => [...investmentKeys.all, "user"] as const,
+  categories: () => [...investmentKeys.all, "categories"] as const,
 };
 
 // Get all investments query
@@ -20,7 +19,7 @@ export const useInvestmentsQuery = () => {
     queryFn: async () => {
       const response = await investmentService.getInvestments();
       if (!response.success) {
-        throw new Error(response.message || 'Failed to get investments');
+        throw new Error(response.message || "Failed to get investments");
       }
       return response.investments;
     },
@@ -35,7 +34,7 @@ export const useInvestmentQuery = (id: string) => {
     queryFn: async () => {
       const response = await investmentService.getInvestment(id);
       if (!response.success) {
-        throw new Error(response.message || 'Failed to get investment');
+        throw new Error(response.message || "Failed to get investment");
       }
       return response.investment;
     },
@@ -53,7 +52,7 @@ export const useUserInvestmentsQuery = () => {
       // For now, we'll get all investments and filter user's investments
       const response = await investmentService.getInvestments();
       if (!response.success) {
-        throw new Error(response.message || 'Failed to get user investments');
+        throw new Error(response.message || "Failed to get user investments");
       }
       return response.investments;
     },
@@ -68,7 +67,7 @@ export const useInvestmentCategoriesQuery = () => {
     queryFn: async () => {
       const response = await investmentService.getCategories();
       if (!response.success) {
-        throw new Error(response.message || 'Failed to get categories');
+        throw new Error(response.message || "Failed to get categories");
       }
       return response.categories;
     },
@@ -81,14 +80,28 @@ export const useRegisterInvestmentMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, amount, paymentMethod, notes }: { id: string; amount: number; paymentMethod?: string; notes?: string }) => {
-      const response = await investmentService.registerInvestment(id, { amount, paymentMethod, notes });
+    mutationFn: async ({
+      id,
+      amount,
+      paymentMethod,
+      notes,
+    }: {
+      id: string;
+      amount: number;
+      paymentMethod?: string;
+      notes?: string;
+    }) => {
+      const response = await investmentService.registerInvestment(id, {
+        amount,
+        paymentMethod,
+        notes,
+      });
       if (!response.success) {
-        throw new Error(response.message || 'Failed to register investment');
+        throw new Error(response.message || "Failed to register investment");
       }
       return response;
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       // Invalidate user investments to refetch
       queryClient.invalidateQueries({ queryKey: investmentKeys.userInvestments() });
       // Also invalidate the specific investment

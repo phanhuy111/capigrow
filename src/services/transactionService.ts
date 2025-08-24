@@ -1,12 +1,11 @@
-import apiClient from '@/services/apiClient';
-import { API_ENDPOINTS } from '@/utils/constants';
-import { ApiResponse } from '@/types';
+import apiClient from "@/services/apiClient";
+import { API_ENDPOINTS } from "@/utils/constants";
 
 // Types for transaction operations
 export interface Transaction {
   id: string;
-  type: 'investment' | 'withdrawal' | 'dividend' | 'fee' | 'refund';
-  status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
+  type: "investment" | "withdrawal" | "dividend" | "fee" | "refund";
+  status: "pending" | "processing" | "completed" | "failed" | "cancelled";
   amount: number;
   currency: string;
   description: string;
@@ -24,7 +23,7 @@ export interface Transaction {
 export interface PaymentRequest {
   amount: number;
   currency?: string;
-  paymentMethod: 'bank_transfer' | 'credit_card' | 'debit_card' | 'e_wallet';
+  paymentMethod: "bank_transfer" | "credit_card" | "debit_card" | "e_wallet";
   investmentId?: string;
   description?: string;
   returnUrl?: string;
@@ -70,20 +69,20 @@ const transactionService = {
     endDate?: string;
   }): Promise<TransactionListResponse> => {
     const queryParams = new URLSearchParams();
-    if (params?.page) queryParams.append('page', params.page.toString());
-    if (params?.limit) queryParams.append('limit', params.limit.toString());
-    if (params?.type) queryParams.append('type', params.type);
-    if (params?.status) queryParams.append('status', params.status);
-    if (params?.startDate) queryParams.append('startDate', params.startDate);
-    if (params?.endDate) queryParams.append('endDate', params.endDate);
-    
-    const url = `${API_ENDPOINTS.TRANSACTIONS.LIST}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    if (params?.page) queryParams.append("page", params.page.toString());
+    if (params?.limit) queryParams.append("limit", params.limit.toString());
+    if (params?.type) queryParams.append("type", params.type);
+    if (params?.status) queryParams.append("status", params.status);
+    if (params?.startDate) queryParams.append("startDate", params.startDate);
+    if (params?.endDate) queryParams.append("endDate", params.endDate);
+
+    const url = `${API_ENDPOINTS.TRANSACTIONS.LIST}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
     return apiClient.get(url);
   },
 
   // Get transaction details
   getTransaction: async (id: string): Promise<TransactionDetailResponse> => {
-    const url = API_ENDPOINTS.TRANSACTIONS.DETAILS.replace(':id', id);
+    const url = API_ENDPOINTS.TRANSACTIONS.DETAILS.replace(":id", id);
     return apiClient.get(url);
   },
 

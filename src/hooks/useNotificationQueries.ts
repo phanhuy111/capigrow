@@ -1,26 +1,50 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { mockNotificationApi } from '@/mock/api/notifications';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { mockNotificationApi } from "@/mock/api/notifications";
 
-// Query keys
-export const notificationKeys = {
-  all: ['notifications'] as const,
-  lists: () => [...notificationKeys.all, 'list'] as const,
-  list: (filters: any) => [...notificationKeys.lists(), { filters }] as const,
-  settings: () => [...notificationKeys.all, 'settings'] as const,
-};
-
-// Get notifications query
-export const useNotificationsQuery = (filters?: {
+// Types
+interface NotificationFilters {
   type?: string;
   isRead?: boolean;
   limit?: number;
-}) => {
+}
+
+interface NotificationSettings {
+  push: {
+    enabled: boolean;
+    investment_updates: boolean;
+    transaction_alerts: boolean;
+    new_opportunities: boolean;
+    security_alerts: boolean;
+  };
+  email: {
+    enabled: boolean;
+    weekly_summary: boolean;
+    monthly_report: boolean;
+    important_updates: boolean;
+  };
+  sms: {
+    enabled: boolean;
+    security_alerts: boolean;
+    transaction_confirmations: boolean;
+  };
+}
+
+// Query keys
+export const notificationKeys = {
+  all: ["notifications"] as const,
+  lists: () => [...notificationKeys.all, "list"] as const,
+  list: (filters?: NotificationFilters) => [...notificationKeys.lists(), { filters }] as const,
+  settings: () => [...notificationKeys.all, "settings"] as const,
+};
+
+// Get notifications query
+export const useNotificationsQuery = (filters?: NotificationFilters) => {
   return useQuery({
     queryKey: notificationKeys.list(filters),
     queryFn: async () => {
       const response = await mockNotificationApi.getNotifications(filters);
       if (!response.success) {
-        throw new Error(response.message || 'Failed to get notifications');
+        throw new Error(response.message || "Failed to get notifications");
       }
       return {
         notifications: response.data.notifications,
@@ -39,7 +63,7 @@ export const useNotificationSettingsQuery = () => {
     queryFn: async () => {
       const response = await mockNotificationApi.getSettings();
       if (!response.success) {
-        throw new Error(response.message || 'Failed to get notification settings');
+        throw new Error(response.message || "Failed to get notification settings");
       }
       return response.data.settings;
     },
@@ -55,7 +79,7 @@ export const useMarkAsReadMutation = () => {
     mutationFn: async (notificationId: string) => {
       const response = await mockNotificationApi.markAsRead(notificationId);
       if (!response.success) {
-        throw new Error(response.message || 'Failed to mark notification as read');
+        throw new Error(response.message || "Failed to mark notification as read");
       }
       return response;
     },
@@ -74,7 +98,7 @@ export const useMarkAllAsReadMutation = () => {
     mutationFn: async () => {
       const response = await mockNotificationApi.markAllAsRead();
       if (!response.success) {
-        throw new Error(response.message || 'Failed to mark all notifications as read');
+        throw new Error(response.message || "Failed to mark all notifications as read");
       }
       return response;
     },
@@ -90,10 +114,10 @@ export const useUpdateNotificationSettingsMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (settings: any) => {
+    mutationFn: async (settings: Partial<NotificationSettings>) => {
       const response = await mockNotificationApi.updateSettings(settings);
       if (!response.success) {
-        throw new Error(response.message || 'Failed to update notification settings');
+        throw new Error(response.message || "Failed to update notification settings");
       }
       return response.data.settings;
     },

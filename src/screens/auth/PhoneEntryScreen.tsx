@@ -1,29 +1,25 @@
-import React from "react";
-import { View, Text, Alert, Dimensions } from "react-native";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Globe, Smartphone } from "lucide-react-native";
+import type React from "react";
+import { useForm } from "react-hook-form";
+import { Alert, Dimensions, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { RootStackParamList } from "@/types";
-import { COLORS } from "@/utils/theme";
-import { Globe, Smartphone } from "lucide-react-native";
-
 import CapiGrowLogo from "@/components/common/CapiGrowLogo";
+import InputForm from "@/components/common/InputForm";
+import { SelectionForm } from "@/components/common/SelectionForm";
 import { Button } from "@/components/ui";
 import { usePhoneVerificationMutation } from "@/hooks/useAuthQueries";
+import type { RootStackParamList } from "@/types";
+import { COLORS } from "@/utils/theme";
 import { cleanPhoneNumber } from "@/utils/validation";
-import { SelectionForm } from "@/components/common/SelectionForm";
-import InputForm from "@/components/common/InputForm";
 
 const { height } = Dimensions.get("window");
 
-type PhoneEntryScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "PhoneEntry"
->;
+type PhoneEntryScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "PhoneEntry">;
 
 // Zod schema for phone validation
 const phoneSchema = z.object({
@@ -48,7 +44,7 @@ const PhoneEntryScreen: React.FC = () => {
     control,
     handleSubmit,
     watch,
-    formState: { errors, isValid },
+    formState: { isValid },
   } = useForm<PhoneFormData>({
     resolver: zodResolver(phoneSchema),
     defaultValues: {
@@ -73,11 +69,9 @@ const PhoneEntryScreen: React.FC = () => {
           phoneNumber: cleanPhone,
         });
       }
-    } catch (error: any) {
-      Alert.alert(
-        "Lỗi",
-        error.response?.data?.message || "Đã xảy ra lỗi. Vui lòng thử lại."
-      );
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Đã xảy ra lỗi. Vui lòng thử lại.";
+      Alert.alert("Lỗi", errorMessage);
     }
   };
 
@@ -93,7 +87,7 @@ const PhoneEntryScreen: React.FC = () => {
           <View className="absolute inset-0 justify-center items-center">
             {Array.from({ length: 16 }).map((_, index) => (
               <View
-                key={index}
+                key={`radial-line-${index * 22.5}`}
                 className="absolute w-0.5 bg-white/10"
                 style={[
                   {
@@ -115,10 +109,7 @@ const PhoneEntryScreen: React.FC = () => {
         </View>
 
         {/* Bottom Form Section */}
-        <View
-          className="bg-white rounded-t-2xl pt-6"
-          style={{ minHeight: height * 0.5 }}
-        >
+        <View className="bg-white rounded-t-2xl pt-6" style={{ minHeight: height * 0.5 }}>
           <View className="px-6">
             <Text className="text-3xl font-bold text-gray-900 mb-3 text-left">
               Nhập số điện thoại của bạn{"\n"}để bắt đầu
@@ -130,7 +121,7 @@ const PhoneEntryScreen: React.FC = () => {
                 label="Quốc gia"
                 placeholder="Chọn quốc gia"
                 name="country"
-                control={control}
+                control={control as any}
                 options={[
                   { label: "🇻🇳 Vietnam (+84)", value: "VN" },
                   { label: "🇺🇸 United States (+1)", value: "US" },
@@ -158,17 +149,11 @@ const PhoneEntryScreen: React.FC = () => {
 
             <Text className="text-xs text-gray-500 text-left leading-4 mb-6">
               Bằng việc nhấn tiếp theo, đồng nghĩa với việc bạn đồng ý các{" "}
-              <Text className="text-purple-600 font-medium">
-                điều khoản sử dụng và dịch vụ
-              </Text>
+              <Text className="text-purple-600 font-medium">điều khoản sử dụng và dịch vụ</Text>
             </Text>
 
             <Button
-              title={
-                phoneVerificationMutation.isPending
-                  ? "Đang xử lý..."
-                  : "Tiếp theo →"
-              }
+              title={phoneVerificationMutation.isPending ? "Đang xử lý..." : "Tiếp theo →"}
               onPress={handleSubmit(onSubmit)}
               variant="primary"
               size="lg"

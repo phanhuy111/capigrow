@@ -231,7 +231,7 @@ export const Icons = {
 
 // Images
 export const Images = {
-  statusBarLight: require('./images/status-bar-light.png'),
+  statusBarLight: require("./images/status-bar-light.png"),
 };
 
 // Asset helper functions

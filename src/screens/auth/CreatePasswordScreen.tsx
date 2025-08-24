@@ -1,43 +1,30 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-  Platform,
-} from "react-native";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { type RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type React from "react";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RouteProp } from "@react-navigation/native";
-import { RootStackParamList } from "@/types";
-import { Input, Button } from "@/components/ui";
+import { Button, Input } from "@/components/ui";
 import { useRegisterMutation } from "@/hooks/useAuthQueries";
 import { useAuthClientStore } from "@/store/authClientStore";
+import type { RootStackParamList, User } from "@/types";
 
 type CreatePasswordScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "CreatePassword"
 >;
-type CreatePasswordScreenRouteProp = RouteProp<
-  RootStackParamList,
-  "CreatePassword"
->;
+type CreatePasswordScreenRouteProp = RouteProp<RootStackParamList, "CreatePassword">;
 
 const createPasswordSchema = z
   .object({
     password: z
       .string()
       .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        "Mật khẩu phải có chữ hoa, chữ thường và số"
-      ),
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Mật khẩu phải có chữ hoa, chữ thường và số"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -73,30 +60,55 @@ const CreatePasswordScreen: React.FC = () => {
   const onSubmit = async (data: CreatePasswordFormData) => {
     try {
       const response = await registerMutation.mutateAsync({
-        phone_number: phoneNumber,
-        first_name: userInfo.firstName,
-        last_name: userInfo.lastName,
+        phoneNumber: phoneNumber,
+        fullName: `${userInfo.firstName} ${userInfo.lastName}`,
         email: userInfo.email,
         password: data.password,
+        confirmPassword: data.password,
+        dateOfBirth: userInfo.dateOfBirth,
+        gender: "other" as const,
       });
 
       // Store authentication data
       if (response.access_token) {
-        setAuthData(response.user, response.access_token, response.refresh_token);
+        // Convert API user to User type format
+        const user: User = {
+          id: response.user.id,
+          email: response.user.email,
+          first_name: response.user.fullName?.split(" ")[0] || "",
+          last_name: response.user.fullName?.split(" ").slice(1).join(" ") || "",
+          phone_number: response.user.phoneNumber,
+          date_of_birth: undefined,
+          profile_image_url: undefined,
+          is_active: true,
+          is_verified: false,
+          verification_status: "pending" as const,
+          investor_type: undefined,
+          risk_tolerance: undefined,
+          investment_goals: undefined,
+          annual_income: undefined,
+          net_worth: undefined,
+          liquid_assets: undefined,
+          two_factor_enabled: false,
+          last_login_at: undefined,
+          timezone: "UTC",
+          language: "en",
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        
+        setAuthData(user, response.access_token, response.refresh_token);
       }
 
-      Alert.alert(
-        "Tạo tài khoản thành công",
-        "Tài khoản của bạn đã được tạo thành công!",
-        [
-          {
-            text: "Tiếp tục",
-            onPress: () => navigation.navigate("MainTabs"),
-          },
-        ]
-      );
-    } catch (error: any) {
-      Alert.alert("Lỗi", error.message || "Không thể tạo tài khoản");
+      Alert.alert("Tạo tài khoản thành công", "Tài khoản của bạn đã được tạo thành công!", [
+        {
+          text: "Tiếp tục",
+          onPress: () => navigation.navigate("MainTabs"),
+        },
+      ]);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Không thể tạo tài khoản";
+      Alert.alert("Lỗi", errorMessage);
     }
   };
 
@@ -117,9 +129,7 @@ const CreatePasswordScreen: React.FC = () => {
             <Button variant="ghost" onPress={() => navigation.goBack()}>
               <Text className="text-xl text-gray-900">←</Text>
             </Button>
-            <Text className="text-lg font-semibold text-gray-900">
-              Tạo mật khẩu
-            </Text>
+            <Text className="text-lg font-semibold text-gray-900">Tạo mật khẩu</Text>
             <View className="w-10" />
           </View>
 
@@ -133,8 +143,7 @@ const CreatePasswordScreen: React.FC = () => {
                 Tạo mật khẩu bảo mật
               </Text>
               <Text className="text-base text-gray-600 leading-5 mb-12">
-                Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và
-                số
+                Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số
               </Text>
 
               <View className="flex-1">
@@ -152,12 +161,8 @@ const CreatePasswordScreen: React.FC = () => {
                       autoCapitalize="none"
                       leftIcon={<Text className="text-lg">🔒</Text>}
                       rightIcon={
-                        <TouchableOpacity
-                          onPress={() => setShowPassword(!showPassword)}
-                        >
-                          <Text className="text-lg">
-                            {showPassword ? "👁️" : "👁️‍🗨️"}
-                          </Text>
+                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                          <Text className="text-lg">{showPassword ? "👁️" : "👁️‍🗨️"}</Text>
                         </TouchableOpacity>
                       }
                       onRightIconPress={() => setShowPassword(!showPassword)}
@@ -180,18 +185,12 @@ const CreatePasswordScreen: React.FC = () => {
                       leftIcon={<Text className="text-lg">🔒</Text>}
                       rightIcon={
                         <TouchableOpacity
-                          onPress={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
+                          onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                         >
-                          <Text className="text-lg">
-                            {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
-                          </Text>
+                          <Text className="text-lg">{showConfirmPassword ? "👁️" : "👁️‍🗨️"}</Text>
                         </TouchableOpacity>
                       }
-                      onRightIconPress={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
+                      onRightIconPress={() => setShowConfirmPassword(!showConfirmPassword)}
                     />
                   )}
                 />
@@ -201,15 +200,9 @@ const CreatePasswordScreen: React.FC = () => {
                   <Text className="text-base font-medium text-gray-900 mb-3">
                     Yêu cầu mật khẩu:
                   </Text>
-                  <Text className="text-sm text-gray-600 mb-1">
-                    • Ít nhất 8 ký tự
-                  </Text>
-                  <Text className="text-sm text-gray-600 mb-1">
-                    • Có chữ hoa và chữ thường
-                  </Text>
-                  <Text className="text-sm text-gray-600 mb-1">
-                    • Có ít nhất 1 số
-                  </Text>
+                  <Text className="text-sm text-gray-600 mb-1">• Ít nhất 8 ký tự</Text>
+                  <Text className="text-sm text-gray-600 mb-1">• Có chữ hoa và chữ thường</Text>
+                  <Text className="text-sm text-gray-600 mb-1">• Có ít nhất 1 số</Text>
                 </View>
               </View>
             </View>
@@ -223,9 +216,7 @@ const CreatePasswordScreen: React.FC = () => {
               disabled={registerMutation.isPending || !isValid}
             >
               <Text className="text-white text-base font-semibold">
-                {registerMutation.isPending
-                  ? "Đang tạo tài khoản..."
-                  : "Tạo tài khoản"}
+                {registerMutation.isPending ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
               </Text>
             </Button>
           </View>

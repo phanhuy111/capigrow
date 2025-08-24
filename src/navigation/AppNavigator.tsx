@@ -1,30 +1,29 @@
-import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { getToken, getUserData } from "@/services/storage";
-import { useAuthClientStore } from "@/store";
-
+import React, { useEffect } from "react";
+import MainTabNavigator from "@/navigation/MainTabNavigator";
+import CreatePasswordScreen from "@/screens/auth/CreatePasswordScreen";
+import OTPVerificationScreen from "@/screens/auth/OTPVerificationScreen";
+import PhoneEntryScreen from "@/screens/auth/PhoneEntryScreen";
 // Import screens
 import SplashScreen from "@/screens/auth/SplashScreen";
 import WelcomeScreen from "@/screens/auth/WelcomeScreen";
-import PhoneEntryScreen from "@/screens/auth/PhoneEntryScreen";
-import OTPVerificationScreen from "@/screens/auth/OTPVerificationScreen";
-import CreatePasswordScreen from "@/screens/auth/CreatePasswordScreen";
-import MainTabNavigator from "@/navigation/MainTabNavigator";
+import LoadingScreen from "@/screens/common/LoadingScreen";
+import InvestmentAmountScreen from "@/screens/investment/InvestmentAmountScreen";
+import InvestmentDetailsScreen from "@/screens/investment/InvestmentDetailsScreen";
+import InvestmentReviewScreen from "@/screens/investment/InvestmentReviewScreen";
 import NotificationScreen from "@/screens/notification/NotificationScreen";
+import BankTransferQRScreen from "@/screens/payment/BankTransferQRScreen";
+import PaymentConfirmationScreen from "@/screens/payment/PaymentConfirmationScreen";
+import PaymentProcessingScreen from "@/screens/payment/PaymentProcessingScreen";
 import IdentityVerificationScreen from "@/screens/verification/IdentityVerificationScreen";
 import VerificationDocumentScreen from "@/screens/verification/VerificationDocumentScreen";
 import VerificationSelfieScreen from "@/screens/verification/VerificationSelfieScreen";
 import VerificationStatusScreen from "@/screens/verification/VerificationStatusScreen";
-import InvestmentDetailsScreen from "@/screens/investment/InvestmentDetailsScreen";
-import InvestmentAmountScreen from "@/screens/investment/InvestmentAmountScreen";
-import InvestmentReviewScreen from "@/screens/investment/InvestmentReviewScreen";
-import PaymentConfirmationScreen from "@/screens/payment/PaymentConfirmationScreen";
-import PaymentProcessingScreen from "@/screens/payment/PaymentProcessingScreen";
-import BankTransferQRScreen from "@/screens/payment/BankTransferQRScreen";
-import LoadingScreen from "@/screens/common/LoadingScreen";
+import { getToken, getUserData } from "@/services/storage";
+import { useAuthClientStore } from "@/store";
 
-import { RootStackParamList } from "@/types";
+import type { RootStackParamList } from "@/types";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -68,25 +67,16 @@ const AppNavigator: React.FC = () => {
           <>
             <Stack.Screen name="Splash" component={SplashScreen} />
             <Stack.Screen name="PhoneEntry" component={PhoneEntryScreen} />
-            <Stack.Screen
-              name="OTPVerification"
-              component={OTPVerificationScreen}
-            />
+            <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} />
             <Stack.Screen name="Welcome" component={WelcomeScreen} />
-            <Stack.Screen
-              name="CreatePassword"
-              component={CreatePasswordScreen}
-            />
+            <Stack.Screen name="CreatePassword" component={CreatePasswordScreen} />
           </>
         ) : (
           // Main App Stack
           <>
             <Stack.Screen name="MainTabs" component={MainTabNavigator} />
             <Stack.Screen name="Notifications" component={NotificationScreen} />
-            <Stack.Screen
-              name="IdentityVerification"
-              component={IdentityVerificationScreen}
-            />
+            <Stack.Screen name="IdentityVerification" component={IdentityVerificationScreen} />
             <Stack.Screen
               name="VerificationDocument"
               component={VerificationDocumentScreen}

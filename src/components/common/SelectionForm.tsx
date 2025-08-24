@@ -1,6 +1,6 @@
-import React from "react";
+import type React from "react";
+import type { Control, FieldPath, FieldValues } from "react-hook-form";
 import { BottomSheetSelectionForm } from "./BottomSheetSelectionForm";
-import { Control, FieldValues, FieldPath } from "react-hook-form";
 
 interface SelectOption {
   value: string;

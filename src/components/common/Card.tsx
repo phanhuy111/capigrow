@@ -1,23 +1,18 @@
-import React from 'react';
-import { View, ViewStyle } from 'react-native';
-import { CARD_STYLES } from '@/utils/theme';
+import type React from "react";
+import { View, type ViewStyle } from "react-native";
+import { CARD_STYLES } from "@/utils/theme";
 
 interface CardProps {
   children: React.ReactNode;
-  variant?: 'default' | 'elevated' | 'flat';
+  variant?: "default" | "elevated" | "flat";
   style?: ViewStyle;
   padding?: number;
 }
 
-const Card: React.FC<CardProps> = ({
-  children,
-  variant = 'default',
-  style,
-  padding,
-}) => {
+const Card: React.FC<CardProps> = ({ children, variant = "default", style, padding }) => {
   const getCardStyle = (): ViewStyle => {
     const baseStyle = CARD_STYLES[variant];
-    
+
     return {
       ...baseStyle,
       ...(padding !== undefined && { padding }),
@@ -25,11 +20,7 @@ const Card: React.FC<CardProps> = ({
     };
   };
 
-  return (
-    <View style={getCardStyle()}>
-      {children}
-    </View>
-  );
+  return <View style={getCardStyle()}>{children}</View>;
 };
 
 export default Card;

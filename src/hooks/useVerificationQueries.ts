@@ -1,11 +1,10 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { IdentityVerification } from '@/types';
-import verificationService from '@/services/verificationService';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import verificationService from "@/services/verificationService";
 
 // Query keys
 export const verificationKeys = {
-  all: ['verification'] as const,
-  status: () => [...verificationKeys.all, 'status'] as const,
+  all: ["verification"] as const,
+  status: () => [...verificationKeys.all, "status"] as const,
 };
 
 // Get verification status query
@@ -15,7 +14,7 @@ export const useVerificationStatusQuery = () => {
     queryFn: async () => {
       const response = await verificationService.getVerificationStatus();
       if (!response.success) {
-        throw new Error(response.message || 'Failed to get verification status');
+        throw new Error(response.message || "Failed to get verification status");
       }
       return response.verification;
     },
@@ -31,7 +30,7 @@ export const useUploadDocumentMutation = () => {
     mutationFn: async (formData: FormData) => {
       const response = await verificationService.uploadDocument(formData);
       if (!response.success) {
-        throw new Error(response.message || 'Failed to upload document');
+        throw new Error(response.message || "Failed to upload document");
       }
       return response.document;
     },
@@ -50,7 +49,7 @@ export const useUploadSelfieMutation = () => {
     mutationFn: async (formData: FormData) => {
       const response = await verificationService.uploadSelfie(formData);
       if (!response.success) {
-        throw new Error(response.message || 'Failed to upload selfie');
+        throw new Error(response.message || "Failed to upload selfie");
       }
       return response;
     },

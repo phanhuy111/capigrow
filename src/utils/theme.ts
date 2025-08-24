@@ -1,4 +1,12 @@
-import { COLORS, FONTS, FONT_WEIGHTS, FONT_SIZES, LINE_HEIGHTS, SPACING, BORDER_RADIUS } from '@/utils/constants';
+import {
+  BORDER_RADIUS,
+  COLORS,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  FONTS,
+  LINE_HEIGHTS,
+  SPACING,
+} from "@/utils/constants";
 
 // Typography styles matching Figma design
 export const TYPOGRAPHY = {
@@ -141,16 +149,16 @@ export const BUTTON_STYLES = {
     paddingHorizontal: SPACING.xxxl,
   },
   tertiary: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
+    backgroundColor: "transparent",
+    borderColor: "transparent",
     borderWidth: 0,
     borderRadius: BORDER_RADIUS.lg,
     paddingVertical: SPACING.xl,
     paddingHorizontal: SPACING.xxxl,
   },
   invisible: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
+    backgroundColor: "transparent",
+    borderColor: "transparent",
     borderWidth: 0,
     borderRadius: BORDER_RADIUS.lg,
     paddingVertical: SPACING.md,

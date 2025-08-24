@@ -1,6 +1,6 @@
-import apiClient from '@/services/apiClient';
-import { API_ENDPOINTS } from '@/utils/constants';
-import { getRefreshToken } from '@/services/storage';
+import apiClient from "@/services/apiClient";
+import { getRefreshToken } from "@/services/storage";
+import { API_ENDPOINTS } from "@/utils/constants";
 
 // Types for authentication
 export interface LoginRequest {
@@ -58,7 +58,7 @@ export interface UserRegistrationRequest {
   password: string;
   confirmPassword: string;
   dateOfBirth: string;
-  gender: 'male' | 'female' | 'other';
+  gender: "male" | "female" | "other";
   referralCode?: string;
 }
 
@@ -137,7 +137,9 @@ const authApi = {
   },
 
   // Send OTP to phone number
-  sendPhoneVerification: async (data: PhoneVerificationRequest): Promise<PhoneVerificationResponse> => {
+  sendPhoneVerification: async (
+    data: PhoneVerificationRequest
+  ): Promise<PhoneVerificationResponse> => {
     return apiClient.post(API_ENDPOINTS.PHONE_VERIFICATION, data);
   },
 

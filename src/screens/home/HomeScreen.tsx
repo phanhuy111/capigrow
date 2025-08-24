@@ -1,25 +1,19 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type React from "react";
+import { useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
-import { useAuthClientStore } from "@/store/authClientStore";
-import { RootStackParamList } from "@/types";
-import { COLORS } from "@/utils/theme";
 import { Icons } from "@/assets";
-
-import { Card, Button, Input } from "@/components/ui";
 import Screen from "@/components/common/Screen";
-import { usePortfolioQuery } from "@/hooks/usePortfolioQueries";
+import { Card, Input } from "@/components/ui";
 import { useInvestmentsQuery } from "@/hooks/useInvestmentQueries";
 import { useNotificationsQuery } from "@/hooks/useNotificationQueries";
+import { usePortfolioQuery } from "@/hooks/usePortfolioQueries";
+import { useAuthClientStore } from "@/store/authClientStore";
+import type { RootStackParamList } from "@/types";
 import { formatCurrency, formatPercentage } from "@/utils/helpers";
+import { COLORS } from "@/utils/theme";
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -30,9 +24,11 @@ const HomeScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   // React Query hooks for data fetching
-  const { data: portfolioData, isLoading: portfolioLoading } = usePortfolioQuery();
-  const { data: allInvestments, isLoading: investmentsLoading } = useInvestmentsQuery();
-  const { data: notificationsData, isLoading: notificationsLoading } = useNotificationsQuery({ limit: 5 });
+  const { data: portfolioData } = usePortfolioQuery();
+  const { data: allInvestments } = useInvestmentsQuery();
+  const { data: notificationsData } = useNotificationsQuery({
+    limit: 5,
+  });
 
   // Process the data
   const investments = allInvestments?.slice(0, 3) || [];
@@ -53,12 +49,7 @@ const HomeScreen: React.FC = () => {
             onPress={() => navigation.navigate("Notifications")}
             className="w-11 h-11 rounded-full bg-gray-100 justify-center items-center relative"
           >
-            <SvgXml
-              xml={Icons.notification}
-              width={24}
-              height={24}
-              fill={COLORS.textPrimary}
-            />
+            <SvgXml xml={Icons.notification} width={24} height={24} fill={COLORS.textPrimary} />
             {notifications.filter((n) => !n.isRead).length > 0 && (
               <View className="absolute top-2 right-2 w-4 h-4 rounded-full bg-red-500 justify-center items-center">
                 <Text className="text-white text-xs font-semibold">
@@ -77,23 +68,13 @@ const HomeScreen: React.FC = () => {
               value={searchQuery}
               onChangeText={setSearchQuery}
               leftIcon={
-                <SvgXml
-                  xml={Icons.search}
-                  width={20}
-                  height={20}
-                  fill={COLORS.textTertiary}
-                />
+                <SvgXml xml={Icons.search} width={20} height={20} fill={COLORS.textTertiary} />
               }
               className="bg-gray-100 border-0"
             />
           </View>
           <TouchableOpacity className="w-12 h-12 rounded-lg bg-gray-100 justify-center items-center">
-            <SvgXml
-              xml={Icons.menuSquare}
-              width={20}
-              height={20}
-              fill={COLORS.textPrimary}
-            />
+            <SvgXml xml={Icons.menuSquare} width={20} height={20} fill={COLORS.textPrimary} />
           </TouchableOpacity>
         </View>
 
@@ -101,16 +82,9 @@ const HomeScreen: React.FC = () => {
         {portfolioData && (
           <Card className="mb-8">
             <View className="flex-row justify-between items-center mb-6">
-              <Text className="text-lg font-semibold text-gray-900">
-                Portfolio Overview
-              </Text>
+              <Text className="text-lg font-semibold text-gray-900">Portfolio Overview</Text>
               <TouchableOpacity className="p-0">
-                <SvgXml
-                  xml={Icons.more}
-                  width={20}
-                  height={20}
-                  fill={COLORS.textSecondary}
-                />
+                <SvgXml xml={Icons.more} width={20} height={20} fill={COLORS.textSecondary} />
               </TouchableOpacity>
             </View>
 
@@ -165,13 +139,9 @@ const HomeScreen: React.FC = () => {
         {/* Investment Categories */}
         <View className="mb-8">
           <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-lg font-semibold text-gray-900">
-              Categories
-            </Text>
+            <Text className="text-lg font-semibold text-gray-900">Categories</Text>
             <TouchableOpacity className="p-0">
-              <Text className="text-sm font-medium text-purple-600">
-                See all
-              </Text>
+              <Text className="text-sm font-medium text-purple-600">See all</Text>
             </TouchableOpacity>
           </View>
 
@@ -180,60 +150,47 @@ const HomeScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
             style={{ marginHorizontal: -24, paddingHorizontal: 24 }}
           >
-            {["Energy", "Technology", "Real Estate", "Healthcare"].map(
-              (category, index) => (
-                <TouchableOpacity
-                  key={index}
-                  className="p-0 items-center mr-4 gap-3"
-                >
-                  <View className="w-14 h-14 rounded-full bg-purple-50 justify-center items-center">
-                    <SvgXml
-                      xml={
-                        index === 0
-                          ? Icons.cup
-                          : index === 1
+            {["Energy", "Technology", "Real Estate", "Healthcare"].map((category, index) => (
+              <TouchableOpacity key={category} className="p-0 items-center mr-4 gap-3">
+                <View className="w-14 h-14 rounded-full bg-purple-50 justify-center items-center">
+                  <SvgXml
+                    xml={
+                      index === 0
+                        ? Icons.cup
+                        : index === 1
                           ? Icons.diagram
                           : index === 2
-                          ? Icons.buildings
-                          : Icons.health
-                      }
-                      width={24}
-                      height={24}
-                      fill={COLORS.primary}
-                    />
-                  </View>
-                  <Text className="text-sm font-medium text-gray-900">
-                    {category}
-                  </Text>
-                </TouchableOpacity>
-              )
-            )}
+                            ? Icons.buildings
+                            : Icons.health
+                    }
+                    width={24}
+                    height={24}
+                    fill={COLORS.primary}
+                  />
+                </View>
+                <Text className="text-sm font-medium text-gray-900">{category}</Text>
+              </TouchableOpacity>
+            ))}
           </ScrollView>
         </View>
 
         {/* Featured Investments */}
         <View className="mb-12">
           <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-lg font-semibold text-gray-900">
-              Featured Investments
-            </Text>
+            <Text className="text-lg font-semibold text-gray-900">Featured Investments</Text>
             <TouchableOpacity className="p-0">
-              <Text className="text-sm font-medium text-purple-600">
-                See all
-              </Text>
+              <Text className="text-sm font-medium text-purple-600">See all</Text>
             </TouchableOpacity>
           </View>
 
-          {investments.map((investment, index) => (
+          {investments.map((investment, _index) => (
             <Card key={investment.id} className="mb-6">
               <View className="flex-row justify-between items-start mb-6">
                 <View className="flex-1 mr-4">
                   <Text className="text-base font-semibold text-gray-900 mb-2">
                     {investment.name}
                   </Text>
-                  <Text className="text-sm text-gray-600">
-                    {investment.category}
-                  </Text>
+                  <Text className="text-sm text-gray-600">{investment.category}</Text>
                 </View>
                 <View className="bg-green-50 px-4 py-2 rounded-lg">
                   <Text className="text-xs font-semibold text-green-600">
@@ -247,9 +204,7 @@ const HomeScreen: React.FC = () => {
                   <View
                     className="h-full bg-purple-600 rounded-full"
                     style={{
-                      width: `${
-                        (investment.totalRaised / investment.targetAmount) * 100
-                      }%`,
+                      width: `${(investment.totalRaised / investment.targetAmount) * 100}%`,
                     }}
                   />
                 </View>
@@ -263,9 +218,7 @@ const HomeScreen: React.FC = () => {
                 <Text className="text-sm text-gray-600">
                   Min: {formatCurrency(investment.minimumAmount)}
                 </Text>
-                <Text className="text-sm text-gray-600">
-                  {investment.investorCount} investors
-                </Text>
+                <Text className="text-sm text-gray-600">{investment.investorCount} investors</Text>
               </View>
             </Card>
           ))}

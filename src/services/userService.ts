@@ -1,6 +1,6 @@
-import apiClient from '@/services/apiClient';
-import { API_ENDPOINTS } from '@/utils/constants';
-import { ApiResponse } from '@/types';
+import apiClient from "@/services/apiClient";
+import type { ApiResponse } from "@/types";
+import { API_ENDPOINTS } from "@/utils/constants";
 
 // Types for user operations
 export interface User {
@@ -11,7 +11,7 @@ export interface User {
   lastName?: string;
   email: string;
   dateOfBirth?: string;
-  gender?: 'male' | 'female' | 'other';
+  gender?: "male" | "female" | "other";
   avatar?: string;
   isVerified: boolean;
   createdAt: string;
@@ -24,7 +24,7 @@ export interface UpdateProfileRequest {
   lastName?: string;
   email?: string;
   dateOfBirth?: string;
-  gender?: 'male' | 'female' | 'other';
+  gender?: "male" | "female" | "other";
   avatar?: string;
 }
 

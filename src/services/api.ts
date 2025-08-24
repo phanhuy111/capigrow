@@ -1,6 +1,11 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { getToken, getRefreshToken, removeToken } from '@/services/storage';
-import { ApiResponse } from '@/types';
+import axios, {
+  type AxiosInstance,
+  type AxiosRequestConfig,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from "axios";
+import { getToken, removeToken } from "@/services/storage";
+import type { ApiResponse } from "@/types";
 
 // Extend the AxiosRequestConfig to include metadata
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
@@ -10,7 +15,7 @@ interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
   };
 }
 
-const BASE_URL = 'http://localhost:8080/api/v1';
+const BASE_URL = "http://localhost:8080/api/v1";
 
 class ApiService {
   private client: AxiosInstance;
@@ -20,7 +25,7 @@ class ApiService {
       baseURL: BASE_URL,
       timeout: 10000,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -50,7 +55,7 @@ class ApiService {
           timestamp: new Date().toISOString(),
         };
 
-        console.log('🚀 API REQUEST:', requestData);
+        console.log("🚀 API REQUEST:", requestData);
 
         return config;
       },
@@ -60,7 +65,7 @@ class ApiService {
           timestamp: new Date().toISOString(),
         };
 
-        console.error('❌ API REQUEST ERROR:', errorData);
+        console.error("❌ API REQUEST ERROR:", errorData);
         return Promise.reject(error);
       }
     );
@@ -84,7 +89,7 @@ class ApiService {
           timestamp: new Date().toISOString(),
         };
 
-        console.log('✅ API RESPONSE:', responseData);
+        console.log("✅ API RESPONSE:", responseData);
 
         return response;
       },
@@ -96,7 +101,7 @@ class ApiService {
         const errorResponseData = {
           id: config?.metadata?.requestId,
           method: config?.method?.toUpperCase(),
-          url: config ? `${config.baseURL}${config.url}` : 'Unknown',
+          url: config ? `${config.baseURL}${config.url}` : "Unknown",
           status: error.response?.status,
           statusText: error.response?.statusText,
           headers: error.response?.headers,
@@ -106,7 +111,7 @@ class ApiService {
           timestamp: new Date().toISOString(),
         };
 
-        console.error('❌ API ERROR RESPONSE:', errorResponseData);
+        console.error("❌ API ERROR RESPONSE:", errorResponseData);
 
         if (error.response?.status === 401) {
           // Token expired or invalid, remove it and redirect to login
@@ -125,7 +130,7 @@ class ApiService {
   private sanitizeHeaders(headers: any): any {
     const sanitized = { ...headers };
     if (sanitized.Authorization) {
-      sanitized.Authorization = sanitized.Authorization.replace(/Bearer .+/, 'Bearer ***');
+      sanitized.Authorization = sanitized.Authorization.replace(/Bearer .+/, "Bearer ***");
     }
     return sanitized;
   }
@@ -178,12 +183,16 @@ class ApiService {
     }
   }
 
-  async upload<T>(url: string, formData: FormData, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  async upload<T>(
+    url: string,
+    formData: FormData,
+    config?: AxiosRequestConfig
+  ): Promise<ApiResponse<T>> {
     try {
       const response = await this.client.post(url, formData, {
         ...config,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
           ...config?.headers,
         },
       });
@@ -200,19 +209,20 @@ class ApiService {
     if (error.response) {
       // Server responded with error status
       return {
-        error: error.response.data.data?.message || error.response.data.data?.error || 'Server error',
+        error:
+          error.response.data.data?.message || error.response.data.data?.error || "Server error",
         status: error.response.status,
       };
     } else if (error.request) {
       // Network error
       return {
-        error: 'Network error. Please check your connection.',
+        error: "Network error. Please check your connection.",
         status: 0,
       };
     } else {
       // Other error
       return {
-        error: error.message || 'An unexpected error occurred',
+        error: error.message || "An unexpected error occurred",
         status: 0,
       };
     }

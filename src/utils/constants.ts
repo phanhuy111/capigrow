@@ -1,95 +1,95 @@
 // Colors - Updated to match Figma design
 export const COLORS = {
   // Primary colors (Purple theme from Figma)
-  primary: '#8B5CF6',
-  primaryLight: '#A855F7',
-  primaryDark: '#7C3AED',
-  primarySurface: '#F3E8FF',
+  primary: "#8B5CF6",
+  primaryLight: "#A855F7",
+  primaryDark: "#7C3AED",
+  primarySurface: "#F3E8FF",
 
   // Secondary colors (Green for success/positive)
-  secondary: '#4CAF50',
-  secondaryLight: '#66BB6A',
-  secondaryDark: '#388E3C',
-  secondaryLight10: 'rgba(76, 175, 80, 0.1)',
+  secondary: "#4CAF50",
+  secondaryLight: "#66BB6A",
+  secondaryDark: "#388E3C",
+  secondaryLight10: "rgba(76, 175, 80, 0.1)",
 
   // Accent colors
-  accent: '#FF6B35',
-  accentLight: '#FF8A65',
-  accentDark: '#E64A19',
+  accent: "#FF6B35",
+  accentLight: "#FF8A65",
+  accentDark: "#E64A19",
 
   // Neutral colors
-  white: '#FFFFFF',
-  black: '#000000',
-  gray50: '#FAFAFA',
-  gray100: '#F5F5F5',
-  gray200: '#EEEEEE',
-  gray300: '#E0E0E0',
-  gray400: '#BDBDBD',
-  gray500: '#9E9E9E',
-  gray600: '#757575',
-  gray700: '#616161',
-  gray800: '#424242',
-  gray900: '#212121',
+  white: "#FFFFFF",
+  black: "#000000",
+  gray50: "#FAFAFA",
+  gray100: "#F5F5F5",
+  gray200: "#EEEEEE",
+  gray300: "#E0E0E0",
+  gray400: "#BDBDBD",
+  gray500: "#9E9E9E",
+  gray600: "#757575",
+  gray700: "#616161",
+  gray800: "#424242",
+  gray900: "#212121",
 
   // Status colors
-  success: '#4CAF50',
-  successLight: '#C8E6C9',
-  successDark: '#2E7D32',
-  warning: '#FF9800',
-  warningLight: '#FFE0B2',
-  warningDark: '#F57C00',
-  error: '#F44336',
-  errorLight: '#FFCDD2',
-  errorDark: '#D32F2F',
-  info: '#2196F3',
-  infoLight: '#BBDEFB',
-  infoDark: '#1976D2',
+  success: "#4CAF50",
+  successLight: "#C8E6C9",
+  successDark: "#2E7D32",
+  warning: "#FF9800",
+  warningLight: "#FFE0B2",
+  warningDark: "#F57C00",
+  error: "#F44336",
+  errorLight: "#FFCDD2",
+  errorDark: "#D32F2F",
+  info: "#2196F3",
+  infoLight: "#BBDEFB",
+  infoDark: "#1976D2",
 
   // Background colors
-  background: '#FAFAFA',
-  backgroundSecondary: '#F5F5F5',
-  surface: '#FFFFFF',
-  surfaceVariant: '#F8F9FA',
-  overlay: 'rgba(0, 0, 0, 0.5)',
-  overlayLight: 'rgba(0, 0, 0, 0.3)',
+  background: "#FAFAFA",
+  backgroundSecondary: "#F5F5F5",
+  surface: "#FFFFFF",
+  surfaceVariant: "#F8F9FA",
+  overlay: "rgba(0, 0, 0, 0.5)",
+  overlayLight: "rgba(0, 0, 0, 0.3)",
 
   // Text colors
-  textPrimary: '#212121',
-  textSecondary: '#757575',
-  textTertiary: '#9E9E9E',
-  textDisabled: '#BDBDBD',
-  textOnPrimary: '#FFFFFF',
-  textOnSecondary: '#FFFFFF',
-  textOnSurface: '#212121',
-  textOnBackground: '#212121',
+  textPrimary: "#212121",
+  textSecondary: "#757575",
+  textTertiary: "#9E9E9E",
+  textDisabled: "#BDBDBD",
+  textOnPrimary: "#FFFFFF",
+  textOnSecondary: "#FFFFFF",
+  textOnSurface: "#212121",
+  textOnBackground: "#212121",
 
   // Border colors
-  border: '#E0E0E0',
-  borderLight: '#F0F0F0',
-  borderDark: '#BDBDBD',
-  divider: '#E0E0E0',
+  border: "#E0E0E0",
+  borderLight: "#F0F0F0",
+  borderDark: "#BDBDBD",
+  divider: "#E0E0E0",
 
   // Investment specific colors
-  positive: '#4CAF50',
-  negative: '#F44336',
-  neutral: '#9E9E9E',
+  positive: "#4CAF50",
+  negative: "#F44336",
+  neutral: "#9E9E9E",
 };
 
 // Typography - Updated to match Figma design (SF Pro Text)
 export const FONTS = {
-  light: 'SF Pro Text',
-  regular: 'SF Pro Text',
-  medium: 'SF Pro Text',
-  semiBold: 'SF Pro Text',
-  bold: 'SF Pro Text',
+  light: "SF Pro Text",
+  regular: "SF Pro Text",
+  medium: "SF Pro Text",
+  semiBold: "SF Pro Text",
+  bold: "SF Pro Text",
 };
 
 export const FONT_WEIGHTS = {
-  light: '300' as const,
-  regular: '400' as const,
-  medium: '500' as const,
-  semiBold: '600' as const,
-  bold: '700' as const,
+  light: "300" as const,
+  regular: "400" as const,
+  medium: "500" as const,
+  semiBold: "600" as const,
+  bold: "700" as const,
 };
 
 export const FONT_SIZES = {
@@ -172,7 +172,7 @@ export const COMPONENT_SPACING = {
 // Shadows
 export const SHADOWS = {
   small: {
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,
@@ -182,7 +182,7 @@ export const SHADOWS = {
     elevation: 1,
   },
   medium: {
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -192,12 +192,12 @@ export const SHADOWS = {
     elevation: 5,
   },
   large: {
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 4,
     },
-    shadowOpacity: 0.30,
+    shadowOpacity: 0.3,
     shadowRadius: 4.65,
     elevation: 8,
   },
@@ -209,42 +209,42 @@ export const SCREEN_PADDING = SPACING.md;
 // Investment risk levels
 export const RISK_LEVELS = {
   low: {
-    label: 'Low Risk',
+    label: "Low Risk",
     color: COLORS.success,
-    description: 'Conservative investments with stable returns',
+    description: "Conservative investments with stable returns",
   },
   medium: {
-    label: 'Medium Risk',
+    label: "Medium Risk",
     color: COLORS.warning,
-    description: 'Balanced investments with moderate returns',
+    description: "Balanced investments with moderate returns",
   },
   high: {
-    label: 'High Risk',
+    label: "High Risk",
     color: COLORS.error,
-    description: 'Aggressive investments with high potential returns',
+    description: "Aggressive investments with high potential returns",
   },
 };
 
 // Investment status
 export const INVESTMENT_STATUS = {
   draft: {
-    label: 'Draft',
+    label: "Draft",
     color: COLORS.gray500,
   },
   active: {
-    label: 'Active',
+    label: "Active",
     color: COLORS.success,
   },
   paused: {
-    label: 'Paused',
+    label: "Paused",
     color: COLORS.warning,
   },
   closed: {
-    label: 'Closed',
+    label: "Closed",
     color: COLORS.error,
   },
   completed: {
-    label: 'Completed',
+    label: "Completed",
     color: COLORS.info,
   },
 };
@@ -252,23 +252,23 @@ export const INVESTMENT_STATUS = {
 // Transaction status
 export const TRANSACTION_STATUS = {
   pending: {
-    label: 'Pending',
+    label: "Pending",
     color: COLORS.warning,
   },
   processing: {
-    label: 'Processing',
+    label: "Processing",
     color: COLORS.info,
   },
   completed: {
-    label: 'Completed',
+    label: "Completed",
     color: COLORS.success,
   },
   failed: {
-    label: 'Failed',
+    label: "Failed",
     color: COLORS.error,
   },
   cancelled: {
-    label: 'Cancelled',
+    label: "Cancelled",
     color: COLORS.gray500,
   },
 };
@@ -276,96 +276,96 @@ export const TRANSACTION_STATUS = {
 // Verification status
 export const VERIFICATION_STATUS = {
   pending: {
-    label: 'Pending',
+    label: "Pending",
     color: COLORS.warning,
-    description: 'Your verification is being processed',
+    description: "Your verification is being processed",
   },
   under_review: {
-    label: 'Under Review',
+    label: "Under Review",
     color: COLORS.info,
-    description: 'Our team is reviewing your documents',
+    description: "Our team is reviewing your documents",
   },
   approved: {
-    label: 'Approved',
+    label: "Approved",
     color: COLORS.success,
-    description: 'Your identity has been verified',
+    description: "Your identity has been verified",
   },
   rejected: {
-    label: 'Rejected',
+    label: "Rejected",
     color: COLORS.error,
-    description: 'Verification failed. Please try again',
+    description: "Verification failed. Please try again",
   },
 };
 
 // API endpoints
 export const API_ENDPOINTS = {
-  BASE_URL: 'http://localhost:8080/api/v1',
+  BASE_URL: "http://localhost:8080/api/v1",
   AUTH: {
-    LOGIN: '/auth/login',
-    REGISTER: '/auth/register',
-    REFRESH: '/auth/refresh',
-    LOGOUT: '/auth/logout',
+    LOGIN: "/auth/login",
+    REGISTER: "/auth/register",
+    REFRESH: "/auth/refresh",
+    LOGOUT: "/auth/logout",
   },
-  PHONE_VERIFICATION: '/auth/phone/verify',
-  OTP_VERIFICATION: '/auth/otp/verify',
-  USER_REGISTRATION: '/auth/user/register',
-  RESEND_OTP: '/auth/otp/resend',
-  CREATE_ACCOUNT: '/auth/account/create',
+  PHONE_VERIFICATION: "/auth/phone/verify",
+  OTP_VERIFICATION: "/auth/otp/verify",
+  USER_REGISTRATION: "/auth/user/register",
+  RESEND_OTP: "/auth/otp/resend",
+  CREATE_ACCOUNT: "/auth/account/create",
   USER: {
-    PROFILE: '/users/profile',
-    CHANGE_PASSWORD: '/users/change-password',
+    PROFILE: "/users/profile",
+    CHANGE_PASSWORD: "/users/change-password",
   },
   INVESTMENTS: {
-    LIST: '/investments',
-    DETAILS: '/investments/:id',
-    REGISTER: '/investments/:id/register',
-    CATEGORIES: '/investments/categories',
+    LIST: "/investments",
+    DETAILS: "/investments/:id",
+    REGISTER: "/investments/:id/register",
+    CATEGORIES: "/investments/categories",
   },
   PORTFOLIO: {
-    OVERVIEW: '/portfolio',
-    PERFORMANCE: '/portfolio/performance',
+    OVERVIEW: "/portfolio",
+    PERFORMANCE: "/portfolio/performance",
   },
   TRANSACTIONS: {
-    LIST: '/transactions',
-    DETAILS: '/transactions/:id',
-    PAYMENT: '/transactions/payment',
+    LIST: "/transactions",
+    DETAILS: "/transactions/:id",
+    PAYMENT: "/transactions/payment",
   },
   VERIFICATION: {
-    DOCUMENTS: '/verification/documents',
-    SELFIE: '/verification/selfie',
-    STATUS: '/verification/status',
+    DOCUMENTS: "/verification/documents",
+    SELFIE: "/verification/selfie",
+    STATUS: "/verification/status",
   },
   FILES: {
-    UPLOAD: '/files/upload',
-    GET: '/files/:id',
-    DELETE: '/files/:id',
+    UPLOAD: "/files/upload",
+    GET: "/files/:id",
+    DELETE: "/files/:id",
   },
 };
 
 // Form validation patterns
 export const VALIDATION_PATTERNS = {
   email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  phone: /^\+?[\d\s\-\(\)]+$/,
+  phone: /^\+?[\d\s\-()]+$/,
   password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/,
 };
 
 // Error messages
 export const ERROR_MESSAGES = {
-  NETWORK_ERROR: 'Network error. Please check your connection.',
-  UNAUTHORIZED: 'Session expired. Please login again.',
-  VALIDATION_ERROR: 'Please check your input and try again.',
-  GENERIC_ERROR: 'Something went wrong. Please try again.',
-  FILE_UPLOAD_ERROR: 'Failed to upload file. Please try again.',
-  CAMERA_PERMISSION: 'Camera permission is required to take photos.',
-  STORAGE_PERMISSION: 'Storage permission is required to select files.',
+  NETWORK_ERROR: "Network error. Please check your connection.",
+  UNAUTHORIZED: "Session expired. Please login again.",
+  VALIDATION_ERROR: "Please check your input and try again.",
+  GENERIC_ERROR: "Something went wrong. Please try again.",
+  FILE_UPLOAD_ERROR: "Failed to upload file. Please try again.",
+  CAMERA_PERMISSION: "Camera permission is required to take photos.",
+  STORAGE_PERMISSION: "Storage permission is required to select files.",
 };
 
 // Success messages
 export const SUCCESS_MESSAGES = {
-  LOGIN_SUCCESS: 'Welcome back!',
-  REGISTER_SUCCESS: 'Account created successfully!',
-  PROFILE_UPDATED: 'Profile updated successfully!',
-  DOCUMENT_UPLOADED: 'Document uploaded successfully!',
-  INVESTMENT_REGISTERED: 'Investment registered successfully!',
-  PAYMENT_PROCESSED: 'Payment processed successfully!',
+  LOGIN_SUCCESS: "Welcome back!",
+  REGISTER_SUCCESS: "Account created successfully!",
+  PROFILE_UPDATED: "Profile updated successfully!",
+  DOCUMENT_UPLOADED: "Document uploaded successfully!",
+  INVESTMENT_REGISTERED: "Investment registered successfully!",
+  PAYMENT_PROCESSED: "Payment processed successfully!",
 };

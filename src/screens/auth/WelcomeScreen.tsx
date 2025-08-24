@@ -1,21 +1,16 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { type RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RouteProp } from "@react-navigation/native";
-import { RootStackParamList } from "@/types";
-import { Input, Button } from "@/components/ui";
-import CapiGrowLogo from "@/components/common/CapiGrowLogo";
+import { Button, Input } from "@/components/ui";
+import type { RootStackParamList } from "@/types";
 
-type WelcomeScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "Welcome"
->;
+type WelcomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "Welcome">;
 type WelcomeScreenRouteProp = RouteProp<RootStackParamList, "Welcome">;
 
 // Zod schema for registration validation
@@ -72,15 +67,9 @@ const WelcomeScreen: React.FC = () => {
   const formatDateInput = (text: string) => {
     const cleaned = text.replace(/\D/g, "");
     if (cleaned.length >= 2 && cleaned.length < 4) {
-      return cleaned.slice(0, 2) + "/" + cleaned.slice(2);
+      return `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
     } else if (cleaned.length >= 4) {
-      return (
-        cleaned.slice(0, 2) +
-        "/" +
-        cleaned.slice(2, 4) +
-        "/" +
-        cleaned.slice(4, 8)
-      );
+      return `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}/${cleaned.slice(4, 8)}`;
     }
     return cleaned;
   };
@@ -149,9 +138,7 @@ const WelcomeScreen: React.FC = () => {
           {/* Continue Button */}
           <View className="pb-6">
             <Button onPress={handleSubmit(onSubmit)} disabled={!isValid}>
-              <Text className="text-white text-base font-semibold">
-                Tiếp theo
-              </Text>
+              <Text className="text-white text-base font-semibold">Tiếp theo</Text>
             </Button>
           </View>
         </View>

@@ -1,13 +1,14 @@
-import React, { useState, forwardRef } from "react";
+import type React from "react";
+import { forwardRef, useState } from "react";
+import { type Control, Controller, type FieldError, type FieldValues, type RegisterOptions } from "react-hook-form";
 import {
-  View,
-  TextInput,
   Text,
-  ViewStyle,
-  TextStyle,
+  TextInput,
+  type TextStyle,
   TouchableOpacity,
+  View,
+  type ViewStyle,
 } from "react-native";
-import { Control, Controller, FieldError } from "react-hook-form";
 
 interface InputProps {
   label?: string;
@@ -29,8 +30,8 @@ interface InputProps {
   onRightIconPress?: () => void;
   // React Hook Form integration
   name?: string;
-  control?: Control<any>;
-  rules?: any;
+  control?: Control<FieldValues>;
+  rules?: RegisterOptions<FieldValues>;
   required?: boolean;
 }
 
@@ -65,7 +66,7 @@ const InputForm = forwardRef<TextInput, InputProps>(
 
     const getInputContainerClassName = () => {
       let baseClasses = "flex-row border px-4 py-4 bg-white";
-      
+
       // Apply 16px border radius to match Figma design
       baseClasses += " rounded-2xl";
 
@@ -91,7 +92,7 @@ const InputForm = forwardRef<TextInput, InputProps>(
     };
 
     const renderInput = (
-      inputValue: any,
+      inputValue: string,
       inputOnChangeText: (text: string) => void,
       inputOnBlur: () => void,
       inputError?: string | FieldError
@@ -108,9 +109,7 @@ const InputForm = forwardRef<TextInput, InputProps>(
           className={getInputContainerClassName()}
           style={multiline ? { height: numberOfLines * 20 + 32 } : undefined}
         >
-          {leftIcon && (
-            <View className="mr-4 justify-center items-center">{leftIcon}</View>
-          )}
+          {leftIcon && <View className="mr-4 justify-center items-center">{leftIcon}</View>}
 
           <TextInput
             ref={ref}
@@ -150,8 +149,7 @@ const InputForm = forwardRef<TextInput, InputProps>(
           <Text className="text-xs text-red-500 mt-2">
             {typeof inputError === "string"
               ? inputError
-              : inputError?.message ||
-                (typeof error === "string" ? error : error?.message)}
+              : inputError?.message || (typeof error === "string" ? error : error?.message)}
           </Text>
         )}
       </View>
@@ -173,12 +171,7 @@ const InputForm = forwardRef<TextInput, InputProps>(
     }
 
     // Regular input without form control
-    return renderInput(
-      value,
-      onChangeText || (() => {}),
-      onBlur || (() => {}),
-      error
-    );
+    return renderInput(value || "", onChangeText || (() => {}), onBlur || (() => {}), error);
   }
 );
 

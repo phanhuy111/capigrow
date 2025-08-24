@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { User } from '@/types';
+import { create } from "zustand";
+import type { User } from "@/types";
 
 // Client-only state for authentication
 interface AuthClientState {
@@ -7,7 +7,7 @@ interface AuthClientState {
   token: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
-  
+
   // Client actions
   setAuthData: (user: User, token: string, refreshToken: string) => void;
   clearAuth: () => void;

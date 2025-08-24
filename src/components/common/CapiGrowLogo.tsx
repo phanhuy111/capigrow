@@ -1,15 +1,12 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import type React from "react";
+import { Text, View } from "react-native";
 
 interface CapiGrowLogoProps {
-  size?: 'small' | 'medium' | 'large';
+  size?: "small" | "medium" | "large";
   color?: string;
 }
 
-const CapiGrowLogo: React.FC<CapiGrowLogoProps> = ({ 
-  size = 'medium', 
-  color = '#ffffff' 
-}) => {
+const CapiGrowLogo: React.FC<CapiGrowLogoProps> = ({ size = "medium", color = "#ffffff" }) => {
   const logoSize = {
     small: { icon: 24, text: 16 },
     medium: { icon: 40, text: 24 },
@@ -21,7 +18,7 @@ const CapiGrowLogo: React.FC<CapiGrowLogoProps> = ({
   return (
     <View className="items-center justify-center">
       {/* Simple geometric logo icon */}
-      <View 
+      <View
         className="rounded-lg mb-3 justify-center items-center transform rotate-45"
         style={{
           width: currentSize.icon,
@@ -29,13 +26,13 @@ const CapiGrowLogo: React.FC<CapiGrowLogoProps> = ({
           backgroundColor: color,
         }}
       >
-        <View 
+        <View
           className="w-3/5 h-3/5 rounded transform -rotate-45"
           style={{ backgroundColor: color }}
         />
       </View>
-      
-      <Text 
+
+      <Text
         className="font-bold text-center tracking-widest"
         style={{
           fontSize: currentSize.text,
@@ -47,7 +44,5 @@ const CapiGrowLogo: React.FC<CapiGrowLogoProps> = ({
     </View>
   );
 };
-
-
 
 export default CapiGrowLogo;

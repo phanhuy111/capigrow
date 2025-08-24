@@ -1,8 +1,4 @@
 // Zustand stores
-export { useAuthClientStore } from './authClientStore';
-export { useInvestmentClientStore } from './investmentClientStore';
-export { useTransactionClientStore } from './transactionClientStore';
-export { useVerificationClientStore } from './verificationClientStore';
 
 // Export types for convenience
 export type {
@@ -11,4 +7,8 @@ export type {
   PortfolioState,
   TransactionState,
   VerificationState,
-} from '@/types';
+} from "@/types";
+export { useAuthClientStore } from "./authClientStore";
+export { useInvestmentClientStore } from "./investmentClientStore";
+export { useTransactionClientStore } from "./transactionClientStore";
+export { useVerificationClientStore } from "./verificationClientStore";

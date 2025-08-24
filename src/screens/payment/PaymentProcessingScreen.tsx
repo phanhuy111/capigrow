@@ -1,8 +1,6 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { RootStackParamList } from '@/types';
-import { useInvestmentClientStore } from '@/store/investmentClientStore';
+import type React from "react";
+import { Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const PaymentProcessingScreen: React.FC = () => {
   return (
@@ -14,7 +12,5 @@ const PaymentProcessingScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-
 
 export default PaymentProcessingScreen;
