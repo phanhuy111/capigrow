@@ -2,138 +2,97 @@ import type React from "react";
 import {
   ActivityIndicator,
   Text,
-  type TextStyle,
   TouchableOpacity,
-  type ViewStyle,
+  type TouchableOpacityProps,
 } from "react-native";
+import tokens from "@/components/lib/tokens";
+import { BUTTON_STYLES, TYPOGRAPHY } from "@/utils/theme";
 
-interface ButtonProps {
+interface ButtonProps extends TouchableOpacityProps {
   title: string;
-  onPress: () => void;
   variant?: "primary" | "secondary" | "tertiary" | "invisible";
   size?: "small" | "medium" | "large";
-  disabled?: boolean;
   loading?: boolean;
-  fullWidth?: boolean;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
+  disabled?: boolean;
+  onPress: () => void;
+  // Figma-specific props
+  state?: "enable" | "disable" | "hover";
+  type?: "primary" | "secondary" | "tertiary";
+  icon?: React.ReactNode;
+  iconPosition?: "left" | "right";
 }
 
 const Button: React.FC<ButtonProps> = ({
   title,
-  onPress,
   variant = "primary",
   size = "medium",
-  disabled = false,
   loading = false,
+  disabled = false,
+  onPress,
   style,
-  fullWidth = false,
+  state = "enable",
+  type,
+  icon,
+  iconPosition = "left",
+  ...props
 }) => {
-  const getButtonClassName = () => {
-    let baseClasses = "justify-center items-center rounded-lg";
+  // Use type prop if provided, otherwise fall back to variant
+  const buttonVariant = type || variant;
 
-    // Size classes
-    switch (size) {
-      case "small":
-        baseClasses += " px-4 py-2 min-h-[36px]";
-        break;
-      case "large":
-        baseClasses += " px-6 py-4 min-h-[52px]";
-        break;
-      default: // medium
-        baseClasses += " px-5 py-3 min-h-[44px]";
-        break;
-    }
-
-    // Variant classes
-    if (disabled) {
-      baseClasses += " bg-gray-300";
-    } else {
-      switch (variant) {
-        case "primary":
-          baseClasses += " bg-purple-600";
-          break;
-        case "secondary":
-          baseClasses += " bg-gray-100 border border-gray-300";
-          break;
-        case "tertiary":
-          baseClasses += " bg-transparent border border-purple-600";
-          break;
-        case "invisible":
-          baseClasses += " bg-transparent";
-          break;
-        default:
-          baseClasses += " bg-purple-600";
-          break;
-      }
-    }
-
-    return baseClasses;
+  // Determine button state
+  const buttonState =
+    disabled || state === "disable" ? "disabled" : state === "hover" ? "hover" : "enabled";
+  const buttonStyle = {
+    ...BUTTON_STYLES[buttonVariant][buttonState],
+    ...BUTTON_STYLES.sizes[size],
   };
 
-  const getTextClassName = () => {
-    let textClasses = "font-medium text-center";
-
-    // Size classes
-    switch (size) {
-      case "small":
-        textClasses += " text-sm";
-        break;
-      case "large":
-        textClasses += " text-lg";
-        break;
-      default: // medium
-        textClasses += " text-base";
-        break;
-    }
-
-    // Color classes
-    if (disabled) {
-      textClasses += " text-gray-500";
-    } else {
-      switch (variant) {
-        case "primary":
-          textClasses += " text-white";
-          break;
-        case "secondary":
-          textClasses += " text-gray-900";
-          break;
-        case "tertiary":
-        case "invisible":
-          textClasses += " text-purple-600";
-          break;
-        default:
-          textClasses += " text-white";
-          break;
-      }
-    }
-
-    return textClasses;
+  const textStyle = {
+    ...TYPOGRAPHY[
+      `button${size.charAt(0).toUpperCase() + size.slice(1)}` as keyof typeof TYPOGRAPHY
+    ],
+    color: getTextColor(),
   };
+
+  function getTextColor() {
+    if (buttonState === "disabled") {
+      return tokens.colors.text.disabled;
+    }
+
+    switch (buttonVariant) {
+      case "primary":
+        return tokens.colors.text.inverse;
+      case "secondary":
+        return tokens.colors.primary[600];
+      case "tertiary":
+        return tokens.colors.primary[600];
+      case "invisible":
+        return tokens.colors.text.primary;
+      default:
+        return tokens.colors.text.primary;
+    }
+  }
 
   return (
     <TouchableOpacity
-      className={`${getButtonClassName()} ${fullWidth ? "w-full" : ""}`}
-      style={style}
+      style={[buttonStyle, style]}
       onPress={onPress}
-      disabled={disabled || loading}
+      disabled={disabled || loading || state === "disable"}
       activeOpacity={0.8}
+      {...props}
     >
       {loading ? (
-        <ActivityIndicator
-          size="small"
-          color={
-            disabled
-              ? "#6B7280"
-              : variant === "primary"
-                ? "#FFFFFF"
-                : variant === "secondary"
-                  ? "#111827"
-                  : "#8B5CF6"
-          }
-        />
+        <ActivityIndicator size="small" color={getTextColor()} />
       ) : (
-        <Text className={getTextClassName()}>{title}</Text>
+        <>
+          {icon && iconPosition === "left" && (
+            <Text style={[textStyle, { marginRight: tokens.spacing[2] }]}>{icon}</Text>
+          )}
+          <Text style={textStyle}>{title}</Text>
+          {icon && iconPosition === "right" && (
+            <Text style={[textStyle, { marginLeft: tokens.spacing[2] }]}>{icon}</Text>
+          )}
+        </>
       )}
     </TouchableOpacity>
   );

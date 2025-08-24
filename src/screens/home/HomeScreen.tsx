@@ -6,6 +6,7 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { Icons } from "@/assets";
 import Screen from "@/components/common/Screen";
+import tokens from "@/components/lib/tokens";
 import { Card, Input } from "@/components/ui";
 import { useInvestmentsQuery } from "@/hooks/useInvestmentQueries";
 import { useNotificationsQuery } from "@/hooks/useNotificationQueries";
@@ -13,7 +14,6 @@ import { usePortfolioQuery } from "@/hooks/usePortfolioQueries";
 import { useAuthClientStore } from "@/store/authClientStore";
 import type { RootStackParamList } from "@/types";
 import { formatCurrency, formatPercentage } from "@/utils/helpers";
-import { COLORS } from "@/utils/theme";
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -49,7 +49,12 @@ const HomeScreen: React.FC = () => {
             onPress={() => navigation.navigate("Notifications")}
             className="w-11 h-11 rounded-full bg-gray-100 justify-center items-center relative"
           >
-            <SvgXml xml={Icons.notification} width={24} height={24} fill={COLORS.textPrimary} />
+            <SvgXml
+              xml={Icons.notification}
+              width={24}
+              height={24}
+              fill={tokens.colors.text.primary}
+            />
             {notifications.filter((n) => !n.isRead).length > 0 && (
               <View className="absolute top-2 right-2 w-4 h-4 rounded-full bg-red-500 justify-center items-center">
                 <Text className="text-white text-xs font-semibold">
@@ -68,13 +73,23 @@ const HomeScreen: React.FC = () => {
               value={searchQuery}
               onChangeText={setSearchQuery}
               leftIcon={
-                <SvgXml xml={Icons.search} width={20} height={20} fill={COLORS.textTertiary} />
+                <SvgXml
+                  xml={Icons.search}
+                  width={20}
+                  height={20}
+                  fill={tokens.colors.text.tertiary}
+                />
               }
               className="bg-gray-100 border-0"
             />
           </View>
           <TouchableOpacity className="w-12 h-12 rounded-lg bg-gray-100 justify-center items-center">
-            <SvgXml xml={Icons.menuSquare} width={20} height={20} fill={COLORS.textPrimary} />
+            <SvgXml
+              xml={Icons.menuSquare}
+              width={20}
+              height={20}
+              fill={tokens.colors.text.primary}
+            />
           </TouchableOpacity>
         </View>
 
@@ -84,7 +99,12 @@ const HomeScreen: React.FC = () => {
             <View className="flex-row justify-between items-center mb-6">
               <Text className="text-lg font-semibold text-gray-900">Portfolio Overview</Text>
               <TouchableOpacity className="p-0">
-                <SvgXml xml={Icons.more} width={20} height={20} fill={COLORS.textSecondary} />
+                <SvgXml
+                  xml={Icons.more}
+                  width={20}
+                  height={20}
+                  fill={tokens.colors.text.secondary}
+                />
               </TouchableOpacity>
             </View>
 
@@ -100,8 +120,8 @@ const HomeScreen: React.FC = () => {
                     height={16}
                     fill={
                       portfolioData.summary.totalReturnPercentage >= 0
-                        ? COLORS.positive
-                        : COLORS.negative
+                        ? tokens.colors.success[500]
+                        : tokens.colors.error[500]
                     }
                   />
                   <Text
@@ -109,8 +129,8 @@ const HomeScreen: React.FC = () => {
                     style={{
                       color:
                         portfolioData.summary.totalReturnPercentage >= 0
-                          ? COLORS.positive
-                          : COLORS.negative,
+                          ? tokens.colors.success[500]
+                          : tokens.colors.error[500],
                     }}
                   >
                     {formatPercentage(portfolioData.summary.totalReturnPercentage)}
@@ -165,7 +185,7 @@ const HomeScreen: React.FC = () => {
                     }
                     width={24}
                     height={24}
-                    fill={COLORS.primary}
+                    fill={tokens.colors.primary[500]}
                   />
                 </View>
                 <Text className="text-sm font-medium text-gray-900">{category}</Text>

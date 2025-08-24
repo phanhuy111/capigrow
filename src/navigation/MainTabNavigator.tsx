@@ -3,6 +3,7 @@ import type React from "react";
 import { View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { Icons } from "@/assets";
+import tokens from "@/components/lib/tokens";
 // Import screens
 import HomeScreen from "@/screens/home/HomeScreen";
 import InvestmentsScreen from "@/screens/investment/InvestmentsScreen";
@@ -10,7 +11,6 @@ import PortfolioScreen from "@/screens/portfolio/PortfolioScreen";
 import ProfileScreen from "@/screens/profile/ProfileScreen";
 import TransactionsScreen from "@/screens/transaction/TransactionsScreen";
 import type { MainTabParamList } from "@/types";
-import { COLORS } from "@/utils/theme";
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -52,14 +52,14 @@ const MainTabNavigator: React.FC = () => {
         tabBarIcon: ({ focused, color }) => (
           <TabBarIcon route={route.name} focused={focused} color={color} size={24} />
         ),
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.textTertiary,
+        tabBarActiveTintColor: tokens.colors.primary[500],
+        tabBarInactiveTintColor: tokens.colors.neutral[400],
         tabBarStyle: {
-          backgroundColor: "#FFFFFF",
+          backgroundColor: tokens.colors.background.primary,
           borderTopWidth: 1,
-          borderTopColor: "#F3F4F6",
-          paddingBottom: 16,
-          paddingTop: 16,
+          borderTopColor: tokens.colors.border.primary,
+          paddingBottom: tokens.spacing[4],
+          paddingTop: tokens.spacing[4],
           height: 80,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
@@ -73,8 +73,8 @@ const MainTabNavigator: React.FC = () => {
           elevation: 8,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "500",
+          fontSize: tokens.typography.fontSize.xs,
+          fontWeight: tokens.typography.fontWeight.medium as "500",
           marginTop: 4,
         },
         tabBarItemStyle: {

@@ -1,3 +1,4 @@
+import tokens from "@/components/lib/tokens";
 import {
   BORDER_RADIUS,
   COLORS,
@@ -8,7 +9,7 @@ import {
   SPACING,
 } from "@/utils/constants";
 
-// Typography styles matching Figma design
+// Enhanced Typography styles matching Figma design
 export const TYPOGRAPHY = {
   // Headings
   h1: {
@@ -131,66 +132,169 @@ export const TYPOGRAPHY = {
 };
 
 // Button styles matching Figma design
+// Enhanced Button styles matching Figma variants
 export const BUTTON_STYLES = {
   primary: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
-    borderWidth: 1,
-    borderRadius: BORDER_RADIUS.lg,
-    paddingVertical: SPACING.xl,
-    paddingHorizontal: SPACING.xxxl,
+    enabled: {
+      backgroundColor: tokens.colors.button.primary,
+      borderColor: tokens.colors.button.primary,
+      borderWidth: 1,
+      borderRadius: tokens.borderRadius.lg,
+    },
+    hover: {
+      backgroundColor: tokens.colors.button.primaryHover,
+      borderColor: tokens.colors.button.primaryHover,
+    },
+    disabled: {
+      backgroundColor: tokens.colors.button.primaryDisabled,
+      borderColor: tokens.colors.button.primaryDisabled,
+    },
   },
   secondary: {
-    backgroundColor: COLORS.surface,
-    borderColor: COLORS.primary,
-    borderWidth: 1,
-    borderRadius: BORDER_RADIUS.lg,
-    paddingVertical: SPACING.xl,
-    paddingHorizontal: SPACING.xxxl,
+    enabled: {
+      backgroundColor: tokens.colors.button.secondary,
+      borderColor: tokens.colors.primary[500],
+      borderWidth: 1,
+      borderRadius: tokens.borderRadius.lg,
+    },
+    hover: {
+      backgroundColor: tokens.colors.button.secondaryHover,
+    },
+    disabled: {
+      backgroundColor: tokens.colors.neutral[100],
+      borderColor: tokens.colors.neutral[300],
+    },
   },
   tertiary: {
-    backgroundColor: "transparent",
-    borderColor: "transparent",
-    borderWidth: 0,
-    borderRadius: BORDER_RADIUS.lg,
-    paddingVertical: SPACING.xl,
-    paddingHorizontal: SPACING.xxxl,
+    enabled: {
+      backgroundColor: tokens.colors.button.tertiary,
+      borderColor: "transparent",
+      borderWidth: 0,
+      borderRadius: tokens.borderRadius.lg,
+    },
+    hover: {
+      backgroundColor: tokens.colors.button.tertiaryHover,
+    },
+    disabled: {
+      backgroundColor: "transparent",
+      opacity: 0.5,
+    },
   },
   invisible: {
-    backgroundColor: "transparent",
-    borderColor: "transparent",
-    borderWidth: 0,
-    borderRadius: BORDER_RADIUS.lg,
-    paddingVertical: SPACING.md,
-    paddingHorizontal: SPACING.lg,
+    enabled: {
+      backgroundColor: "transparent",
+      borderColor: "transparent",
+      borderWidth: 0,
+      borderRadius: tokens.borderRadius.lg,
+    },
+    hover: {
+      backgroundColor: tokens.colors.neutral[50],
+    },
+    disabled: {
+      backgroundColor: "transparent",
+      opacity: 0.3,
+    },
+  },
+  // Size variants
+  sizes: {
+    small: {
+      paddingVertical: tokens.spacing[2],
+      paddingHorizontal: tokens.spacing[3],
+      minHeight: tokens.componentSizes.button.sm.height,
+    },
+    medium: {
+      paddingVertical: tokens.spacing[3],
+      paddingHorizontal: tokens.spacing[4],
+      minHeight: tokens.componentSizes.button.base.height,
+    },
+    large: {
+      paddingVertical: tokens.spacing[4],
+      paddingHorizontal: tokens.spacing[5],
+      minHeight: tokens.componentSizes.button.lg.height,
+    },
   },
 };
 
 // Input styles matching Figma design
+// Enhanced Input styles matching Figma variants
 export const INPUT_STYLES = {
-  default: {
-    backgroundColor: COLORS.surface,
-    borderColor: COLORS.border,
-    borderWidth: 1,
-    borderRadius: BORDER_RADIUS.lg,
-    paddingVertical: SPACING.xl,
-    paddingHorizontal: SPACING.xl,
-    fontSize: FONT_SIZES.md,
-    fontFamily: FONTS.regular,
-    color: COLORS.textPrimary,
+  variants: {
+    normal: {
+      inputted: {
+        false: {
+          backgroundColor: tokens.colors.input.background,
+          borderColor: tokens.colors.input.border,
+          borderWidth: 1,
+          borderRadius: tokens.borderRadius.lg,
+        },
+        true: {
+          backgroundColor: tokens.colors.input.background,
+          borderColor: tokens.colors.input.border,
+          borderWidth: 1,
+          borderRadius: tokens.borderRadius.lg,
+        },
+      },
+    },
+    selected: {
+      inputted: {
+        false: {
+          backgroundColor: tokens.colors.input.background,
+          borderColor: tokens.colors.input.borderFocus,
+          borderWidth: 2,
+          borderRadius: tokens.borderRadius.lg,
+        },
+        true: {
+          backgroundColor: tokens.colors.input.background,
+          borderColor: tokens.colors.input.borderFocus,
+          borderWidth: 2,
+          borderRadius: tokens.borderRadius.lg,
+        },
+      },
+    },
   },
-  focused: {
-    borderColor: COLORS.primary,
-    borderWidth: 2,
+  states: {
+    default: {
+      backgroundColor: tokens.colors.input.background,
+      borderColor: tokens.colors.input.border,
+      borderWidth: 1,
+      borderRadius: tokens.borderRadius.lg,
+      fontSize: tokens.typography.fontSize.base,
+      fontFamily: tokens.typography.fontFamily.primary,
+      color: tokens.colors.text.primary,
+    },
+    focused: {
+      borderColor: tokens.colors.input.borderFocus,
+      borderWidth: 2,
+    },
+    error: {
+      borderColor: tokens.colors.input.borderError,
+      borderWidth: 1,
+    },
+    disabled: {
+      backgroundColor: tokens.colors.neutral[100],
+      borderColor: tokens.colors.neutral[300],
+      color: tokens.colors.text.disabled,
+    },
   },
-  error: {
-    borderColor: COLORS.error,
-    borderWidth: 1,
-  },
-  disabled: {
-    backgroundColor: COLORS.gray100,
-    borderColor: COLORS.borderLight,
-    color: COLORS.textDisabled,
+  sizes: {
+    small: {
+      paddingVertical: tokens.spacing[2],
+      paddingHorizontal: tokens.spacing[3],
+      minHeight: tokens.componentSizes.input.sm.height,
+      fontSize: tokens.componentSizes.input.sm.fontSize,
+    },
+    medium: {
+      paddingVertical: tokens.spacing[3],
+      paddingHorizontal: tokens.spacing[3],
+      minHeight: tokens.componentSizes.input.base.height,
+      fontSize: tokens.componentSizes.input.base.fontSize,
+    },
+    large: {
+      paddingVertical: tokens.spacing[4],
+      paddingHorizontal: tokens.spacing[4],
+      minHeight: tokens.componentSizes.input.lg.height,
+      fontSize: tokens.componentSizes.input.lg.fontSize,
+    },
   },
 };
 

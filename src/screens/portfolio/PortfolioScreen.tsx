@@ -4,11 +4,11 @@ import { RefreshControl, ScrollView, Text, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { Icons } from "@/assets";
 import Screen from "@/components/common/Screen";
+import tokens from "@/components/lib/tokens";
 import { Button, Card } from "@/components/ui";
 import { usePortfolioPerformanceQuery, usePortfolioQuery } from "@/hooks/usePortfolioQueries";
 import type { UserInvestment } from "@/types";
 import { formatDate } from "@/utils/helpers";
-import { COLORS } from "@/utils/theme";
 
 const PortfolioScreen: React.FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<"daily" | "monthly" | "yearly">("monthly");
@@ -43,15 +43,15 @@ const PortfolioScreen: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return COLORS.success;
+        return tokens.colors.success[500];
       case "completed":
-        return COLORS.info;
+        return tokens.colors.primary[500];
       case "pending":
-        return COLORS.warning;
+        return tokens.colors.warning[500];
       case "cancelled":
-        return COLORS.error;
+        return tokens.colors.error[500];
       default:
-        return COLORS.textTertiary;
+        return tokens.colors.text.tertiary;
     }
   };
 
@@ -80,7 +80,7 @@ const PortfolioScreen: React.FC = () => {
             </View>
           </View>
           <Button variant="ghost" size="icon" className="p-2">
-            <SvgXml xml={Icons.more} width={20} height={20} fill={COLORS.textSecondary} />
+            <SvgXml xml={Icons.more} width={20} height={20} fill={tokens.colors.text.secondary} />
           </Button>
         </View>
 
@@ -101,13 +101,13 @@ const PortfolioScreen: React.FC = () => {
             <Text className="text-sm text-gray-600">Return</Text>
             <Text
               className="text-base font-semibold"
-              style={{ color: isPositive ? COLORS.positive : COLORS.negative }}
+              style={{ color: isPositive ? tokens.colors.success[500] : tokens.colors.error[500] }}
             >
               {formatCurrencyVND(returnAmount)}
             </Text>
             <Text
               className="text-xs font-medium"
-              style={{ color: isPositive ? COLORS.positive : COLORS.negative }}
+              style={{ color: isPositive ? tokens.colors.success[500] : tokens.colors.error[500] }}
             >
               ({formatPercentageValue(returnPercentage)})
             </Text>
@@ -153,7 +153,12 @@ const PortfolioScreen: React.FC = () => {
         <View className="flex-row justify-between items-center mb-12 pt-4">
           <Text className="text-2xl font-bold text-gray-900">Portfolio</Text>
           <Button variant="ghost" size="icon" className="w-11 h-11 rounded-full bg-gray-50">
-            <SvgXml xml={Icons.notification} width={24} height={24} fill={COLORS.textPrimary} />
+            <SvgXml
+              xml={Icons.notification}
+              width={24}
+              height={24}
+              fill={tokens.colors.text.primary}
+            />
           </Button>
         </View>
 
@@ -162,7 +167,7 @@ const PortfolioScreen: React.FC = () => {
           <View className="flex-row justify-between items-center mb-6">
             <Text className="text-sm font-medium text-gray-600">Total Portfolio Value</Text>
             <Button variant="ghost" size="icon" className="w-8 h-8">
-              <SvgXml xml={Icons.more} width={20} height={20} fill={COLORS.textSecondary} />
+              <SvgXml xml={Icons.more} width={20} height={20} fill={tokens.colors.text.secondary} />
             </Button>
           </View>
 
@@ -175,17 +180,21 @@ const PortfolioScreen: React.FC = () => {
                 xml={Icons.trendUp}
                 width={16}
                 height={16}
-                fill={isPositiveReturn ? COLORS.positive : COLORS.negative}
+                fill={isPositiveReturn ? tokens.colors.success[500] : tokens.colors.error[500]}
               />
               <Text
                 className="text-base font-semibold"
-                style={{ color: isPositiveReturn ? COLORS.positive : COLORS.negative }}
+                style={{
+                  color: isPositiveReturn ? tokens.colors.success[500] : tokens.colors.error[500],
+                }}
               >
                 {formatCurrencyVND(portfolioData.summary.totalReturn)}
               </Text>
               <Text
                 className="text-sm font-medium"
-                style={{ color: isPositiveReturn ? COLORS.positive : COLORS.negative }}
+                style={{
+                  color: isPositiveReturn ? tokens.colors.success[500] : tokens.colors.error[500],
+                }}
               >
                 ({formatPercentageValue(portfolioData.summary.totalReturnPercentage)})
               </Text>
@@ -239,7 +248,12 @@ const PortfolioScreen: React.FC = () => {
         {/* Performance Chart Placeholder */}
         <Card className="mb-12">
           <View className="items-center py-16 gap-4">
-            <SvgXml xml={Icons.chartSuccess} width={48} height={48} fill={COLORS.primary} />
+            <SvgXml
+              xml={Icons.chartSuccess}
+              width={48}
+              height={48}
+              fill={tokens.colors.primary[500]}
+            />
             <Text className="text-base font-semibold text-gray-900">Performance Chart</Text>
             <Text className="text-sm text-gray-600">
               {selectedPeriod.charAt(0).toUpperCase() + selectedPeriod.slice(1)} performance data
@@ -280,26 +294,46 @@ const PortfolioScreen: React.FC = () => {
           <View className="px-6">
             <View className="flex-row flex-wrap gap-4 mb-6">
               <Card className="flex-1 min-w-[45%] items-center p-6">
-                <SvgXml xml={Icons.trendUp} width={24} height={24} fill={COLORS.positive} />
+                <SvgXml
+                  xml={Icons.trendUp}
+                  width={24}
+                  height={24}
+                  fill={tokens.colors.success[500]}
+                />
                 <Text className="text-lg font-semibold text-gray-900 mb-1">
                   +{formatPercentageValue(8.5)}
                 </Text>
                 <Text className="text-sm text-gray-600 text-center">Best Performing</Text>
               </Card>
               <Card className="flex-1 min-w-[45%] items-center p-6">
-                <SvgXml xml={Icons.graph} width={24} height={24} fill={COLORS.primary} />
+                <SvgXml
+                  xml={Icons.graph}
+                  width={24}
+                  height={24}
+                  fill={tokens.colors.primary[500]}
+                />
                 <Text className="text-lg font-semibold text-gray-900 mb-1">
                   {formatPercentageValue(portfolioData.summary.totalReturnPercentage)}
                 </Text>
                 <Text className="text-sm text-gray-600 text-center">Average Return</Text>
               </Card>
               <Card className="flex-1 min-w-[45%] items-center p-6">
-                <SvgXml xml={Icons.shieldTick} width={24} height={24} fill={COLORS.warning} />
+                <SvgXml
+                  xml={Icons.shieldTick}
+                  width={24}
+                  height={24}
+                  fill={tokens.colors.warning[500]}
+                />
                 <Text className="text-lg font-semibold text-gray-900 mb-1">Medium</Text>
                 <Text className="text-sm text-gray-600 text-center">Risk Level</Text>
               </Card>
               <Card className="flex-1 min-w-[45%] items-center p-6">
-                <SvgXml xml={Icons.timer} width={24} height={24} fill={COLORS.info} />
+                <SvgXml
+                  xml={Icons.timer}
+                  width={24}
+                  height={24}
+                  fill={tokens.colors.primary[500]}
+                />
                 <Text className="text-lg font-semibold text-gray-900 mb-1">24 months</Text>
                 <Text className="text-sm text-gray-600 text-center">Avg. Duration</Text>
               </Card>
@@ -319,7 +353,7 @@ const PortfolioScreen: React.FC = () => {
               )
             ) : (
               <View className="items-center py-20">
-                <SvgXml xml={Icons.cup} width={60} height={60} fill={COLORS.textTertiary} />
+                <SvgXml xml={Icons.cup} width={60} height={60} fill={tokens.colors.text.tertiary} />
                 <Text className="text-lg font-bold text-gray-900 mt-4 mb-1">
                   No Investments Yet
                 </Text>

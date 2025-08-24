@@ -127,7 +127,7 @@ class ApiService {
     return Math.random().toString(36).substring(2, 11);
   }
 
-  private sanitizeHeaders(headers: any): any {
+  private sanitizeHeaders(headers: Record<string, string>): Record<string, string> {
     const sanitized = { ...headers };
     if (sanitized.Authorization) {
       sanitized.Authorization = sanitized.Authorization.replace(/Bearer .+/, "Bearer ***");
@@ -142,31 +142,31 @@ class ApiService {
         data: response.data.data,
         status: response.status,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       return this.handleError(error);
     }
   }
 
-  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     try {
       const response = await this.client.post(url, data, config);
       return {
         data: response.data.data,
         status: response.status,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       return this.handleError(error);
     }
   }
 
-  async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  async put<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     try {
       const response = await this.client.put(url, data, config);
       return {
         data: response.data.data,
         status: response.status,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       return this.handleError(error);
     }
   }
@@ -178,7 +178,7 @@ class ApiService {
         data: response.data.data,
         status: response.status,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       return this.handleError(error);
     }
   }
@@ -200,32 +200,36 @@ class ApiService {
         data: response.data.data,
         status: response.status,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       return this.handleError(error);
     }
   }
 
-  private handleError(error: any): ApiResponse {
-    if (error.response) {
-      // Server responded with error status
-      return {
-        error:
-          error.response.data.data?.message || error.response.data.data?.error || "Server error",
-        status: error.response.status,
-      };
-    } else if (error.request) {
-      // Network error
-      return {
-        error: "Network error. Please check your connection.",
-        status: 0,
-      };
-    } else {
-      // Other error
-      return {
-        error: error.message || "An unexpected error occurred",
-        status: 0,
-      };
+  private handleError(error: unknown): ApiResponse {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        // Server responded with error status
+        return {
+          error:
+            error.response.data?.data?.message ||
+            error.response.data?.data?.error ||
+            "Server error",
+          status: error.response.status,
+        };
+      } else if (error.request) {
+        // Network error
+        return {
+          error: "Network error. Please check your connection.",
+          status: 0,
+        };
+      }
     }
+    // Other error
+    const message = error instanceof Error ? error.message : "An unexpected error occurred";
+    return {
+      error: message,
+      status: 0,
+    };
   }
 }
 

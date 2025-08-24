@@ -79,12 +79,12 @@ class ApiClient {
   }
 
   // POST request
-  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
     return this.request<T>({ ...config, method: "POST", url, data });
   }
 
   // PUT request
-  async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  async put<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
     return this.request<T>({ ...config, method: "PUT", url, data });
   }
 

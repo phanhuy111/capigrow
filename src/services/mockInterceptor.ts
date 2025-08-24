@@ -72,7 +72,7 @@ export class MockInterceptor {
     );
   }
 
-  private async getMockResponse(config: InternalAxiosRequestConfig): Promise<any> {
+  private async getMockResponse(config: InternalAxiosRequestConfig): Promise<unknown> {
     const { method = "get", url = "" } = config;
     const normalizedUrl = url.toLowerCase();
 
@@ -201,11 +201,12 @@ export class MockInterceptor {
     });
   }
 
-  private mockUploadDocument(data: any) {
+  private mockUploadDocument(data: unknown) {
+    const documentData = data as { type?: string };
     return mockApiResponse({
       document: {
         id: "1",
-        type: data?.type || "id_card",
+        type: documentData?.type || "id_card",
         url: "https://example.com/document.jpg",
         status: "uploaded",
         uploadedAt: new Date().toISOString(),
@@ -213,7 +214,7 @@ export class MockInterceptor {
     });
   }
 
-  private mockUploadSelfie(_data: any) {
+  private mockUploadSelfie(_data: unknown) {
     return mockApiResponse({
       document: {
         id: "2",

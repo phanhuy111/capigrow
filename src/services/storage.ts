@@ -95,7 +95,7 @@ export const removeRefreshToken = async (): Promise<void> => {
 };
 
 // Regular storage for non-sensitive data
-export const setUserData = async (userData: any): Promise<void> => {
+export const setUserData = async (userData: unknown): Promise<void> => {
   try {
     await AsyncStorage.setItem(USER_KEY, JSON.stringify(userData));
   } catch (error) {
@@ -104,7 +104,7 @@ export const setUserData = async (userData: any): Promise<void> => {
   }
 };
 
-export const getUserData = async (): Promise<any | null> => {
+export const getUserData = async (): Promise<unknown | null> => {
   try {
     const userData = await AsyncStorage.getItem(USER_KEY);
     return userData ? JSON.parse(userData) : null;
@@ -158,7 +158,7 @@ export const removeItem = async (key: string): Promise<void> => {
   }
 };
 
-export const setObject = async (key: string, value: any): Promise<void> => {
+export const setObject = async (key: string, value: unknown): Promise<void> => {
   try {
     await AsyncStorage.setItem(key, JSON.stringify(value));
   } catch (error) {
@@ -167,7 +167,7 @@ export const setObject = async (key: string, value: any): Promise<void> => {
   }
 };
 
-export const getObject = async (key: string): Promise<any | null> => {
+export const getObject = async (key: string): Promise<unknown | null> => {
   try {
     const value = await AsyncStorage.getItem(key);
     return value ? JSON.parse(value) : null;

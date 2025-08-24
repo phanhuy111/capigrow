@@ -11,10 +11,10 @@ import { z } from "zod";
 import CapiGrowLogo from "@/components/common/CapiGrowLogo";
 import InputForm from "@/components/common/InputForm";
 import { SelectionForm } from "@/components/common/SelectionForm";
+import tokens from "@/components/lib/tokens";
 import { Button } from "@/components/ui";
 import { usePhoneVerificationMutation } from "@/hooks/useAuthQueries";
 import type { RootStackParamList } from "@/types";
-import { COLORS } from "@/utils/theme";
 import { cleanPhoneNumber } from "@/utils/validation";
 
 const { height } = Dimensions.get("window");
@@ -104,7 +104,7 @@ const PhoneEntryScreen: React.FC = () => {
           <View className="flex-1 justify-center items-center z-10">
             {/* Logo */}
             <View className="items-center justify-center">
-              <CapiGrowLogo size="large" color={COLORS.white} />
+              <CapiGrowLogo size="large" color={tokens.colors.neutral[0]} />
             </View>
           </View>
         </View>
