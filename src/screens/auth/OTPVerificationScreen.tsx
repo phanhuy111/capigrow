@@ -14,7 +14,7 @@ import {
   useOTPVerificationMutation,
   useResendOTPMutation,
 } from "@/hooks/useAuthQueries";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthClientStore } from "@/store/authClientStore";
 
 type OTPVerificationScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -35,7 +35,7 @@ type OTPFormData = z.infer<typeof otpSchema>;
 const OTPVerificationScreen: React.FC = () => {
   const navigation = useNavigation<OTPVerificationScreenNavigationProp>();
   const route = useRoute<OTPVerificationScreenRouteProp>();
-  const { setAuthData } = useAuthStore();
+  const { setAuthData } = useAuthClientStore();
   const { phoneNumber, isLogin = false } = route.params;
   // For demo purposes, using a mock sessionId - in real app this would come from previous screen
   const sessionId = "mock-session-id";
@@ -98,11 +98,7 @@ const OTPVerificationScreen: React.FC = () => {
       if (result.success) {
         // Store auth data if available
         if (result.token && result.user && result.refreshToken) {
-          setAuthData({
-            user: result.user,
-            access_token: result.token,
-            refresh_token: result.refreshToken,
-          });
+          setAuthData(result.user, result.token, result.refreshToken);
         }
 
         if (isLogin || (result.user && result.user.is_verified)) {

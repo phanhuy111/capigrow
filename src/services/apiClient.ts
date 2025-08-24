@@ -1,5 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { API_ENDPOINTS } from '@/utils/constants';
+import { getToken, removeToken } from '@/services/storage';
+import { MockInterceptor } from './mockInterceptor';
 
 class ApiClient {
   private instance: AxiosInstance;
@@ -19,9 +21,8 @@ class ApiClient {
   private setupInterceptors() {
     // Request interceptor
     this.instance.interceptors.request.use(
-      (config) => {
-        // Add auth token if available
-        const token = this.getAuthToken();
+      async (config) => {
+        const token = await this.getAuthToken();
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -37,25 +38,33 @@ class ApiClient {
       (response: AxiosResponse) => {
         return response;
       },
-      (error) => {
+      async (error) => {
+        // Handle mock responses
+        if (error.isMockResponse) {
+          return Promise.resolve(error.response);
+        }
+        
         // Handle common errors
         if (error.response?.status === 401) {
           // Handle unauthorized access
-          this.handleUnauthorized();
+          await this.handleUnauthorized();
         }
         return Promise.reject(error);
       }
     );
+
+    // Setup mock interceptor for development
+    const mockInterceptor = new MockInterceptor();
+    mockInterceptor.setupInterceptor(this.instance);
   }
 
-  private getAuthToken(): string | null {
-    // TODO: Implement token retrieval from secure storage
-    return null;
+  private async getAuthToken(): Promise<string | null> {
+    return await getToken();
   }
 
-  private handleUnauthorized() {
-    // TODO: Implement logout logic
-    console.log('Unauthorized access - redirecting to login');
+  private async handleUnauthorized() {
+    await removeToken();
+    console.log('Unauthorized access - token removed');
   }
 
   // Generic request method

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,44 +10,20 @@ import { COLORS } from '@/utils/theme';
 import { Icons } from '@/assets';
 import Screen from '@/components/common/Screen';
 import { Card, Button } from '@/components/ui';
-import { mockPortfolioApi } from '@/mock/api/portfolio';
+import { usePortfolioQuery, usePortfolioPerformanceQuery } from '@/hooks/usePortfolioQueries';
 import { formatDate } from '@/utils/helpers';
 
 
 
 const PortfolioScreen: React.FC = () => {
-  const [portfolioData, setPortfolioData] = useState<any>(null);
-  const [_performanceData, setPerformanceData] = useState<any[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<'daily' | 'monthly' | 'yearly'>('monthly');
   const [selectedTab, setSelectedTab] = useState<'overview' | 'investments'>('overview');
 
-  const loadPortfolioData = useCallback(async () => {
-    try {
-      const [portfolioResponse, performanceResponse] = await Promise.all([
-        mockPortfolioApi.getPortfolio(),
-        mockPortfolioApi.getPerformance(selectedPeriod),
-      ]);
-
-      if (portfolioResponse.success) {
-        setPortfolioData(portfolioResponse.data);
-      }
-      if (performanceResponse.success) {
-        setPerformanceData(performanceResponse.data);
-      }
-    } catch (error) {
-      console.error('Error loading portfolio data:', error);
-    }
-  }, [selectedPeriod]);
-
-  useEffect(() => {
-    loadPortfolioData();
-  }, [loadPortfolioData]);
+  const { data: portfolioData, isLoading: portfolioLoading, refetch: refetchPortfolio } = usePortfolioQuery();
+  const { data: _performanceData, isLoading: performanceLoading, refetch: refetchPerformance } = usePortfolioPerformanceQuery(selectedPeriod);
 
   const onRefresh = async () => {
-    setRefreshing(true);
-    await loadPortfolioData();
-    setRefreshing(false);
+    await Promise.all([refetchPortfolio(), refetchPerformance()]);
   };
 
   const formatCurrencyVND = (amount: number) => {
@@ -131,7 +107,7 @@ const PortfolioScreen: React.FC = () => {
     );
   };
 
-  if (!portfolioData) {
+  if (portfolioLoading || performanceLoading || !portfolioData) {
     return (
       <Screen>
         <View className="flex-1 justify-center items-center">
@@ -141,13 +117,13 @@ const PortfolioScreen: React.FC = () => {
     );
   }
 
-  const isPositiveReturn = portfolioData.totalReturn >= 0;
+  const isPositiveReturn = portfolioData.summary.totalReturn >= 0;
 
   return (
     <Screen paddingHorizontal>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={portfolioLoading || performanceLoading} onRefresh={onRefresh} />}
       >
         {/* Header */}
         <View className="flex-row justify-between items-center mb-12 pt-4">
@@ -171,7 +147,7 @@ const PortfolioScreen: React.FC = () => {
           </View>
 
           <View className="items-center mb-12 gap-4">
-            <Text className="text-4xl font-bold text-gray-900">{formatCurrencyVND(portfolioData.totalValue)}</Text>
+            <Text className="text-4xl font-bold text-gray-900">{formatCurrencyVND(portfolioData.summary.currentValue)}</Text>
             <View className="flex-row items-center gap-2">
               <SvgXml
                 xml={Icons.trendUp}
@@ -180,25 +156,25 @@ const PortfolioScreen: React.FC = () => {
                 fill={isPositiveReturn ? COLORS.positive : COLORS.negative}
               />
               <Text className="text-base font-semibold" style={{ color: isPositiveReturn ? COLORS.positive : COLORS.negative }}>
-                {formatCurrencyVND(portfolioData.totalReturn)}
+                {formatCurrencyVND(portfolioData.summary.totalReturn)}
               </Text>
               <Text className="text-sm font-medium" style={{ color: isPositiveReturn ? COLORS.positive : COLORS.negative }}>
-                ({formatPercentageValue(portfolioData.returnPercentage)})
+                ({formatPercentageValue(portfolioData.summary.totalReturnPercentage)})
               </Text>
             </View>
           </View>
 
           <View className="flex-row justify-around">
             <View className="items-center gap-2">
-              <Text className="text-base text-gray-900 font-semibold">{formatCurrencyVND(portfolioData.totalInvested)}</Text>
+              <Text className="text-base text-gray-900 font-semibold">{formatCurrencyVND(portfolioData.summary.totalInvested)}</Text>
               <Text className="text-sm text-gray-600">Total Invested</Text>
             </View>
             <View className="items-center gap-2">
-              <Text className="text-base text-gray-900 font-semibold">{portfolioData.activeInvestments}</Text>
+              <Text className="text-base text-gray-900 font-semibold">{portfolioData.summary.activeInvestments}</Text>
               <Text className="text-sm text-gray-600">Active Investments</Text>
             </View>
             <View className="items-center gap-2">
-              <Text className="text-base text-gray-900 font-semibold">{portfolioData.completedInvestments}</Text>
+              <Text className="text-base text-gray-900 font-semibold">{portfolioData.summary.completedInvestments}</Text>
               <Text className="text-sm text-gray-600">Completed</Text>
             </View>
           </View>
@@ -270,7 +246,7 @@ const PortfolioScreen: React.FC = () => {
               </Card>
               <Card className="flex-1 min-w-[45%] items-center p-6">
                 <SvgXml xml={Icons.graph} width={24} height={24} fill={COLORS.primary} />
-                <Text className="text-lg font-semibold text-gray-900 mb-1">{formatPercentageValue(portfolioData.returnPercentage)}</Text>
+                <Text className="text-lg font-semibold text-gray-900 mb-1">{formatPercentageValue(portfolioData.summary.totalReturnPercentage)}</Text>
                 <Text className="text-sm text-gray-600 text-center">Average Return</Text>
               </Card>
               <Card className="flex-1 min-w-[45%] items-center p-6">

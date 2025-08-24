@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "@/types";
 import { COLORS } from "@/utils/theme";
-import { useInvestmentStore } from "@/store/investmentStore";
+import { useInvestmentClientStore } from "@/store/investmentClientStore";
 import { formatCurrency, formatPercentage } from "@/utils/helpers";
 
 const InvestmentReviewScreen: React.FC = () => {

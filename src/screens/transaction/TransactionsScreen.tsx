@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,29 +9,23 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useTransactionStore } from '@/store';
-import { Transaction, RootStackParamList } from '@/types';
+import { useTransactionsQuery } from '@/hooks/useTransactionQueries';
+import { Transaction } from '@/services/transactionService';
+import { RootStackParamList } from '@/types';
 import Screen from '@/components/common/Screen';
 import { COLORS } from '@/utils/theme';
 import { TRANSACTION_STATUS } from '@/utils/constants';
 import { formatCurrency, formatDate } from '@/utils/helpers';
 
 const TransactionsScreen: React.FC = () => {
-  const { transactions, isLoading, fetchTransactions } = useTransactionStore();
-  const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<string>('all');
-
-  useEffect(() => {
-    fetchTransactions();
-  }, [fetchTransactions]);
+  const { data: transactions = [], isLoading, refetch } = useTransactionsQuery();
 
   const onRefresh = async () => {
-    setRefreshing(true);
-    await fetchTransactions();
-    setRefreshing(false);
+    await refetch();
   };
 
-  const filteredTransactions = (transactions || []).filter(transaction => {
+  const filteredTransactions = transactions.filter(transaction => {
     if (filter === 'all') return true;
     return transaction.type === filter;
   });
@@ -89,7 +83,7 @@ const TransactionsScreen: React.FC = () => {
               {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
             </Text>
             <Text className="text-sm text-gray-600 mb-1">
-              {formatDate(item.created_at, 'short')}
+              {formatDate(item.createdAt, 'short')}
             </Text>
             {item.description && (
               <Text className="text-xs text-gray-600" numberOfLines={1}>
@@ -140,7 +134,7 @@ const TransactionsScreen: React.FC = () => {
     </TouchableOpacity>
   );
 
-  if (isLoading && transactions.length === 0) {
+  if (isLoading) {
     return (
       <SafeAreaView className="flex-1 bg-gray-50">
         <View className="flex-1 justify-center items-center">
@@ -173,7 +167,7 @@ const TransactionsScreen: React.FC = () => {
         className="px-6 pt-4"
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
         }
         ListEmptyComponent={
           <View className="flex-1 justify-center items-center py-16">

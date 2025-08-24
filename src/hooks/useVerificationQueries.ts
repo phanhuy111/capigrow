@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { IdentityVerification } from '@/types';
-import apiService from '@/services/api';
+import verificationService from '@/services/verificationService';
 
 // Query keys
 export const verificationKeys = {
@@ -13,11 +13,11 @@ export const useVerificationStatusQuery = () => {
   return useQuery({
     queryKey: verificationKeys.status(),
     queryFn: async () => {
-      const response = await apiService.getVerificationStatus();
-      if (response.error) {
-        throw new Error(response.error);
+      const response = await verificationService.getVerificationStatus();
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to get verification status');
       }
-      return response.data as IdentityVerification;
+      return response.verification;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -29,11 +29,11 @@ export const useUploadDocumentMutation = () => {
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await apiService.uploadDocument(formData);
-      if (response.error) {
-        throw new Error(response.error);
+      const response = await verificationService.uploadDocument(formData);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to upload document');
       }
-      return response.data;
+      return response.document;
     },
     onSuccess: () => {
       // Invalidate verification status to refetch updated status
@@ -48,11 +48,11 @@ export const useUploadSelfieMutation = () => {
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await apiService.uploadSelfie(formData);
-      if (response.error) {
-        throw new Error(response.error);
+      const response = await verificationService.uploadSelfie(formData);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to upload selfie');
       }
-      return response.data;
+      return response;
     },
     onSuccess: () => {
       // Invalidate verification status to refetch updated status

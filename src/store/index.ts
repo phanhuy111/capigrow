@@ -1,9 +1,8 @@
 // Zustand stores
-export { useAuthStore } from './authStore';
-export { useInvestmentStore } from './investmentStore';
-export { usePortfolioStore } from './portfolioStore';
-export { useTransactionStore } from './transactionStore';
-export { useVerificationStore } from './verificationStore';
+export { useAuthClientStore } from './authClientStore';
+export { useInvestmentClientStore } from './investmentClientStore';
+export { useTransactionClientStore } from './transactionClientStore';
+export { useVerificationClientStore } from './verificationClientStore';
 
 // Export types for convenience
 export type {

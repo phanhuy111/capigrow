@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,55 +9,34 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SvgXml } from "react-native-svg";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthClientStore } from "@/store/authClientStore";
 import { RootStackParamList } from "@/types";
 import { COLORS } from "@/utils/theme";
 import { Icons } from "@/assets";
 
 import { Card, Button, Input } from "@/components/ui";
 import Screen from "@/components/common/Screen";
-import { mockPortfolioApi } from "@/mock/api/portfolio";
-import { mockInvestmentApi } from "@/mock/api/investments";
-import { mockNotificationApi } from "@/mock/api/notifications";
+import { usePortfolioQuery } from "@/hooks/usePortfolioQueries";
+import { useInvestmentsQuery } from "@/hooks/useInvestmentQueries";
+import { useNotificationsQuery } from "@/hooks/useNotificationQueries";
 import { formatCurrency, formatPercentage } from "@/utils/helpers";
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const { user } = useAuthStore();
+  const { user } = useAuthClientStore();
 
-  const [portfolioData, setPortfolioData] = useState<any>(null);
-  const [investments, setInvestments] = useState<any[]>([]);
-  const [notifications, setNotifications] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  // React Query hooks for data fetching
+  const { data: portfolioData, isLoading: portfolioLoading } = usePortfolioQuery();
+  const { data: allInvestments, isLoading: investmentsLoading } = useInvestmentsQuery();
+  const { data: notificationsData, isLoading: notificationsLoading } = useNotificationsQuery({ limit: 5 });
 
-  const loadData = async () => {
-    try {
-      const [portfolioResponse, investmentsResponse, notificationsResponse] =
-        await Promise.all([
-          mockPortfolioApi.getPortfolio(),
-          mockInvestmentApi.getInvestments(),
-          mockNotificationApi.getNotifications({ limit: 5 }),
-        ]);
-
-      if (portfolioResponse.success) {
-        setPortfolioData(portfolioResponse.data);
-      }
-      if (investmentsResponse.success) {
-        setInvestments(investmentsResponse.data.slice(0, 3));
-      }
-      if (notificationsResponse.success) {
-        setNotifications(notificationsResponse.data);
-      }
-    } catch (error) {
-      console.error("Error loading home data:", error);
-    }
-  };
+  // Process the data
+  const investments = allInvestments?.slice(0, 3) || [];
+  const notifications = notificationsData?.notifications || [];
 
   return (
     <Screen paddingHorizontal>
@@ -138,7 +117,7 @@ const HomeScreen: React.FC = () => {
             <View className="gap-6">
               <View className="items-center gap-4">
                 <Text className="text-3xl font-bold text-gray-900">
-                  {formatCurrency(portfolioData.totalValue)}
+                  {formatCurrency(portfolioData.summary.currentValue)}
                 </Text>
                 <View className="flex-row items-center gap-2">
                   <SvgXml
@@ -146,7 +125,7 @@ const HomeScreen: React.FC = () => {
                     width={16}
                     height={16}
                     fill={
-                      portfolioData.returnPercentage >= 0
+                      portfolioData.summary.totalReturnPercentage >= 0
                         ? COLORS.positive
                         : COLORS.negative
                     }
@@ -155,12 +134,12 @@ const HomeScreen: React.FC = () => {
                     className="text-sm font-semibold"
                     style={{
                       color:
-                        portfolioData.returnPercentage >= 0
+                        portfolioData.summary.totalReturnPercentage >= 0
                           ? COLORS.positive
                           : COLORS.negative,
                     }}
                   >
-                    {formatPercentage(portfolioData.returnPercentage)}
+                    {formatPercentage(portfolioData.summary.totalReturnPercentage)}
                   </Text>
                 </View>
               </View>
@@ -168,13 +147,13 @@ const HomeScreen: React.FC = () => {
               <View className="flex-row justify-around">
                 <View className="items-center gap-2">
                   <Text className="text-base font-semibold text-gray-900">
-                    {formatCurrency(portfolioData.totalInvested)}
+                    {formatCurrency(portfolioData.summary.totalInvested)}
                   </Text>
                   <Text className="text-sm text-gray-600">Total Invested</Text>
                 </View>
                 <View className="items-center gap-2">
                   <Text className="text-base font-semibold text-gray-900">
-                    {formatCurrency(portfolioData.totalReturn)}
+                    {formatCurrency(portfolioData.summary.totalReturn)}
                   </Text>
                   <Text className="text-sm text-gray-600">Total Return</Text>
                 </View>
@@ -250,7 +229,7 @@ const HomeScreen: React.FC = () => {
               <View className="flex-row justify-between items-start mb-6">
                 <View className="flex-1 mr-4">
                   <Text className="text-base font-semibold text-gray-900 mb-2">
-                    {investment.title}
+                    {investment.name}
                   </Text>
                   <Text className="text-sm text-gray-600">
                     {investment.category}
@@ -282,7 +261,7 @@ const HomeScreen: React.FC = () => {
 
               <View className="flex-row justify-between items-center">
                 <Text className="text-sm text-gray-600">
-                  Min: {formatCurrency(investment.minInvestment)}
+                  Min: {formatCurrency(investment.minimumAmount)}
                 </Text>
                 <Text className="text-sm text-gray-600">
                   {investment.investorCount} investors

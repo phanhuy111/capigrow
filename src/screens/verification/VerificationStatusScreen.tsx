@@ -10,7 +10,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types';
-import { useVerificationStore } from '@/store/verificationStore';
+import { VerificationStatus } from '@/services/verificationService';
+import { useVerificationStatusQuery } from '@/hooks/useVerificationQueries';
 import { COLORS } from '@/utils/theme';
 import { VERIFICATION_STATUS } from '@/utils/constants';
 import { formatDate } from '@/utils/helpers';
@@ -22,11 +23,7 @@ type VerificationStatusScreenNavigationProp = NativeStackNavigationProp<
 
 const VerificationStatusScreen: React.FC = () => {
   const navigation = useNavigation<VerificationStatusScreenNavigationProp>();
-  const { verification, isLoading, fetchVerificationStatus } = useVerificationStore();
-
-  useEffect(() => {
-    fetchVerificationStatus();
-  }, [fetchVerificationStatus]);
+  const { data: verification, isLoading } = useVerificationStatusQuery();
 
   const getStatusInfo = () => {
     if (!verification) {
@@ -39,7 +36,7 @@ const VerificationStatusScreen: React.FC = () => {
       };
     }
 
-    const statusKey = verification.status as keyof typeof VERIFICATION_STATUS;
+    const statusKey = verification.overall as keyof typeof VERIFICATION_STATUS;
     const statusInfo = VERIFICATION_STATUS[statusKey];
 
     const icons = {
@@ -50,7 +47,7 @@ const VerificationStatusScreen: React.FC = () => {
     };
 
     return {
-      status: verification.status,
+      status: verification.overall,
       color: statusInfo.color,
       icon: icons[statusKey] || '⏳',
       title: statusInfo.label,
@@ -107,16 +104,16 @@ const VerificationStatusScreen: React.FC = () => {
             </Text>
 
             <View className="flex-row justify-between items-center mb-2">
-              <Text className="text-sm text-gray-600 flex-1">Document Type:</Text>
+              <Text className="text-sm text-gray-600 flex-1">Completed Steps:</Text>
               <Text className="text-sm text-gray-900 font-medium flex-2 text-right">
-                {verification.document_type?.replace('_', ' ').toUpperCase() || 'Not specified'}
+                {verification.completedSteps} of {verification.totalSteps}
               </Text>
             </View>
 
             <View className="flex-row justify-between items-center mb-2">
-              <Text className="text-sm text-gray-600 flex-1">Submitted:</Text>
+              <Text className="text-sm text-gray-600 flex-1">Last Updated:</Text>
               <Text className="text-sm text-gray-900 font-medium flex-2 text-right">
-                {formatDate(verification.created_at, 'long')}
+                {formatDate(verification.lastUpdated, 'long')}
               </Text>
             </View>
 
@@ -135,30 +132,31 @@ const VerificationStatusScreen: React.FC = () => {
               </View>
             </View>
 
-            {verification.verified_at && (
-              <View className="flex-row justify-between items-center mb-2">
-                <Text className="text-sm text-gray-600 flex-1">Verified:</Text>
-                <Text className="text-sm text-gray-900 font-medium flex-2 text-right">
-                  {formatDate(verification.verified_at, 'long')}
-                </Text>
-              </View>
-            )}
+            <View className="flex-row justify-between items-center mb-2">
+              <Text className="text-sm text-gray-600 flex-1">Identity:</Text>
+              <Text className="text-sm text-gray-900 font-medium flex-2 text-right">
+                {verification.identity.replace('_', ' ').toUpperCase()}
+              </Text>
+            </View>
 
-            {verification.rejection_reason && (
-              <View className="mt-4 p-4 rounded-md border-l-4" style={{ backgroundColor: COLORS.error + '10', borderLeftColor: COLORS.error }}>
-                <Text className="text-sm font-semibold mb-1" style={{ color: COLORS.error }}>
-                  Rejection Reason:
-                </Text>
-                <Text className="text-sm text-gray-900 leading-5">
-                  {verification.rejection_reason}
-                </Text>
-              </View>
-            )}
+            <View className="flex-row justify-between items-center mb-2">
+              <Text className="text-sm text-gray-600 flex-1">Address:</Text>
+              <Text className="text-sm text-gray-900 font-medium flex-2 text-right">
+                {verification.address.replace('_', ' ').toUpperCase()}
+              </Text>
+            </View>
+
+            <View className="flex-row justify-between items-center mb-2">
+              <Text className="text-sm text-gray-600 flex-1">Selfie:</Text>
+              <Text className="text-sm text-gray-900 font-medium flex-2 text-right">
+                {verification.selfie.replace('_', ' ').toUpperCase()}
+              </Text>
+            </View>
           </View>
         )}
 
         <View className="flex-1 justify-end pb-6">
-          {verification?.status === 'rejected' && (
+          {verification?.overall === 'rejected' && (
             <TouchableOpacity 
               className="bg-blue-600 py-4 rounded-md items-center" 
               onPress={handleRetryVerification}
@@ -169,7 +167,7 @@ const VerificationStatusScreen: React.FC = () => {
             </TouchableOpacity>
           )}
 
-          {verification?.status === 'approved' && (
+          {verification?.overall === 'approved' && (
             <TouchableOpacity 
               className="bg-green-600 py-4 rounded-md items-center" 
               onPress={handleGoHome}
@@ -180,7 +178,7 @@ const VerificationStatusScreen: React.FC = () => {
             </TouchableOpacity>
           )}
 
-          {(!verification || verification.status === 'pending' || verification.status === 'under_review') && (
+          {(!verification || verification.overall === 'pending' || verification.overall === 'under_review') && (
             <View className="items-center">
               <Text className="text-sm text-gray-600 text-center leading-5 mb-4">
                 We'll notify you once your verification is complete. This usually takes 1-2 business days.

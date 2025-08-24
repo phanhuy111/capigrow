@@ -7,23 +7,44 @@ export const mockAuthApi = {
 
     // Simulate login validation
     if (email === 'user@example.com' && password === 'password123') {
-      return mockApiResponse(mockAuthData, true, 'Login successful');
+      return mockApiResponse({
+        access_token: 'mock_access_token_123',
+        refresh_token: 'mock_refresh_token_123',
+        user: {
+          id: '1',
+          email: 'user@example.com',
+          fullName: 'Nguyen Van A',
+          phoneNumber: '+84123456789'
+        }
+      }, true, 'Login successful');
     }
 
     return mockApiResponse(null, false, 'Invalid credentials');
   },
 
   register: async (userData: {
+    phoneNumber: string;
+    fullName: string;
     email: string;
     password: string;
-    firstName: string;
-    lastName: string;
-    phone: string;
+    confirmPassword: string;
+    dateOfBirth: string;
+    gender: 'male' | 'female' | 'other';
+    referralCode?: string;
   }) => {
     await mockDelay(2000);
 
     // Simulate registration
-    return mockApiResponse(mockAuthData, true, 'Registration successful');
+    return mockApiResponse({
+      access_token: 'mock_access_token_456',
+      refresh_token: 'mock_refresh_token_456',
+      user: {
+        id: '2',
+        phoneNumber: userData.phoneNumber,
+        fullName: userData.fullName,
+        email: userData.email
+      }
+    }, true, 'Registration successful');
   },
 
   verifyPhone: async (phone: string, otp: string) => {
@@ -44,13 +65,18 @@ export const mockAuthApi = {
     return mockApiResponse({ sent: true }, true, 'OTP sent successfully');
   },
 
-  refreshToken: async (refreshToken: string) => {
+  refreshToken: async (refreshToken?: string) => {
     await mockDelay(500);
 
     return mockApiResponse({
-      accessToken: 'new_mock_access_token',
-      refreshToken: 'new_mock_refresh_token',
-      expiresIn: 3600,
+      access_token: 'new_mock_access_token',
+      refresh_token: 'new_mock_refresh_token',
+      user: {
+        id: '1',
+        email: 'user@example.com',
+        fullName: 'Nguyen Van A',
+        phoneNumber: '+84123456789'
+      }
     }, true, 'Token refreshed');
   },
 
@@ -83,6 +109,59 @@ export const mockAuthApi = {
     await mockDelay(2000);
 
     // Simulate account creation
-    return mockApiResponse(mockAuthData, true, 'Account created successfully');
+    return mockApiResponse({
+      access_token: 'mock_access_token_789',
+      refresh_token: 'mock_refresh_token_789',
+      user: {
+        id: '3',
+        phoneNumber: userData.phoneNumber,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email
+      }
+    }, true, 'Account created successfully');
+  },
+
+  sendPhoneVerification: async (data: {
+    phoneNumber: string;
+    countryCode: string;
+  }) => {
+    await mockDelay(1000);
+
+    return mockApiResponse({
+      sessionId: 'mock_session_id_123'
+    }, true, 'OTP sent successfully');
+  },
+
+  verifyOTP: async (data: {
+    sessionId: string;
+    otp: string;
+  }) => {
+    await mockDelay(1000);
+
+    // Simulate OTP verification - accept common test OTPs
+    if (data.otp === '0000' || data.otp === '1234' || data.otp === '1111') {
+      return mockApiResponse({
+        access_token: 'mock_access_token_otp',
+        refresh_token: 'mock_refresh_token_otp',
+        user: {
+          id: '4',
+          phoneNumber: '+84123456789',
+          fullName: 'User OTP',
+          email: 'user.otp@example.com'
+        },
+        isNewUser: false
+      }, true, 'OTP verified successfully');
+    }
+
+    return mockApiResponse(null, false, 'Invalid OTP');
+  },
+
+  resendOTP: async (sessionId: string) => {
+    await mockDelay(500);
+
+    return mockApiResponse({
+      sessionId: sessionId
+    }, true, 'OTP resent successfully');
   },
 };

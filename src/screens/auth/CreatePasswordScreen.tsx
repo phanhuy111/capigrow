@@ -18,7 +18,7 @@ import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "@/types";
 import { Input, Button } from "@/components/ui";
 import { useRegisterMutation } from "@/hooks/useAuthQueries";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthClientStore } from "@/store/authClientStore";
 
 type CreatePasswordScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -51,7 +51,7 @@ const CreatePasswordScreen: React.FC = () => {
   const navigation = useNavigation<CreatePasswordScreenNavigationProp>();
   const route = useRoute<CreatePasswordScreenRouteProp>();
   const { phoneNumber, userInfo } = route.params;
-  const { setAuthData } = useAuthStore();
+  const { setAuthData } = useAuthClientStore();
   const registerMutation = useRegisterMutation();
 
   const {
@@ -82,11 +82,7 @@ const CreatePasswordScreen: React.FC = () => {
 
       // Store authentication data
       if (response.access_token) {
-        setAuthData({
-          user: response.user,
-          access_token: response.access_token,
-          refresh_token: response.refresh_token,
-        });
+        setAuthData(response.user, response.access_token, response.refresh_token);
       }
 
       Alert.alert(

@@ -4,20 +4,68 @@ import { mockUserProfile } from '@/mock/data/user';
 export const mockUserApi = {
   getProfile: async () => {
     await mockDelay(1000);
-    return mockApiResponse(mockUserProfile, true, 'Profile retrieved successfully');
+    
+    const userData = {
+      user: {
+        id: '1',
+        phoneNumber: '+84123456789',
+        fullName: 'Nguyen Van A',
+        firstName: 'Van A',
+        lastName: 'Nguyen',
+        email: 'user@example.com',
+        dateOfBirth: '1990-01-15',
+        gender: 'male' as const,
+        avatar: '/images/avatar.jpg',
+        isVerified: true,
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-12-20T00:00:00Z'
+      }
+    };
+    
+    return mockApiResponse(userData, true, 'Profile retrieved successfully');
   },
 
-  updateProfile: async (profileData: Partial<typeof mockUserProfile>) => {
+  updateProfile: async (profileData: {
+    fullName?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    dateOfBirth?: string;
+    gender?: 'male' | 'female' | 'other';
+    avatar?: string;
+  }) => {
     await mockDelay(1500);
     
-    const updatedProfile = { ...mockUserProfile, ...profileData };
-    return mockApiResponse(updatedProfile, true, 'Profile updated successfully');
+    const updatedUser = {
+      id: '1',
+      phoneNumber: '+84123456789',
+      fullName: profileData.fullName || 'Nguyen Van A',
+      firstName: profileData.firstName || 'Van A',
+      lastName: profileData.lastName || 'Nguyen',
+      email: profileData.email || 'user@example.com',
+      dateOfBirth: profileData.dateOfBirth || '1990-01-15',
+      gender: profileData.gender || 'male' as const,
+      avatar: profileData.avatar || '/images/avatar.jpg',
+      isVerified: true,
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: new Date().toISOString()
+    };
+    
+    const responseData = {
+      user: updatedUser
+    };
+    
+    return mockApiResponse(responseData, true, 'Profile updated successfully');
   },
 
-  changePassword: async (currentPassword: string, newPassword: string) => {
+  changePassword: async (passwordData: {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  }) => {
     await mockDelay(1000);
     
-    if (currentPassword === 'password123') {
+    if (passwordData.currentPassword === 'password123') {
       return mockApiResponse({ success: true }, true, 'Password changed successfully');
     }
     

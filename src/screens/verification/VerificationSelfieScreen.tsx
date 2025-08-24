@@ -13,7 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types';
-import { useVerificationStore } from '@/store/verificationStore';
+import { useVerificationClientStore } from '@/store/verificationClientStore';
+import { useUploadSelfieMutation } from '@/hooks/useVerificationQueries';
 import { COLORS } from '@/utils/theme';
 
 type VerificationSelfieScreenNavigationProp = NativeStackNavigationProp<
@@ -23,7 +24,8 @@ type VerificationSelfieScreenNavigationProp = NativeStackNavigationProp<
 
 const VerificationSelfieScreen: React.FC = () => {
   const navigation = useNavigation<VerificationSelfieScreenNavigationProp>();
-  const { isLoading, uploadSelfie } = useVerificationStore();
+  const { isUploading, setIsUploading } = useVerificationClientStore();
+  const uploadSelfie = useUploadSelfieMutation();
 
   const [selfieImage, setSelfieImage] = useState<string | null>(null);
 
@@ -63,12 +65,15 @@ const VerificationSelfieScreen: React.FC = () => {
       } as any);
 
       try {
-        await uploadSelfie(formData);
+        setIsUploading(true);
+        await uploadSelfie.mutateAsync(formData);
         Alert.alert('Success', 'Selfie uploaded successfully!', [
           { text: 'Continue', onPress: () => navigation.navigate('VerificationStatus') },
         ]);
       } catch (uploadError) {
         Alert.alert('Error', 'Failed to upload selfie. Please try again.');
+      } finally {
+        setIsUploading(false);
       }
     } catch (error) {
       Alert.alert('Error', 'An unexpected error occurred. Please try again.');
@@ -124,12 +129,12 @@ const VerificationSelfieScreen: React.FC = () => {
 
         <TouchableOpacity
           className={`py-4 rounded-md items-center mb-6 ${
-            (!selfieImage || isLoading) ? 'bg-gray-400' : 'bg-blue-600'
+            (!selfieImage || isUploading) ? 'bg-gray-400' : 'bg-blue-600'
           }`}
           onPress={handleSubmit}
-          disabled={!selfieImage || isLoading}
+          disabled={!selfieImage || isUploading}
         >
-          {isLoading ? (
+          {isUploading ? (
             <ActivityIndicator color={COLORS.white} />
           ) : (
             <Text className="text-white text-base font-semibold">

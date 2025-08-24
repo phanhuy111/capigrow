@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/types";
-import { useInvestmentStore } from "@/store/investmentStore";
+import { useInvestmentClientStore } from "@/store/investmentClientStore";
 import { formatCurrency, calculateReturns } from "@/utils/helpers";
 
 type InvestmentAmountScreenNavigationProp = NativeStackNavigationProp<
@@ -47,7 +47,7 @@ type InvestmentAmountFormData = z.infer<typeof investmentAmountSchema>;
 const InvestmentAmountScreen: React.FC = () => {
   const navigation = useNavigation<InvestmentAmountScreenNavigationProp>();
   const route = useRoute<InvestmentAmountScreenRouteProp>();
-  const { selectedInvestment } = useInvestmentStore();
+  const { selectedInvestment } = useInvestmentClientStore();
 
   const { investmentId } = route.params;
   const investment = selectedInvestment;

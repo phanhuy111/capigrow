@@ -47,7 +47,6 @@ const PhoneEntryScreen: React.FC = () => {
   const {
     control,
     handleSubmit,
-    setValue,
     watch,
     formState: { errors, isValid },
   } = useForm<PhoneFormData>({
@@ -66,15 +65,13 @@ const PhoneEntryScreen: React.FC = () => {
     try {
       const result = await phoneVerificationMutation.mutateAsync({
         phoneNumber: cleanPhone,
-        countryCode: "+84", // Vietnam country code
+        countryCode: "+84",
       });
 
       if (result.success) {
         navigation.navigate("OTPVerification", {
           phoneNumber: cleanPhone,
         });
-      } else {
-        Alert.alert("Lỗi", result.message || "Không thể gửi mã OTP");
       }
     } catch (error: any) {
       Alert.alert(

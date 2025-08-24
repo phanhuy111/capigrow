@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -16,9 +16,8 @@ import { COLORS } from '@/utils/theme';
 import { Icons } from '@/assets';
 import Screen from '@/components/common/Screen';
 import { Card } from '@/components/ui/card';
-import { useInvestmentsQuery } from '@/hooks/useInvestmentQueries';
+import { useInvestmentsQuery, useInvestmentCategoriesQuery } from '@/hooks/useInvestmentQueries';
 import { formatCurrency, formatPercentage } from '@/utils/helpers';
-import { mockInvestmentApi } from '@/mock/api/investments';
 
 const { width } = Dimensions.get('window');
 
@@ -27,47 +26,25 @@ type InvestmentsScreenNavigationProp = NativeStackNavigationProp<RootStackParamL
 const InvestmentsScreen: React.FC = () => {
   const navigation = useNavigation<InvestmentsScreenNavigationProp>();
 
-  const [investments, setInvestments] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedRiskLevel, setSelectedRiskLevel] = useState<string>('');
-  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    loadInvestments();
-  }, []);
-
-  const loadInvestments = async () => {
-    try {
-      const [investmentsResponse, categoriesResponse] = await Promise.all([
-        mockInvestmentApi.getInvestments(),
-        mockInvestmentApi.getCategories(),
-      ]);
-
-      if (investmentsResponse.success) {
-        setInvestments(investmentsResponse.data);
-      }
-      if (categoriesResponse.success) {
-        setCategories(categoriesResponse.data);
-      }
-    } catch (error) {
-      console.error('Error loading investments:', error);
-    }
-  };
+  const { data: investments = [], isLoading: investmentsLoading, refetch: refetchInvestments } = useInvestmentsQuery();
+  const { data: categories = [], isLoading: categoriesLoading, refetch: refetchCategories } = useInvestmentCategoriesQuery();
 
   const onRefresh = async () => {
-    setRefreshing(true);
-    await loadInvestments();
-    setRefreshing(false);
+    await Promise.all([refetchInvestments(), refetchCategories()]);
   };
 
-  const filteredInvestments = investments.filter((investment) => {
+  const filteredInvestments = investments.filter((investment: any) => {
     const matchesSearch = investment.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       investment.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = !selectedCategory || investment.category.toLowerCase() === selectedCategory.toLowerCase();
-    const matchesRisk = !selectedRiskLevel || investment.riskLevel.toLowerCase() === selectedRiskLevel.toLowerCase();
-    return matchesSearch && matchesCategory && matchesRisk && investment.status === 'active';
+    const matchesCategory = !selectedCategory || investment.category === selectedCategory;
+    const matchesRisk = !selectedRiskLevel || investment.riskLevel === selectedRiskLevel;
+    const matchesStatus = investment.status === 'active';
+    
+    return matchesSearch && matchesCategory && matchesRisk && matchesStatus;
   });
 
   const formatCurrencyVND = (amount: number) => {
@@ -155,7 +132,7 @@ const InvestmentsScreen: React.FC = () => {
             </View>
             <View className="flex-row items-center gap-2">
               <SvgXml xml={Icons.emptyWallet} width={16} height={16} fill={COLORS.textSecondary} />
-              <Text className="text-sm text-gray-600 font-medium">{formatCurrencyVND(item.minInvestment)}</Text>
+              <Text className="text-sm text-gray-600 font-medium">{formatCurrency(item.minInvestment)}</Text>
             </View>
           </View>
 
@@ -174,7 +151,7 @@ const InvestmentsScreen: React.FC = () => {
             </View>
             <View className="flex-row justify-between">
               <Text className="text-sm text-gray-600">
-                {formatCurrencyVND(item.totalRaised)} raised
+                {formatCurrency(item.totalRaised)} raised
               </Text>
               <Text className="text-sm text-gray-600">
                 {item.investorCount} investors
@@ -222,7 +199,7 @@ const InvestmentsScreen: React.FC = () => {
     <Screen paddingHorizontal>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={investmentsLoading || categoriesLoading} onRefresh={onRefresh} />}
       >
         {/* Header */}
         <View className="flex-row justify-between items-center mb-8 pt-4">

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Investment, UserInvestment } from '@/types';
-import apiService from '@/services/api';
+import investmentService from '@/services/investmentService';
 
 // Query keys
 export const investmentKeys = {
@@ -10,6 +10,7 @@ export const investmentKeys = {
   details: () => [...investmentKeys.all, 'detail'] as const,
   detail: (id: string) => [...investmentKeys.details(), id] as const,
   userInvestments: () => [...investmentKeys.all, 'user'] as const,
+  categories: () => [...investmentKeys.all, 'categories'] as const,
 };
 
 // Get all investments query
@@ -17,11 +18,11 @@ export const useInvestmentsQuery = () => {
   return useQuery({
     queryKey: investmentKeys.lists(),
     queryFn: async () => {
-      const response = await apiService.getInvestments();
-      if (response.error) {
-        throw new Error(response.error);
+      const response = await investmentService.getInvestments();
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to get investments');
       }
-      return response.data as Investment[];
+      return response.investments;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -32,29 +33,46 @@ export const useInvestmentQuery = (id: string) => {
   return useQuery({
     queryKey: investmentKeys.detail(id),
     queryFn: async () => {
-      const response = await apiService.getInvestment(id);
-      if (response.error) {
-        throw new Error(response.error);
+      const response = await investmentService.getInvestment(id);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to get investment');
       }
-      return response.data as Investment;
+      return response.investment;
     },
     enabled: !!id,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
 
-// Get user investments query (from portfolio)
+// Get user investments query
 export const useUserInvestmentsQuery = () => {
   return useQuery({
     queryKey: investmentKeys.userInvestments(),
     queryFn: async () => {
-      const response = await apiService.getPortfolio();
-      if (response.error) {
-        throw new Error(response.error);
+      // Note: This should be handled by portfolioService or a separate endpoint
+      // For now, we'll get all investments and filter user's investments
+      const response = await investmentService.getInvestments();
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to get user investments');
       }
-      return response.data.investments as UserInvestment[];
+      return response.investments;
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+};
+
+// Get investment categories query
+export const useInvestmentCategoriesQuery = () => {
+  return useQuery({
+    queryKey: investmentKeys.categories(),
+    queryFn: async () => {
+      const response = await investmentService.getCategories();
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to get categories');
+      }
+      return response.categories;
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutes (categories don't change often)
   });
 };
 
@@ -63,18 +81,18 @@ export const useRegisterInvestmentMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, amount }: { id: string; amount: number }) => {
-      const response = await apiService.registerInvestment(id, amount);
-      if (response.error) {
-        throw new Error(response.error);
+    mutationFn: async ({ id, amount, paymentMethod, notes }: { id: string; amount: number; paymentMethod?: string; notes?: string }) => {
+      const response = await investmentService.registerInvestment(id, { amount, paymentMethod, notes });
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to register investment');
       }
-      return response.data;
+      return response;
     },
     onSuccess: (data, variables) => {
-      // Invalidate and refetch investments
-      queryClient.invalidateQueries({ queryKey: investmentKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: investmentKeys.detail(variables.id) });
+      // Invalidate user investments to refetch
       queryClient.invalidateQueries({ queryKey: investmentKeys.userInvestments() });
+      // Also invalidate the specific investment
+      queryClient.invalidateQueries({ queryKey: investmentKeys.detail(variables.id) });
     },
   });
 };

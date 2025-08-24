@@ -15,7 +15,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { RootStackParamList } from "@/types";
 import { COLORS } from "@/utils/theme";
 import { formatCurrency, generateQRData } from "@/utils/helpers";
-import { useInvestmentStore } from "@/store/investmentStore";
+import { useInvestmentClientStore } from "@/store/investmentClientStore";
 
 type BankTransferQRScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,

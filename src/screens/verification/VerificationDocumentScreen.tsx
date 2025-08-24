@@ -13,7 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types';
-import { useVerificationStore } from '@/store/verificationStore';
+import { useVerificationClientStore } from '@/store/verificationClientStore';
+import { useUploadDocumentMutation } from '@/hooks/useVerificationQueries';
 import { COLORS } from '@/utils/theme';
 
 type VerificationDocumentScreenNavigationProp = NativeStackNavigationProp<
@@ -23,7 +24,8 @@ type VerificationDocumentScreenNavigationProp = NativeStackNavigationProp<
 
 const VerificationDocumentScreen: React.FC = () => {
   const navigation = useNavigation<VerificationDocumentScreenNavigationProp>();
-  const { isLoading, uploadDocument } = useVerificationStore();
+  const { isUploading, setIsUploading } = useVerificationClientStore();
+  const uploadDocument = useUploadDocumentMutation();
 
   const [selectedDocumentType, setSelectedDocumentType] = useState<string>('');
   const [frontImage, setFrontImage] = useState<string | null>(null);
@@ -135,12 +137,15 @@ const VerificationDocumentScreen: React.FC = () => {
       }
 
       try {
-        await uploadDocument(formData);
+        setIsUploading(true);
+        await uploadDocument.mutateAsync(formData);
         Alert.alert('Success', 'Document uploaded successfully!', [
           { text: 'Continue', onPress: () => navigation.navigate('VerificationSelfie') },
         ]);
       } catch (uploadError) {
         Alert.alert('Error', 'Failed to upload document. Please try again.');
+      } finally {
+        setIsUploading(false);
       }
     } catch (error) {
       Alert.alert('Error', 'An unexpected error occurred. Please try again.');
@@ -248,12 +253,12 @@ const VerificationDocumentScreen: React.FC = () => {
 
         <TouchableOpacity
           className={`py-4 rounded-md items-center mb-6 ${
-            isLoading ? 'bg-gray-400' : 'bg-blue-600'
+            isUploading ? 'bg-gray-400' : 'bg-blue-600'
           }`}
           onPress={handleSubmit}
-          disabled={isLoading}
+          disabled={isUploading}
         >
-          {isLoading ? (
+          {isUploading ? (
             <ActivityIndicator color={COLORS.white} />
           ) : (
             <Text className="text-white text-base font-semibold">

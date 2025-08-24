@@ -13,11 +13,12 @@ import { Icons } from "@/assets";
 import Screen from "@/components/common/Screen";
 import { Card } from "@/components/ui";
 import { Button } from "@/components/ui";
-import { mockUserApi } from "@/mock/api/user";
+import { useUploadDocumentMutation } from "@/hooks/useVerificationQueries";
 
 const IdentityVerificationScreen: React.FC = () => {
   const navigation = useNavigation();
   const [currentStep, setCurrentStep] = useState(1);
+  const uploadDocument = useUploadDocumentMutation();
 
   const handleGoBack = (): void => {
     navigation.goBack();
@@ -53,12 +54,13 @@ const IdentityVerificationScreen: React.FC = () => {
   const handleDocumentUpload = async (type: string) => {
     try {
       setUploading(true);
-      // Simulate document upload
-      const response = await mockUserApi.uploadDocument(type, null);
-      if (response.success) {
-        setDocuments((prev) => ({ ...prev, [type]: response.data.url }));
-        Alert.alert("Success", "Document uploaded successfully");
-      }
+      // Create FormData for document upload
+      const formData = new FormData();
+      formData.append('documentType', type);
+      
+      const response = await uploadDocument.mutateAsync(formData);
+      setDocuments((prev) => ({ ...prev, [type]: response.url || 'uploaded' }));
+      Alert.alert("Success", "Document uploaded successfully");
     } catch (error) {
       Alert.alert("Error", "Failed to upload document");
     } finally {

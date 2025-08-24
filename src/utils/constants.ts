@@ -319,6 +319,7 @@ export const API_ENDPOINTS = {
     LIST: '/investments',
     DETAILS: '/investments/:id',
     REGISTER: '/investments/:id/register',
+    CATEGORIES: '/investments/categories',
   },
   PORTFOLIO: {
     OVERVIEW: '/portfolio',

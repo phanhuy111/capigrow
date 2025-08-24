@@ -1,6 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { LoginRequest, RegisterRequest, AuthResponse, User } from '@/types';
-import apiService from '@/services/api';
+import { User } from '@/types';
+import authService, { 
+  LoginRequest, 
+  LoginResponse, 
+  UserRegistrationRequest, 
+  UserRegistrationResponse,
+  PhoneVerificationRequest,
+  OTPVerificationRequest,
+  CreateAccountRequest
+} from '@/services/authService';
+import userService, { UpdateProfileRequest } from '@/services/userService';
 import { useAuthClientStore } from '@/store/authClientStore';
 import { setToken, setRefreshToken, setUserData, clearAllData } from '@/services/storage';
 
@@ -17,25 +26,37 @@ export const useLoginMutation = () => {
 
   return useMutation({
     mutationFn: async (credentials: LoginRequest) => {
-      const response = await apiService.login(credentials.email, credentials.password);
-      if (response.error) {
-        throw new Error(response.error);
+      const response = await authService.login(credentials);
+      if (!response.success) {
+        throw new Error(response.message || 'Login failed');
       }
-      return response.data as AuthResponse;
+      return response;
     },
-    onSuccess: async (authData: AuthResponse) => {
-      // Validate tokens before storing
-      if (!authData.access_token || !authData.refresh_token) {
-        throw new Error('Invalid response: missing tokens');
-      }
-
-      // Store tokens and user data
-      await setToken(authData.access_token);
-      await setRefreshToken(authData.refresh_token);
-      await setUserData(authData.user);
-
+    onSuccess: async (data: LoginResponse) => {
+      // Store tokens
+      await setToken(data.access_token);
+      await setRefreshToken(data.refresh_token);
+      await setUserData(data.user);
+      
+      // Convert authService user to types User format
+      const user: User = {
+        id: data.user.id,
+        email: data.user.email,
+        first_name: data.user.fullName.split(' ')[0] || '',
+        last_name: data.user.fullName.split(' ').slice(1).join(' ') || '',
+        phone_number: data.user.phoneNumber,
+        is_active: true,
+        is_verified: false,
+        verification_status: 'pending',
+        two_factor_enabled: false,
+        timezone: 'UTC',
+        language: 'en',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      
       // Update client state
-      setAuthData(authData.user, authData.access_token, authData.refresh_token);
+      setAuthData(user, data.access_token, data.refresh_token);
       
       // Invalidate and refetch user profile
       queryClient.invalidateQueries({ queryKey: authKeys.profile() });
@@ -49,21 +70,38 @@ export const useRegisterMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (userData: RegisterRequest) => {
-      const response = await apiService.register(userData);
-      if (response.error) {
-        throw new Error(response.error);
+    mutationFn: async (userData: UserRegistrationRequest) => {
+      const response = await authService.register(userData);
+      if (!response.success) {
+        throw new Error(response.message || 'Registration failed');
       }
-      return response.data as AuthResponse;
+      return response;
     },
-    onSuccess: async (authData: AuthResponse) => {
-      // Store tokens and user data
-      await setToken(authData.access_token);
-      await setRefreshToken(authData.refresh_token);
-      await setUserData(authData.user);
-
+    onSuccess: async (data: UserRegistrationResponse) => {
+      // Store tokens
+      await setToken(data.access_token);
+      await setRefreshToken(data.refresh_token);
+      await setUserData(data.user);
+      
+      // Convert authService user to types User format
+      const user: User = {
+        id: data.user.id,
+        email: data.user.email,
+        first_name: data.user.fullName.split(' ')[0] || '',
+        last_name: data.user.fullName.split(' ').slice(1).join(' ') || '',
+        phone_number: data.user.phoneNumber,
+        is_active: true,
+        is_verified: false,
+        verification_status: 'pending',
+        two_factor_enabled: false,
+        timezone: 'UTC',
+        language: 'en',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      
       // Update client state
-      setAuthData(authData.user, authData.access_token, authData.refresh_token);
+      setAuthData(user, data.access_token, data.refresh_token);
       
       // Invalidate and refetch user profile
       queryClient.invalidateQueries({ queryKey: authKeys.profile() });
@@ -79,7 +117,7 @@ export const useLogoutMutation = () => {
   return useMutation({
     mutationFn: async () => {
       // Call logout API if needed
-      await apiService.logout();
+      await authService.logout();
     },
     onSuccess: async () => {
       // Clear stored data
@@ -107,11 +145,31 @@ export const useProfileQuery = () => {
   return useQuery({
     queryKey: authKeys.profile(),
     queryFn: async () => {
-      const response = await apiService.getProfile();
-      if (response.error) {
-        throw new Error(response.error);
+      const response = await userService.getProfile();
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to get profile');
       }
-      return response.data as User;
+      
+      // Convert userService User to types User format
+      const user: User = {
+        id: response.user.id,
+        email: response.user.email,
+        first_name: response.user.firstName || response.user.fullName.split(' ')[0] || '',
+        last_name: response.user.lastName || response.user.fullName.split(' ').slice(1).join(' ') || '',
+        phone_number: response.user.phoneNumber,
+        date_of_birth: response.user.dateOfBirth,
+        profile_image_url: response.user.avatar,
+        is_active: true,
+        is_verified: response.user.isVerified,
+        verification_status: 'pending',
+        two_factor_enabled: false,
+        timezone: 'UTC',
+        language: 'en',
+        created_at: response.user.createdAt,
+        updated_at: response.user.updatedAt
+      };
+      
+      return user;
     },
     enabled: !!token, // Only fetch if user is authenticated
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -124,12 +182,32 @@ export const useUpdateProfileMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (userData: Partial<User>) => {
-      const response = await apiService.updateProfile(userData);
-      if (response.error) {
-        throw new Error(response.error);
+    mutationFn: async (userData: UpdateProfileRequest) => {
+      const response = await userService.updateProfile(userData);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to update profile');
       }
-      return response.data as User;
+      
+      // Convert userService User to types User format
+      const user: User = {
+        id: response.user.id,
+        email: response.user.email,
+        first_name: response.user.firstName || response.user.fullName.split(' ')[0] || '',
+        last_name: response.user.lastName || response.user.fullName.split(' ').slice(1).join(' ') || '',
+        phone_number: response.user.phoneNumber,
+        date_of_birth: response.user.dateOfBirth,
+        profile_image_url: response.user.avatar,
+        is_active: true,
+        is_verified: response.user.isVerified,
+        verification_status: 'pending',
+        two_factor_enabled: false,
+        timezone: 'UTC',
+        language: 'en',
+        created_at: response.user.createdAt,
+        updated_at: response.user.updatedAt
+      };
+      
+      return user;
     },
     onSuccess: (updatedUser: User) => {
       // Update client state
@@ -147,12 +225,12 @@ export const useOTPVerificationMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ sessionId, otp }: { sessionId: string; otp: string }) => {
-      const response = await apiService.verifyOTP(sessionId, otp);
-      if (response.error) {
-        throw new Error(response.error);
+    mutationFn: async (request: OTPVerificationRequest) => {
+      const response = await authService.verifyOTP(request);
+      if (!response.success) {
+        throw new Error(response.message || 'OTP verification failed');
       }
-      return response.data;
+      return response;
     },
     onSuccess: async (data: any) => {
       if (data.access_token && data.refresh_token) {
@@ -161,8 +239,25 @@ export const useOTPVerificationMutation = () => {
         await setRefreshToken(data.refresh_token);
         await setUserData(data.user);
 
+        // Convert authService user to types User format
+        const user: User = {
+          id: data.user.id,
+          email: data.user.email,
+          first_name: data.user.fullName.split(' ')[0] || '',
+          last_name: data.user.fullName.split(' ').slice(1).join(' ') || '',
+          phone_number: data.user.phoneNumber,
+          is_active: true,
+          is_verified: false,
+          verification_status: 'pending',
+          two_factor_enabled: false,
+          timezone: 'UTC',
+          language: 'en',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+
         // Update client state
-        setAuthData(data.user, data.access_token, data.refresh_token);
+        setAuthData(user, data.access_token, data.refresh_token);
         
         // Invalidate and refetch user profile
         queryClient.invalidateQueries({ queryKey: authKeys.profile() });
@@ -174,12 +269,12 @@ export const useOTPVerificationMutation = () => {
 // Phone verification mutation
 export const usePhoneVerificationMutation = () => {
   return useMutation({
-    mutationFn: async ({ phoneNumber, countryCode }: { phoneNumber: string; countryCode: string }) => {
-      const response = await apiService.sendPhoneVerification(phoneNumber, countryCode);
-      if (response.error) {
-        throw new Error(response.error);
+    mutationFn: async (request: PhoneVerificationRequest) => {
+      const response = await authService.sendPhoneVerification(request);
+      if (!response.success) {
+        throw new Error(response.message || 'Phone verification failed');
       }
-      return response.data;
+      return response;
     },
   });
 };
@@ -188,11 +283,11 @@ export const usePhoneVerificationMutation = () => {
 export const useResendOTPMutation = () => {
   return useMutation({
     mutationFn: async (sessionId: string) => {
-      const response = await apiService.resendOTP(sessionId);
-      if (response.error) {
-        throw new Error(response.error);
+      const response = await authService.resendOTP(sessionId);
+      if (!response.success) {
+        throw new Error(response.message || 'Resend OTP failed');
       }
-      return response.data;
+      return response;
     },
   });
 };
@@ -204,20 +299,37 @@ export const useRefreshTokenMutation = () => {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await apiService.refreshToken();
-      if (response.error) {
-        throw new Error(response.error);
+      const response = await authService.refreshToken();
+      if (!response.success) {
+        throw new Error(response.message || 'Token refresh failed');
       }
-      return response.data as AuthResponse;
+      return response;
     },
-    onSuccess: async (authData: AuthResponse) => {
+    onSuccess: async (data: LoginResponse) => {
       // Store new tokens
-      await setToken(authData.access_token);
-      await setRefreshToken(authData.refresh_token);
-      await setUserData(authData.user);
+      await setToken(data.access_token);
+      await setRefreshToken(data.refresh_token);
+      await setUserData(data.user);
+
+      // Convert authService user to types User format
+      const user: User = {
+        id: data.user.id,
+        email: data.user.email,
+        first_name: data.user.fullName.split(' ')[0] || '',
+        last_name: data.user.fullName.split(' ').slice(1).join(' ') || '',
+        phone_number: data.user.phoneNumber,
+        is_active: true,
+        is_verified: false,
+        verification_status: 'pending',
+        two_factor_enabled: false,
+        timezone: 'UTC',
+        language: 'en',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
 
       // Update client state
-      setAuthData(authData.user, authData.access_token, authData.refresh_token);
+      setAuthData(user, data.access_token, data.refresh_token);
     },
     onError: async () => {
       // If refresh fails, logout user

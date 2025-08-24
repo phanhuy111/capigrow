@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { getToken, getUserData } from "@/services/storage";
-import { useAuthStore } from "@/store";
+import { useAuthClientStore } from "@/store";
 
 // Import screens
 import SplashScreen from "@/screens/auth/SplashScreen";
@@ -29,7 +29,7 @@ import { RootStackParamList } from "@/types";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator: React.FC = () => {
-  const { isAuthenticated, isLoading, setAuthData } = useAuthStore();
+  const { isAuthenticated, setAuthData } = useAuthClientStore();
   const [initializing, setInitializing] = React.useState(true);
 
   useEffect(() => {
@@ -39,12 +39,7 @@ const AppNavigator: React.FC = () => {
         const userData = await getUserData();
 
         if (token && userData) {
-          setAuthData({
-            user: userData,
-            access_token: token,
-            refresh_token: "", // Will be loaded separately if needed
-            expires_at: "",
-          });
+          setAuthData(userData, token, ""); // user, token, refreshToken
         }
       } catch (error) {
         console.error("Error initializing auth:", error);
@@ -56,7 +51,7 @@ const AppNavigator: React.FC = () => {
     initializeAuth();
   }, [setAuthData]);
 
-  if (initializing || isLoading) {
+  if (initializing) {
     return <LoadingScreen />;
   }
 

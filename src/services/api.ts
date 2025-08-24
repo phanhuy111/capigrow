@@ -124,7 +124,6 @@ class ApiService {
 
   private sanitizeHeaders(headers: any): any {
     const sanitized = { ...headers };
-    // Hide sensitive information
     if (sanitized.Authorization) {
       sanitized.Authorization = sanitized.Authorization.replace(/Bearer .+/, 'Bearer ***');
     }
@@ -217,118 +216,6 @@ class ApiService {
         status: 0,
       };
     }
-  }
-
-  // Health check
-  async healthCheck(): Promise<ApiResponse> {
-    return this.get('/health');
-  }
-
-  // Auth endpoints
-  async login(email: string, password: string): Promise<ApiResponse> {
-    return this.post('/auth/login', { email, password });
-  }
-
-  async register(userData: any): Promise<ApiResponse> {
-    return this.post('/auth/register', userData);
-  }
-
-  async verifyOTP(sessionId: string, otp: string): Promise<ApiResponse> {
-    return this.post('/auth/verify-otp', { sessionId, otp });
-  }
-
-  async sendPhoneVerification(phoneNumber: string, countryCode: string): Promise<ApiResponse> {
-    return this.post('/auth/send-otp', { phoneNumber, countryCode });
-  }
-
-  async resendOTP(sessionId: string): Promise<ApiResponse> {
-    return this.post('/auth/resend-otp', { sessionId });
-  }
-
-  async refreshToken(): Promise<ApiResponse> {
-    const refreshToken = await getRefreshToken();
-    if (!refreshToken) {
-      throw new Error('No refresh token available');
-    }
-    return this.post('/auth/refresh', { refresh_token: refreshToken });
-  }
-
-  async logout(): Promise<ApiResponse> {
-    return this.post('/auth/logout');
-  }
-
-  // User endpoints
-  async getProfile(): Promise<ApiResponse> {
-    return this.get('/users/profile');
-  }
-
-  async updateProfile(userData: any): Promise<ApiResponse> {
-    return this.put('/users/profile', userData);
-  }
-
-  async changePassword(passwordData: any): Promise<ApiResponse> {
-    return this.post('/users/change-password', passwordData);
-  }
-
-  // Investment endpoints
-  async getInvestments(): Promise<ApiResponse> {
-    return this.get('/investments');
-  }
-
-  async getInvestment(id: string): Promise<ApiResponse> {
-    return this.get(`/investments/${id}`);
-  }
-
-  async registerInvestment(id: string, amount: number): Promise<ApiResponse> {
-    return this.post(`/investments/${id}/register`, { amount });
-  }
-
-  // Portfolio endpoints
-  async getPortfolio(): Promise<ApiResponse> {
-    return this.get('/portfolio');
-  }
-
-  async getPortfolioPerformance(): Promise<ApiResponse> {
-    return this.get('/portfolio/performance');
-  }
-
-  // Transaction endpoints
-  async getTransactions(): Promise<ApiResponse> {
-    return this.get('/transactions');
-  }
-
-  async getTransaction(id: string): Promise<ApiResponse> {
-    return this.get(`/transactions/${id}`);
-  }
-
-  async processPayment(paymentData: any): Promise<ApiResponse> {
-    return this.post('/transactions/payment', paymentData);
-  }
-
-  // Verification endpoints
-  async uploadDocument(formData: FormData): Promise<ApiResponse> {
-    return this.upload('/verification/documents', formData);
-  }
-
-  async uploadSelfie(formData: FormData): Promise<ApiResponse> {
-    return this.upload('/verification/selfie', formData);
-  }
-
-  async getVerificationStatus(): Promise<ApiResponse> {
-    return this.get('/verification/status');
-  }
-
-  // File endpoints
-  async uploadFile(formData: FormData): Promise<ApiResponse> {
-    return this.upload('/files/upload', formData);
-  }
-
-  async getFile(id: string): Promise<ApiResponse> {
-    return this.get(`/files/${id}`);
-  }
-
-  async deleteFile(id: string): Promise<ApiResponse> {
-    return this.delete(`/files/${id}`);
   }
 }
 

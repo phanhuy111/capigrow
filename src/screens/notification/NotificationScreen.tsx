@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -11,57 +11,47 @@ import { SvgXml } from "react-native-svg";
 import { COLORS } from "@/utils/theme";
 import { Icons } from "@/assets";
 import { Card } from "@/components/ui";
-import { mockNotificationApi } from "@/mock/api/notifications";
+import {
+  useNotificationsQuery,
+  useMarkAsReadMutation,
+  useMarkAllAsReadMutation,
+} from "@/hooks/useNotificationQueries";
 import { formatDate } from "@/utils/helpers";
+
+interface Notification {
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  isRead: boolean;
+  priority: string;
+  createdAt: string;
+}
 
 const NotificationScreen: React.FC = () => {
   const navigation = useNavigation();
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    loadNotifications();
-  }, []);
+  const {
+    data: notificationsData,
+    isLoading,
+    refetch,
+  } = useNotificationsQuery();
 
-  const loadNotifications = async () => {
-    try {
-      const response = await mockNotificationApi.getNotifications();
-      if (response.success) {
-        setNotifications(response.data);
-      }
-    } catch (error) {
-      console.error("Error loading notifications:", error);
-    }
+  const markAsReadMutation = useMarkAsReadMutation();
+  const markAllAsReadMutation = useMarkAllAsReadMutation();
+
+  const notifications = notificationsData?.notifications || [];
+
+  const onRefresh = () => {
+    refetch();
   };
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await loadNotifications();
-    setRefreshing(false);
+  const handleMarkAsRead = (notificationId: string) => {
+    markAsReadMutation.mutate(notificationId);
   };
 
-  const handleMarkAsRead = async (notificationId: string) => {
-    try {
-      await mockNotificationApi.markAsRead(notificationId);
-      setNotifications((prev) =>
-        prev.map((notif) =>
-          notif.id === notificationId ? { ...notif, isRead: true } : notif
-        )
-      );
-    } catch (error) {
-      console.error("Error marking notification as read:", error);
-    }
-  };
-
-  const handleMarkAllAsRead = async () => {
-    try {
-      await mockNotificationApi.markAllAsRead();
-      setNotifications((prev) =>
-        prev.map((notif) => ({ ...notif, isRead: true }))
-      );
-    } catch (error) {
-      console.error("Error marking all notifications as read:", error);
-    }
+  const handleMarkAllAsRead = () => {
+    markAllAsReadMutation.mutate();
   };
 
   const getNotificationIcon = (type: string) => {
@@ -145,13 +135,13 @@ const NotificationScreen: React.FC = () => {
     );
   };
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const unreadCount = notifications.filter((n: Notification) => !n.isRead).length;
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
       }
     >
       {/* Header */}

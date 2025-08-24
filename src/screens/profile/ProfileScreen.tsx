@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,43 +6,29 @@ import {
   Alert,
   Switch,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SvgXml } from 'react-native-svg';
 import { RootStackParamList } from '@/types';
-import { useAuthStore } from '@/store/authStore';
+import { useAuthClientStore } from '@/store/authClientStore';
+import { useUserProfileQuery } from '@/hooks/useUserQueries';
 import { COLORS } from '@/utils/theme';
 import { Icons } from '@/assets';
 import Screen from '@/components/common/Screen';
 import { Card, Button } from '@/components/ui';
-import { mockUserApi } from '@/mock/api/user';
 import { formatDate } from '@/utils/helpers';
 
 type ProfileScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const ProfileScreen: React.FC = () => {
-  const { logoutUser } = useAuthStore();
+  const { clearAuth } = useAuthClientStore();
   const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const { data: userProfile, isLoading, error } = useUserProfileQuery();
 
-  const [userProfile, setUserProfile] = useState<any>(null);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
-
-  useEffect(() => {
-    loadUserProfile();
-  }, []);
-
-  const loadUserProfile = async () => {
-    try {
-      const response = await mockUserApi.getProfile();
-      if (response.success) {
-        setUserProfile(response.data);
-      }
-    } catch (error) {
-      console.error('Error loading user profile:', error);
-    }
-  };
 
   const handleLogout = () => {
     Alert.alert(
@@ -50,7 +36,7 @@ const ProfileScreen: React.FC = () => {
       'Are you sure you want to logout?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Logout', onPress: () => logoutUser() },
+        { text: 'Logout', onPress: () => clearAuth() },
       ]
     );
   };
@@ -88,13 +74,8 @@ const ProfileScreen: React.FC = () => {
   };
 
   const getVerificationStatus = () => {
-    if (!userProfile?.verification) return 'pending';
-
-    const { identity, bank, selfie } = userProfile.verification;
-    if (identity.status === 'approved' && bank.status === 'approved' && selfie.status === 'approved') {
-      return 'verified';
-    }
-    return 'pending';
+    if (!userProfile) return 'pending';
+    return userProfile.is_verified ? 'verified' : userProfile.verification_status;
   };
 
   if (!userProfile) {
@@ -119,7 +100,6 @@ const ProfileScreen: React.FC = () => {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="w-11 h-11 rounded-full bg-gray-100" 
             onPress={handleNotificationSettings}
           >
             <SvgXml xml={Icons.menuSquare} width={24} height={24} fill={COLORS.textPrimary} />
@@ -130,8 +110,8 @@ const ProfileScreen: React.FC = () => {
         <Card className="mb-8">
           <View className="flex-row items-center gap-6">
             <View className="relative">
-              {userProfile.avatar ? (
-                <Image source={{ uri: userProfile.avatar }} className="w-20 h-20 rounded-full" />
+              {userProfile.profile_image_url ? (
+                <Image source={{ uri: userProfile.profile_image_url }} className="w-20 h-20 rounded-full" />
               ) : (
                 <View className="w-20 h-20 rounded-full bg-blue-600 justify-center items-center">
                   <SvgXml xml={Icons.user} width={32} height={32} fill={COLORS.white} />
@@ -139,8 +119,7 @@ const ProfileScreen: React.FC = () => {
               )}
               <Button 
                 variant="ghost" 
-                size="icon" 
-                className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-purple-600 border-2 border-white"
+                size="icon"
               >
                 <SvgXml xml={Icons.camera} width={16} height={16} fill={COLORS.white} />
               </Button>
@@ -148,7 +127,7 @@ const ProfileScreen: React.FC = () => {
 
             <View className="flex-1 gap-2">
               <Text className="text-xl font-semibold text-gray-900">
-                {userProfile.firstName} {userProfile.lastName}
+                {userProfile.first_name} {userProfile.last_name}
               </Text>
               <Text className="text-base text-gray-600">{userProfile.email}</Text>
               <View className="flex-row items-center gap-2">
@@ -167,7 +146,6 @@ const ProfileScreen: React.FC = () => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="p-2" 
               onPress={handleEditProfile}
             >
               <SvgXml xml={Icons.edit} width={20} height={20} fill={COLORS.textSecondary} />
@@ -196,7 +174,6 @@ const ProfileScreen: React.FC = () => {
           <Card className="py-2">
             <Button 
               variant="ghost" 
-              className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleEditProfile}
             >
               <View className="flex-row items-center flex-1 gap-4">
@@ -210,7 +187,6 @@ const ProfileScreen: React.FC = () => {
 
             <Button 
               variant="ghost" 
-              className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleBankAccount}
             >
               <View className="flex-row items-center flex-1 gap-4">
@@ -224,7 +200,6 @@ const ProfileScreen: React.FC = () => {
 
             <Button 
               variant="ghost" 
-              className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleVerification}
             >
               <View className="flex-row items-center flex-1 gap-4">
@@ -251,7 +226,6 @@ const ProfileScreen: React.FC = () => {
 
             <Button 
               variant="ghost" 
-              className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleChangePassword}
             >
               <View className="flex-row items-center flex-1 gap-4">
@@ -272,7 +246,6 @@ const ProfileScreen: React.FC = () => {
           <Card className="py-2">
             <Button 
               variant="ghost" 
-              className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleNotificationSettings}
             >
               <View className="flex-row items-center flex-1 gap-4">
@@ -293,7 +266,6 @@ const ProfileScreen: React.FC = () => {
 
             <Button 
               variant="ghost" 
-              className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleLanguageSettings}
             >
               <View className="flex-row items-center flex-1 gap-4">
@@ -310,7 +282,6 @@ const ProfileScreen: React.FC = () => {
 
             <Button 
               variant="ghost" 
-              className="flex-row justify-between items-center py-5 px-4" 
               onPress={handleSecurity}
             >
               <View className="flex-row items-center flex-1 gap-4">
@@ -382,7 +353,7 @@ const ProfileScreen: React.FC = () => {
         <View className="items-center py-8 gap-2">
           <Text className="text-sm text-gray-400 text-center">CapiGrow v1.0.0</Text>
           <Text className="text-sm text-gray-400 text-center">
-            Member since {formatDate(userProfile.createdAt, 'short')}
+            Member since {formatDate(userProfile.created_at, 'short')}
           </Text>
         </View>
 
@@ -390,7 +361,6 @@ const ProfileScreen: React.FC = () => {
         <Button 
           variant="destructive" 
           onPress={handleLogout}
-          className="flex-row items-center justify-center gap-4 bg-red-50 py-4 rounded-lg mb-8"
         >
           <SvgXml xml={Icons.logout} width={24} height={24} fill={COLORS.error} />
           <Text className="text-base font-semibold text-red-600">Logout</Text>

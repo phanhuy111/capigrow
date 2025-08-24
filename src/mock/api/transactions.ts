@@ -2,7 +2,9 @@ import { mockDelay, mockApiResponse } from './index';
 import { mockTransactions, mockPaymentMethods } from '@/mock/data/transactions';
 
 export const mockTransactionApi = {
-  getTransactions: async (filters?: {
+  getTransactions: async (params?: {
+    page?: number;
+    limit?: number;
     type?: string;
     status?: string;
     startDate?: string;
@@ -10,33 +12,102 @@ export const mockTransactionApi = {
   }) => {
     await mockDelay(1000);
     
-    let filteredTransactions = [...mockTransactions];
+    const mockTransactionsList = [
+      {
+        id: 'TXN001',
+        type: 'investment' as const,
+        status: 'completed' as const,
+        amount: 10000000,
+        currency: 'VND',
+        description: 'Đầu tư vào Quỹ Cân Bằng VN',
+        investmentId: 'INV001',
+        investmentName: 'Quỹ Cân Bằng VN',
+        paymentMethod: 'bank_transfer',
+        paymentReference: 'PAY001',
+        fees: 50000,
+        netAmount: 9950000,
+        createdAt: '2024-12-01T10:00:00Z',
+        updatedAt: '2024-12-01T10:30:00Z',
+        completedAt: '2024-12-01T10:30:00Z'
+      },
+      {
+        id: 'TXN002',
+        type: 'dividend' as const,
+        status: 'completed' as const,
+        amount: 500000,
+        currency: 'VND',
+        description: 'Cổ tức từ Quỹ Cân Bằng VN',
+        investmentId: 'INV001',
+        investmentName: 'Quỹ Cân Bằng VN',
+        paymentMethod: 'bank_transfer',
+        paymentReference: 'DIV001',
+        fees: 0,
+        netAmount: 500000,
+        createdAt: '2024-12-15T09:00:00Z',
+        updatedAt: '2024-12-15T09:15:00Z',
+        completedAt: '2024-12-15T09:15:00Z'
+      }
+    ];
     
-    if (filters?.type) {
+    let filteredTransactions = [...mockTransactionsList];
+    
+    if (params?.type) {
       filteredTransactions = filteredTransactions.filter(
-        tx => tx.type === filters.type
+        tx => tx.type === params.type
       );
     }
     
-    if (filters?.status) {
+    if (params?.status) {
       filteredTransactions = filteredTransactions.filter(
-        tx => tx.status === filters.status
+        tx => tx.status === params.status
       );
     }
     
-    return mockApiResponse(filteredTransactions, true, 'Transactions retrieved successfully');
+    const page = params?.page || 1;
+    const limit = params?.limit || 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedTransactions = filteredTransactions.slice(startIndex, endIndex);
+    
+    const responseData = {
+      transactions: paginatedTransactions,
+      pagination: {
+        page,
+        limit,
+        total: filteredTransactions.length,
+        totalPages: Math.ceil(filteredTransactions.length / limit)
+      }
+    };
+    
+    return mockApiResponse(responseData, true, 'Transactions retrieved successfully');
   },
 
-  getTransactionDetails: async (transactionId: string) => {
+  getTransaction: async (transactionId: string) => {
     await mockDelay(500);
     
-    const transaction = mockTransactions.find(tx => tx.id === transactionId);
+    const mockTransaction = {
+      id: transactionId,
+      type: 'investment' as const,
+      status: 'completed' as const,
+      amount: 10000000,
+      currency: 'VND',
+      description: 'Đầu tư vào Quỹ Cân Bằng VN',
+      investmentId: 'INV001',
+      investmentName: 'Quỹ Cân Bằng VN',
+      paymentMethod: 'bank_transfer',
+      paymentReference: 'PAY001',
+      fees: 50000,
+      netAmount: 9950000,
+      createdAt: '2024-12-01T10:00:00Z',
+      updatedAt: '2024-12-01T10:30:00Z',
+      completedAt: '2024-12-01T10:30:00Z'
+    };
     
-    if (transaction) {
-      return mockApiResponse(transaction, true, 'Transaction details retrieved successfully');
-    }
+    const responseData = {
+      transaction: mockTransaction
+    };
     
-    return mockApiResponse(null, false, 'Transaction not found');
+    return mockApiResponse(responseData, true, 'Transaction details retrieved successfully');
   },
 
   getPaymentMethods: async () => {
