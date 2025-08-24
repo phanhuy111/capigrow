@@ -13,7 +13,7 @@ const SplashScreen: React.FC = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.replace('Welcome');
+      navigation.replace('PhoneEntry');
     }, 2500);
 
     return () => clearTimeout(timer);

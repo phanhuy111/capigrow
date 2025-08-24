@@ -1,26 +1,22 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Alert,
-  Dimensions,
-  Platform,
-} from "react-native";
+import React from "react";
+import { View, Text, Alert, Dimensions } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RootStackParamList } from "@/types";
-import { COLORS, SPACING, TYPOGRAPHY, BORDER_RADIUS } from "@/utils/theme";
+import { COLORS } from "@/utils/theme";
+import { Globe, Smartphone } from "lucide-react-native";
 
 import CapiGrowLogo from "@/components/common/CapiGrowLogo";
-import { Input, Button } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { usePhoneVerificationMutation } from "@/hooks/useAuthQueries";
 import { cleanPhoneNumber } from "@/utils/validation";
+import { SelectionForm } from "@/components/common/SelectionForm";
+import InputForm from "@/components/common/InputForm";
 
 const { height } = Dimensions.get("window");
 
@@ -31,6 +27,7 @@ type PhoneEntryScreenNavigationProp = NativeStackNavigationProp<
 
 // Zod schema for phone validation
 const phoneSchema = z.object({
+  country: z.string().min(1, "Vui lòng chọn quốc gia"),
   phoneNumber: z
     .string()
     .min(1, "Vui lòng nhập số điện thoại")
@@ -45,7 +42,6 @@ type PhoneFormData = z.infer<typeof phoneSchema>;
 
 const PhoneEntryScreen: React.FC = () => {
   const navigation = useNavigation<PhoneEntryScreenNavigationProp>();
-  const [useKeypad, setUseKeypad] = useState(true);
   const phoneVerificationMutation = usePhoneVerificationMutation();
 
   const {
@@ -63,7 +59,6 @@ const PhoneEntryScreen: React.FC = () => {
   });
 
   const phoneNumber = watch("phoneNumber");
-  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: PhoneFormData) => {
     const cleanPhone = cleanPhoneNumber(data.phoneNumber);
@@ -87,54 +82,6 @@ const PhoneEntryScreen: React.FC = () => {
         error.response?.data?.message || "Đã xảy ra lỗi. Vui lòng thử lại."
       );
     }
-  };
-
-  const handleSendOTP = async () => {
-    const cleanNumber = phoneNumber.replace(/\s/g, "");
-    if (!cleanNumber.trim()) {
-      Alert.alert("Lỗi", "Vui lòng nhập số điện thoại của bạn");
-      return;
-    }
-
-    if (cleanNumber.length < 9) {
-      Alert.alert("Lỗi", "Vui lòng nhập số điện thoại hợp lệ");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const response = await phoneVerificationMutation.mutateAsync({
-        phoneNumber: cleanNumber,
-        countryCode: "+84",
-      });
-      if (response.success) {
-        navigation.navigate("OTPVerification", { phoneNumber: cleanNumber });
-      } else {
-        Alert.alert("Lỗi", response.message || "Không thể gửi mã OTP");
-      }
-    } catch (error) {
-      Alert.alert("Lỗi", "Đã xảy ra lỗi. Vui lòng thử lại.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const formatPhoneNumber = (text: string) => {
-    const cleaned = text.replace(/\D/g, "");
-    const limited = cleaned.slice(0, 9);
-
-    if (limited.length >= 6) {
-      return `${limited.slice(0, 3)} ${limited.slice(3, 6)} ${limited.slice(
-        6
-      )}`;
-    } else if (limited.length >= 3) {
-      return `${limited.slice(0, 3)} ${limited.slice(3)}`;
-    }
-    return limited;
-  };
-
-  const toggleInputMethod = () => {
-    setUseKeypad(!useKeypad);
   };
 
   return (
@@ -171,92 +118,91 @@ const PhoneEntryScreen: React.FC = () => {
         </View>
 
         {/* Bottom Form Section */}
-        <View className="bg-white rounded-t-3xl pt-8" style={{ minHeight: height * 0.45 }}>
-          <View className="px-8">
-            <Text className="text-lg font-semibold text-gray-900 text-left mb-8 leading-6">
-              Nhập số điện thoại của bạn để bắt đầu
+        <View
+          className="bg-white rounded-t-2xl pt-6"
+          style={{ minHeight: height * 0.5 }}
+        >
+          <View className="px-6">
+            <Text className="text-3xl font-bold text-gray-900 mb-3 text-left">
+              Nhập số điện thoại của bạn{"\n"}để bắt đầu
             </Text>
 
             {/* Country and Phone Input */}
-            <View className="mb-4">
-              <TouchableOpacity className="flex-row items-center bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 mb-4">
-                <Text className="text-xl mr-3">🇻🇳</Text>
-                <Text className="flex-1 text-base text-gray-900">Vietnam (+84)</Text>
-                <Text className="text-xs text-gray-500">▼</Text>
-              </TouchableOpacity>
+            <View className="space-y-6">
+              <SelectionForm
+                label="Quốc gia"
+                placeholder="Chọn quốc gia"
+                name="country"
+                control={control}
+                options={[
+                  { label: "🇻🇳 Vietnam (+84)", value: "VN" },
+                  { label: "🇺🇸 United States (+1)", value: "US" },
+                  { label: "🇬🇧 United Kingdom (+44)", value: "GB" },
+                  { label: "🇯🇵 Japan (+81)", value: "JP" },
+                  { label: "🇰🇷 South Korea (+82)", value: "KR" },
+                  { label: "🇸🇬 Singapore (+65)", value: "SG" },
+                  { label: "🇹🇭 Thailand (+66)", value: "TH" },
+                  { label: "🇲🇾 Malaysia (+60)", value: "MY" },
+                  { label: "🇮🇩 Indonesia (+62)", value: "ID" },
+                  { label: "🇵🇭 Philippines (+63)", value: "PH" },
+                ]}
+                leftIcon={<Globe size={20} color="#6B7280" />}
+              />
+
+              <InputForm
+                label="Số điện thoại"
+                placeholder="Nhập số điện thoại"
+                name="phoneNumber"
+                control={control}
+                keyboardType="phone-pad"
+                leftIcon={<Smartphone size={20} color="#6B7280" />}
+              />
             </View>
 
-            {useKeypad ? (
-              <TouchableOpacity className="flex-row items-center bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 mb-8">
-                <Text className="text-xl mr-3">📱</Text>
-                <Text
-                  className={`flex-1 text-base ${
-                    phoneNumber ? "text-gray-900" : "text-gray-400"
-                  }`}
-                >
-                  {phoneNumber || "Nhập số điện thoại"}
-                </Text>
-              </TouchableOpacity>
-            ) : (
-              <Controller
-                control={control}
-                name="phoneNumber"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <Input
-                    label="Số điện thoại"
-                    placeholder="Nhập số điện thoại"
-                    value={value}
-                    onChangeText={(text) => {
-                      const cleaned = cleanPhoneNumber(text);
-                      if (cleaned.length <= 9) {
-                        onChange(formatPhoneNumber(cleaned));
-                      }
-                    }}
-                    onBlur={onBlur}
-                    keyboardType="phone-pad"
-                    error={errors.phoneNumber?.message}
-                    className="flex-row items-center bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 mb-8"
-                  />
-                )}
-              />
-            )}
-
-            <TouchableOpacity
-              onPress={toggleInputMethod}
-              className="items-center py-3 mb-4"
-            >
-              <Text className="text-sm text-purple-500 font-medium">
-                {useKeypad ? "Sử dụng bàn phím" : "Sử dụng số pad"}
-              </Text>
-            </TouchableOpacity>
-
-            <Text className="text-xs text-gray-400 text-left leading-4 mb-8">
+            <Text className="text-xs text-gray-500 text-left leading-4 mb-6">
               Bằng việc nhấn tiếp theo, đồng nghĩa với việc bạn đồng ý các{" "}
-              <Text className="text-purple-500 font-medium">điều khoản sử dụng và dịch vụ</Text>
+              <Text className="text-purple-600 font-medium">
+                điều khoản sử dụng và dịch vụ
+              </Text>
             </Text>
 
-          <Button
-            onPress={handleSubmit(onSubmit)}
-            disabled={
-              !isValid ||
-              phoneNumber.replace(/\s/g, "").length < 9 ||
-              phoneVerificationMutation.isPending
-            }
-            loading={phoneVerificationMutation.isPending}
-          >
-            <Text className="text-white text-base font-semibold">
-              {phoneVerificationMutation.isPending
-                ? "Đang xử lý..."
-                : "Tiếp theo →"}
-            </Text>
-          </Button>
+            <Button
+              title={
+                phoneVerificationMutation.isPending
+                  ? "Đang xử lý..."
+                  : "Tiếp theo →"
+              }
+              onPress={handleSubmit(onSubmit)}
+              variant="primary"
+              size="lg"
+              fullWidth
+              disabled={
+                !isValid ||
+                phoneNumber.replace(/\s/g, "").length < 9 ||
+                phoneVerificationMutation.isPending
+              }
+              loading={phoneVerificationMutation.isPending}
+              style={{
+                backgroundColor: "#8B5CF6",
+                borderRadius: 16,
+                paddingVertical: 16,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 3,
+              }}
+              textStyle={{
+                fontSize: 16,
+                fontWeight: "600",
+                color: "#FFFFFF",
+              }}
+            />
           </View>
         </View>
       </SafeAreaView>
     </KeyboardAwareScrollView>
   );
 };
-
-
 
 export default PhoneEntryScreen;

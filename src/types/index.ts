@@ -145,14 +145,10 @@ export interface IdentityVerification {
 // Navigation Types
 export type RootStackParamList = {
   Splash: undefined;
-  Welcome: undefined;
+  Welcome: { phoneNumber?: string };
   PhoneEntry: undefined;
   OTPVerification: { phoneNumber: string; isLogin?: boolean };
-  CreateAccount: { phoneNumber: string };
   CreatePassword: { phoneNumber: string; userInfo: { firstName: string; lastName: string; email: string; dateOfBirth: string } };
-  UserRegistration: { phoneNumber: string; token: string };
-  Login: undefined;
-  Register: undefined;
   MainTabs: undefined;
   Notifications: undefined;
   IdentityVerification: undefined;
@@ -165,6 +161,7 @@ export type RootStackParamList = {
   PaymentConfirmation: { transactionId: string };
   PaymentProcessing: { transactionId: string };
   BankTransferQR: { transactionId: string };
+  ComponentsDemo: undefined;
   Profile: undefined;
 };
 

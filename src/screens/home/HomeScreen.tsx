@@ -1,19 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { SvgXml } from 'react-native-svg';
-import { useAuthStore } from '@/store/authStore';
-import { RootStackParamList } from '@/types';
-import { COLORS } from '@/utils/theme';
-import { Icons } from '@/assets';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { SvgXml } from "react-native-svg";
+import { useAuthStore } from "@/store/authStore";
+import { RootStackParamList } from "@/types";
+import { COLORS } from "@/utils/theme";
+import { Icons } from "@/assets";
 
-import { Card, Button, Input } from '@/components/ui';
-import Screen from '@/components/common/Screen';
-import { mockPortfolioApi } from '@/mock/api/portfolio';
-import { mockInvestmentApi } from '@/mock/api/investments';
-import { mockNotificationApi } from '@/mock/api/notifications';
-import { formatCurrency, formatPercentage } from '@/utils/helpers';
+import { Card, Button, Input } from "@/components/ui";
+import Screen from "@/components/common/Screen";
+import { mockPortfolioApi } from "@/mock/api/portfolio";
+import { mockInvestmentApi } from "@/mock/api/investments";
+import { mockNotificationApi } from "@/mock/api/notifications";
+import { formatCurrency, formatPercentage } from "@/utils/helpers";
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -24,7 +30,7 @@ const HomeScreen: React.FC = () => {
   const [portfolioData, setPortfolioData] = useState<any>(null);
   const [investments, setInvestments] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     loadData();
@@ -32,11 +38,12 @@ const HomeScreen: React.FC = () => {
 
   const loadData = async () => {
     try {
-      const [portfolioResponse, investmentsResponse, notificationsResponse] = await Promise.all([
-        mockPortfolioApi.getPortfolio(),
-        mockInvestmentApi.getInvestments(),
-        mockNotificationApi.getNotifications({ limit: 5 }),
-      ]);
+      const [portfolioResponse, investmentsResponse, notificationsResponse] =
+        await Promise.all([
+          mockPortfolioApi.getPortfolio(),
+          mockInvestmentApi.getInvestments(),
+          mockNotificationApi.getNotifications({ limit: 5 }),
+        ]);
 
       if (portfolioResponse.success) {
         setPortfolioData(portfolioResponse.data);
@@ -48,11 +55,9 @@ const HomeScreen: React.FC = () => {
         setNotifications(notificationsResponse.data);
       }
     } catch (error) {
-      console.error('Error loading home data:', error);
+      console.error("Error loading home data:", error);
     }
   };
-
-
 
   return (
     <Screen paddingHorizontal>
@@ -61,17 +66,24 @@ const HomeScreen: React.FC = () => {
         <View className="flex-row justify-between items-center mb-8 pt-4">
           <View className="flex-1">
             <Text className="text-base text-gray-600 mb-1">Good morning,</Text>
-            <Text className="text-xl font-semibold text-gray-900">{user?.first_name || 'User'}</Text>
+            <Text className="text-xl font-semibold text-gray-900">
+              {user?.first_name || "User"}
+            </Text>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('Notifications')}
+            onPress={() => navigation.navigate("Notifications")}
             className="w-11 h-11 rounded-full bg-gray-100 justify-center items-center relative"
           >
-            <SvgXml xml={Icons.notification} width={24} height={24} fill={COLORS.textPrimary} />
-            {notifications.filter(n => !n.isRead).length > 0 && (
+            <SvgXml
+              xml={Icons.notification}
+              width={24}
+              height={24}
+              fill={COLORS.textPrimary}
+            />
+            {notifications.filter((n) => !n.isRead).length > 0 && (
               <View className="absolute top-2 right-2 w-4 h-4 rounded-full bg-red-500 justify-center items-center">
                 <Text className="text-white text-xs font-semibold">
-                  {notifications.filter(n => !n.isRead).length}
+                  {notifications.filter((n) => !n.isRead).length}
                 </Text>
               </View>
             )}
@@ -85,14 +97,24 @@ const HomeScreen: React.FC = () => {
               placeholder="Search investments..."
               value={searchQuery}
               onChangeText={setSearchQuery}
-              leftIcon={<SvgXml xml={Icons.search} width={20} height={20} fill={COLORS.textTertiary} />}
+              leftIcon={
+                <SvgXml
+                  xml={Icons.search}
+                  width={20}
+                  height={20}
+                  fill={COLORS.textTertiary}
+                />
+              }
               className="bg-gray-100 border-0"
             />
           </View>
-          <TouchableOpacity
-            className="w-12 h-12 rounded-lg bg-gray-100 justify-center items-center"
-          >
-            <SvgXml xml={Icons.menuSquare} width={20} height={20} fill={COLORS.textPrimary} />
+          <TouchableOpacity className="w-12 h-12 rounded-lg bg-gray-100 justify-center items-center">
+            <SvgXml
+              xml={Icons.menuSquare}
+              width={20}
+              height={20}
+              fill={COLORS.textPrimary}
+            />
           </TouchableOpacity>
         </View>
 
@@ -100,9 +122,16 @@ const HomeScreen: React.FC = () => {
         {portfolioData && (
           <Card className="mb-8">
             <View className="flex-row justify-between items-center mb-6">
-              <Text className="text-lg font-semibold text-gray-900">Portfolio Overview</Text>
+              <Text className="text-lg font-semibold text-gray-900">
+                Portfolio Overview
+              </Text>
               <TouchableOpacity className="p-0">
-                <SvgXml xml={Icons.more} width={20} height={20} fill={COLORS.textSecondary} />
+                <SvgXml
+                  xml={Icons.more}
+                  width={20}
+                  height={20}
+                  fill={COLORS.textSecondary}
+                />
               </TouchableOpacity>
             </View>
 
@@ -116,11 +145,21 @@ const HomeScreen: React.FC = () => {
                     xml={Icons.trendUp}
                     width={16}
                     height={16}
-                    fill={portfolioData.returnPercentage >= 0 ? COLORS.positive : COLORS.negative}
+                    fill={
+                      portfolioData.returnPercentage >= 0
+                        ? COLORS.positive
+                        : COLORS.negative
+                    }
                   />
-                  <Text className="text-sm font-semibold" style={{
-                    color: portfolioData.returnPercentage >= 0 ? COLORS.positive : COLORS.negative
-                  }}>
+                  <Text
+                    className="text-sm font-semibold"
+                    style={{
+                      color:
+                        portfolioData.returnPercentage >= 0
+                          ? COLORS.positive
+                          : COLORS.negative,
+                    }}
+                  >
                     {formatPercentage(portfolioData.returnPercentage)}
                   </Text>
                 </View>
@@ -147,35 +186,62 @@ const HomeScreen: React.FC = () => {
         {/* Investment Categories */}
         <View className="mb-8">
           <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-lg font-semibold text-gray-900">Categories</Text>
+            <Text className="text-lg font-semibold text-gray-900">
+              Categories
+            </Text>
             <TouchableOpacity className="p-0">
-              <Text className="text-sm font-medium text-purple-600">See all</Text>
+              <Text className="text-sm font-medium text-purple-600">
+                See all
+              </Text>
             </TouchableOpacity>
           </View>
 
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -24, paddingHorizontal: 24 }}>
-            {['Energy', 'Technology', 'Real Estate', 'Healthcare'].map((category, index) => (
-              <TouchableOpacity key={index} className="p-0 items-center mr-4 gap-3">
-                <View className="w-14 h-14 rounded-full bg-purple-50 justify-center items-center">
-                  <SvgXml
-                    xml={index === 0 ? Icons.cup : index === 1 ? Icons.diagram : index === 2 ? Icons.buildings : Icons.health}
-                    width={24}
-                    height={24}
-                    fill={COLORS.primary}
-                  />
-                </View>
-                <Text className="text-sm font-medium text-gray-900">{category}</Text>
-              </TouchableOpacity>
-            ))}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginHorizontal: -24, paddingHorizontal: 24 }}
+          >
+            {["Energy", "Technology", "Real Estate", "Healthcare"].map(
+              (category, index) => (
+                <TouchableOpacity
+                  key={index}
+                  className="p-0 items-center mr-4 gap-3"
+                >
+                  <View className="w-14 h-14 rounded-full bg-purple-50 justify-center items-center">
+                    <SvgXml
+                      xml={
+                        index === 0
+                          ? Icons.cup
+                          : index === 1
+                          ? Icons.diagram
+                          : index === 2
+                          ? Icons.buildings
+                          : Icons.health
+                      }
+                      width={24}
+                      height={24}
+                      fill={COLORS.primary}
+                    />
+                  </View>
+                  <Text className="text-sm font-medium text-gray-900">
+                    {category}
+                  </Text>
+                </TouchableOpacity>
+              )
+            )}
           </ScrollView>
         </View>
 
         {/* Featured Investments */}
         <View className="mb-12">
           <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-lg font-semibold text-gray-900">Featured Investments</Text>
+            <Text className="text-lg font-semibold text-gray-900">
+              Featured Investments
+            </Text>
             <TouchableOpacity className="p-0">
-              <Text className="text-sm font-medium text-purple-600">See all</Text>
+              <Text className="text-sm font-medium text-purple-600">
+                See all
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -183,8 +249,12 @@ const HomeScreen: React.FC = () => {
             <Card key={investment.id} className="mb-6">
               <View className="flex-row justify-between items-start mb-6">
                 <View className="flex-1 mr-4">
-                  <Text className="text-base font-semibold text-gray-900 mb-2">{investment.title}</Text>
-                  <Text className="text-sm text-gray-600">{investment.category}</Text>
+                  <Text className="text-base font-semibold text-gray-900 mb-2">
+                    {investment.title}
+                  </Text>
+                  <Text className="text-sm text-gray-600">
+                    {investment.category}
+                  </Text>
                 </View>
                 <View className="bg-green-50 px-4 py-2 rounded-lg">
                   <Text className="text-xs font-semibold text-green-600">
@@ -197,11 +267,16 @@ const HomeScreen: React.FC = () => {
                 <View className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                   <View
                     className="h-full bg-purple-600 rounded-full"
-                    style={{ width: `${(investment.totalRaised / investment.targetAmount) * 100}%` }}
+                    style={{
+                      width: `${
+                        (investment.totalRaised / investment.targetAmount) * 100
+                      }%`,
+                    }}
                   />
                 </View>
                 <Text className="text-sm text-gray-600">
-                  {formatCurrency(investment.totalRaised)} of {formatCurrency(investment.targetAmount)}
+                  {formatCurrency(investment.totalRaised)} of{" "}
+                  {formatCurrency(investment.targetAmount)}
                 </Text>
               </View>
 
@@ -220,7 +295,5 @@ const HomeScreen: React.FC = () => {
     </Screen>
   );
 };
-
-
 
 export default HomeScreen;

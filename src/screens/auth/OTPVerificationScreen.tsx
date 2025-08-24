@@ -96,16 +96,6 @@ const OTPVerificationScreen: React.FC = () => {
       });
 
       if (result.success) {
-        if (isLogin) {
-          // For existing users, navigate to main app
-          navigation.navigate("MainTabs");
-        } else {
-          // For new users, navigate to user registration
-          navigation.navigate("UserRegistration", {
-            phoneNumber,
-            token: result.token || "temp-token",
-          });
-        }
         // Store auth data if available
         if (result.token && result.user && result.refreshToken) {
           setAuthData({
@@ -114,17 +104,27 @@ const OTPVerificationScreen: React.FC = () => {
             refresh_token: result.refreshToken,
           });
         }
+
+        if (isLogin || (result.user && result.user.is_verified)) {
+          // For existing users, navigate directly to main app
+          navigation.navigate("MainTabs");
+        } else {
+          // For new users, navigate to welcome/registration screen
+          navigation.navigate("Welcome", {
+            phoneNumber,
+          });
+        }
       } else {
         Alert.alert(
-          "Error",
-          result.message || "Invalid OTP. Please try again."
+          "Lỗi",
+          result.message || "Mã OTP không đúng. Vui lòng thử lại."
         );
       }
     } catch (error: any) {
       Alert.alert(
-        "Error",
+        "Lỗi",
         error.response?.data?.message ||
-          "Verification failed. Please try again."
+          "Xác thực thất bại. Vui lòng thử lại."
       );
     }
   };
