@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { KeyboardProvider } from "react-native-keyboard-controller";
+import { PortalHost } from "@rn-primitives/portal";
 import { QueryProvider } from "./src/providers/QueryProvider";
 import AppNavigator from "./src/navigation/AppNavigator";
 import "./global.css";
@@ -17,6 +18,7 @@ const App: React.FC = () => {
             <SafeAreaProvider>
               <StatusBar style="dark" />
               <AppNavigator />
+              <PortalHost />
             </SafeAreaProvider>
           </BottomSheetModalProvider>
         </GestureHandlerRootView>

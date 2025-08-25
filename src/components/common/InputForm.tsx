@@ -16,7 +16,7 @@ import {
   type ViewStyle,
 } from "react-native";
 
-interface InputProps {
+interface InputProps<T extends FieldValues> {
   label?: string;
   placeholder?: string;
   value?: string;
@@ -34,14 +34,13 @@ interface InputProps {
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   onRightIconPress?: () => void;
-  // React Hook Form integration
   name?: string;
-  control?: Control<FieldValues>;
-  rules?: RegisterOptions<FieldValues>;
+  control?: Control<T>;
+  rules?: RegisterOptions<T>;
   required?: boolean;
 }
 
-const InputForm = forwardRef<TextInput, InputProps>(
+const InputForm = forwardRef<TextInput, InputProps<FieldValues>>(
   (
     {
       label,
@@ -70,28 +69,20 @@ const InputForm = forwardRef<TextInput, InputProps>(
   ) => {
     const [isFocused, setIsFocused] = useState(false);
 
+    // Copy exact style từ dropdown để match 100%
     const getInputContainerClassName = () => {
-      let baseClasses = "flex-row border px-4 py-4 bg-white";
-
-      // Apply 16px border radius to match Figma design
-      baseClasses += " rounded-2xl";
+      let baseClasses = "flex-row items-center border rounded-2xl px-4 py-4 bg-white";
 
       if (isFocused) {
         baseClasses += " border-purple-500";
       } else if (error) {
         baseClasses += " border-red-500";
       } else {
-        baseClasses += " border-gray-200";
+        baseClasses += " border-gray-300";
       }
 
       if (disabled) {
         baseClasses += " bg-gray-50";
-      }
-
-      if (multiline) {
-        baseClasses += " items-start";
-      } else {
-        baseClasses += " items-center";
       }
 
       return baseClasses;
@@ -103,26 +94,31 @@ const InputForm = forwardRef<TextInput, InputProps>(
       inputOnBlur: () => void,
       inputError?: string | FieldError
     ) => (
-      <View className="my-3" style={style}>
+      <View style={style}>
         {label && (
-          <Text className="text-sm font-medium mb-2 text-gray-700">
+          <Text className="text-foreground text-sm font-medium mb-2">
             {label}
             {required && <Text className="text-red-500"> *</Text>}
           </Text>
         )}
 
-        <View
-          className={getInputContainerClassName()}
-          style={multiline ? { height: numberOfLines * 20 + 32 } : undefined}
-        >
-          {leftIcon && <View className="mr-4 justify-center items-center">{leftIcon}</View>}
+        <View className={getInputContainerClassName()}>
+          {leftIcon && <View className="mr-3 flex-shrink-0">{leftIcon}</View>}
 
           <TextInput
             ref={ref}
-            className={`flex-1 text-base ${
-              disabled ? "text-gray-400" : "text-gray-900"
-            } ${multiline ? "pt-3" : ""}`}
-            style={[multiline && { textAlignVertical: "top" }, inputStyle]}
+            className="flex-1 text-base text-gray-900"
+            style={[
+              {
+                // Reset tất cả padding để match dropdown
+                paddingVertical: 0,
+                paddingHorizontal: 0,
+                margin: 0,
+                textAlignVertical: "center",
+                includeFontPadding: false,
+              },
+              inputStyle,
+            ]}
             placeholder={placeholder}
             placeholderTextColor="#9CA3AF"
             value={inputValue}
@@ -138,11 +134,12 @@ const InputForm = forwardRef<TextInput, InputProps>(
             multiline={multiline}
             numberOfLines={numberOfLines}
             onFocus={() => setIsFocused(true)}
+            underlineColorAndroid="transparent"
           />
 
           {rightIcon && (
             <TouchableOpacity
-              className="ml-4 justify-center items-center"
+              className="ml-3 flex-shrink-0"
               onPress={onRightIconPress}
               disabled={!onRightIconPress}
             >

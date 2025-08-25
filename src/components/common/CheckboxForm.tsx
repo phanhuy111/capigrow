@@ -7,8 +7,8 @@ import {
   type RegisterOptions,
 } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
-import { cn } from "@/components/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
 interface CheckboxFormProps<T extends FieldValues> {
   control?: Control<T>;

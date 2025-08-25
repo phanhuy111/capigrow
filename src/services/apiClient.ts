@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from "axios";
 import { getToken, removeToken } from "@/services/storage";
 import { API_ENDPOINTS } from "@/utils/constants";
-import { MockInterceptor } from "./mockInterceptor";
+import MockInterceptor from "./mockInterceptor";
 
 class ApiClient {
   private instance: AxiosInstance;
@@ -39,14 +39,11 @@ class ApiClient {
         return response;
       },
       async (error) => {
-        // Handle mock responses
         if (error.isMockResponse) {
           return Promise.resolve(error.response);
         }
 
-        // Handle common errors
         if (error.response?.status === 401) {
-          // Handle unauthorized access
           await this.handleUnauthorized();
         }
         return Promise.reject(error);
@@ -54,8 +51,7 @@ class ApiClient {
     );
 
     // Setup mock interceptor for development
-    const mockInterceptor = new MockInterceptor();
-    mockInterceptor.setupInterceptor(this.instance);
+    MockInterceptor.setupInterceptor(this.instance);
   }
 
   private async getAuthToken(): Promise<string | null> {

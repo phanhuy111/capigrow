@@ -1,6 +1,6 @@
 import type { LucideIcon, LucideProps } from "lucide-react-native";
 import { cssInterop } from "nativewind";
-import { cn } from "@/components/lib/utils";
+import { cn } from "@/lib/utils";
 
 type IconProps = LucideProps & {
   as: LucideIcon;

@@ -111,42 +111,40 @@ const PhoneEntryScreen: React.FC = () => {
 
         {/* Bottom Form Section */}
         <View className="bg-white rounded-t-2xl pt-6" style={{ minHeight: height * 0.5 }}>
-          <View className="px-6">
+          <View className="px-6 flex gap-2">
             <Text className="text-3xl font-bold text-gray-900 mb-3 text-left">
               Nhập số điện thoại của bạn{"\n"}để bắt đầu
             </Text>
 
             {/* Country and Phone Input */}
-            <View className="space-y-6">
-              <SelectionForm
-                label="Quốc gia"
-                placeholder="Chọn quốc gia"
-                name="country"
-                control={control as Control<PhoneFormData>}
-                options={[
-                  { label: "🇻🇳 Vietnam (+84)", value: "VN" },
-                  { label: "🇺🇸 United States (+1)", value: "US" },
-                  { label: "🇬🇧 United Kingdom (+44)", value: "GB" },
-                  { label: "🇯🇵 Japan (+81)", value: "JP" },
-                  { label: "🇰🇷 South Korea (+82)", value: "KR" },
-                  { label: "🇸🇬 Singapore (+65)", value: "SG" },
-                  { label: "🇹🇭 Thailand (+66)", value: "TH" },
-                  { label: "🇲🇾 Malaysia (+60)", value: "MY" },
-                  { label: "🇮🇩 Indonesia (+62)", value: "ID" },
-                  { label: "🇵🇭 Philippines (+63)", value: "PH" },
-                ]}
-                leftIcon={<Globe size={20} color="#6B7280" />}
-              />
+            <SelectionForm
+              label="Quốc gia"
+              placeholder="Chọn quốc gia"
+              name="country"
+              control={control as Control<PhoneFormData>}
+              options={[
+                { label: "🇻🇳 Vietnam (+84)", value: "VN" },
+                { label: "🇺🇸 United States (+1)", value: "US" },
+                { label: "🇬🇧 United Kingdom (+44)", value: "GB" },
+                { label: "🇯🇵 Japan (+81)", value: "JP" },
+                { label: "🇰🇷 South Korea (+82)", value: "KR" },
+                { label: "🇸🇬 Singapore (+65)", value: "SG" },
+                { label: "🇹🇭 Thailand (+66)", value: "TH" },
+                { label: "🇲🇾 Malaysia (+60)", value: "MY" },
+                { label: "🇮🇩 Indonesia (+62)", value: "ID" },
+                { label: "🇵🇭 Philippines (+63)", value: "PH" },
+              ]}
+              leftIcon={<Globe size={20} color="#6B7280" />}
+            />
 
-              <InputForm
-                label="Số điện thoại"
-                placeholder="Nhập số điện thoại"
-                name="phoneNumber"
-                control={control}
-                keyboardType="phone-pad"
-                leftIcon={<Smartphone size={20} color="#6B7280" />}
-              />
-            </View>
+            <InputForm
+              label="Số điện thoại"
+              placeholder="Nhập số điện thoại"
+              name="phoneNumber"
+              control={control as Control<PhoneFormData>}
+              keyboardType="phone-pad"
+              leftIcon={<Smartphone size={20} color="#6B7280" />}
+            />
 
             <Text className="text-xs text-gray-500 text-left leading-4 mb-6">
               Bằng việc nhấn tiếp theo, đồng nghĩa với việc bạn đồng ý các{" "}

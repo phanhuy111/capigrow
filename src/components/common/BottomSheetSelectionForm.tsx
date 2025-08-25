@@ -10,7 +10,7 @@ import {
   type FieldValues,
 } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
-import { cn } from "@/components/lib/utils";
+import { cn } from "@/lib/utils";
 
 interface SelectOption {
   value: string;
@@ -113,7 +113,7 @@ export function BottomSheetSelectionForm<T extends FieldValues>({
       onPress={openBottomSheet}
       disabled={disabled}
       className={cn(
-        "flex-row items-center justify-between px-3 py-3 border border-input bg-background rounded-lg",
+        "flex-row items-center justify-between px-3 py-3 border border-gray-300 bg-background rounded-lg",
         size === "sm" && "py-2",
         (fieldError || error) && "border-red-500",
         disabled && "opacity-50",

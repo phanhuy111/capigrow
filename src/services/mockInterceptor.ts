@@ -95,6 +95,19 @@ export class MockInterceptor {
       return method === "post" ? await mockAuthApi.logout() : null;
     }
 
+    // Phone verification endpoints
+    if (normalizedUrl.includes(API_ENDPOINTS.PHONE_VERIFICATION.toLowerCase())) {
+      return method === "post" ? await mockAuthApi.sendPhoneVerification(config.data) : null;
+    }
+
+    if (normalizedUrl.includes(API_ENDPOINTS.OTP_VERIFICATION.toLowerCase())) {
+      return method === "post" ? await mockAuthApi.verifyOTP(config.data) : null;
+    }
+
+    if (normalizedUrl.includes(API_ENDPOINTS.RESEND_OTP.toLowerCase())) {
+      return method === "post" ? await mockAuthApi.resendOTP(config.data?.sessionId) : null;
+    }
+
     // User endpoints
     if (normalizedUrl.includes(API_ENDPOINTS.USER.PROFILE.toLowerCase())) {
       if (method === "get") {

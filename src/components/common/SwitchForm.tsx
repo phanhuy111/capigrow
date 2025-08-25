@@ -7,8 +7,8 @@ import {
   type RegisterOptions,
 } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
-import { cn } from "@/components/lib/utils";
 import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
 
 interface SwitchFormProps<T extends FieldValues> {
   control?: Control<T>;

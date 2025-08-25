@@ -1,5 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import {
+  type RouteProp,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -8,7 +12,13 @@ import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { z } from "zod";
-import { useOTPVerificationMutation, useResendOTPMutation } from "@/hooks/useAuthQueries";
+import { Icon } from "@/components/common";
+import Header from "@/components/common/Header";
+import { Button } from "@/components/ui/button";
+import {
+  useOTPVerificationMutation,
+  useResendOTPMutation,
+} from "@/hooks/useAuthQueries";
 import { useAuthClientStore } from "@/store/authClientStore";
 import type { RootStackParamList } from "@/types";
 
@@ -16,9 +26,11 @@ type OTPVerificationScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "OTPVerification"
 >;
-type OTPVerificationScreenRouteProp = RouteProp<RootStackParamList, "OTPVerification">;
+type OTPVerificationScreenRouteProp = RouteProp<
+  RootStackParamList,
+  "OTPVerification"
+>;
 
-// Zod schema for OTP validation
 const otpSchema = z.object({
   otp: z.string().min(6, "OTP must be 6 digits").max(6, "OTP must be 6 digits"),
 });
@@ -29,8 +41,7 @@ const OTPVerificationScreen: React.FC = () => {
   const navigation = useNavigation<OTPVerificationScreenNavigationProp>();
   const route = useRoute<OTPVerificationScreenRouteProp>();
   const { setAuthData } = useAuthClientStore();
-  const { phoneNumber, isLogin = false } = route.params;
-  // For demo purposes, using a mock sessionId - in real app this would come from previous screen
+  const { phoneNumber } = route.params;
   const sessionId = "mock-session-id";
 
   const [countdown, setCountdown] = useState(60);
@@ -40,16 +51,13 @@ const OTPVerificationScreen: React.FC = () => {
   const resendOTPMutation = useResendOTPMutation();
 
   const { control, handleSubmit, setValue, watch } = useForm<OTPFormData>({
-    defaultValues: {
-      otp: "",
-    },
+    defaultValues: { otp: "" },
     mode: "onChange",
     resolver: zodResolver(otpSchema),
   });
 
   const otp = watch("otp");
 
-  // Countdown timer for resend OTP
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
@@ -59,28 +67,6 @@ const OTPVerificationScreen: React.FC = () => {
     }
   }, [countdown]);
 
-  const _handleKeyPress = (key: string) => {
-    const currentOtp = otp;
-    if (currentOtp.length < 6) {
-      const newOtp = currentOtp + key;
-      setValue("otp", newOtp, { shouldValidate: true });
-
-      // Auto-submit when OTP is complete
-      if (newOtp.length === 6) {
-        setTimeout(() => {
-          handleSubmit(onSubmit)();
-        }, 500);
-      }
-    }
-  };
-
-  const _handleDelete = () => {
-    const currentOtp = otp;
-    if (currentOtp.length > 0) {
-      setValue("otp", currentOtp.slice(0, -1), { shouldValidate: true });
-    }
-  };
-
   const onSubmit = async (data: OTPFormData) => {
     try {
       const result = await otpVerificationMutation.mutateAsync({
@@ -89,9 +75,7 @@ const OTPVerificationScreen: React.FC = () => {
       });
 
       if (result.success) {
-        // Store auth data if available
         if (result.access_token && result.user && result.refresh_token) {
-          // Convert API user to User type format
           const user = {
             id: result.user.id,
             email: result.user.email,
@@ -121,20 +105,21 @@ const OTPVerificationScreen: React.FC = () => {
         }
 
         if (!result.isNewUser) {
-          // For existing users, navigate directly to main app
           navigation.navigate("MainTabs");
         } else {
-          // For new users, navigate to welcome/registration screen
-          navigation.navigate("Welcome", {
-            phoneNumber,
-          });
+          navigation.navigate("Welcome", { phoneNumber });
         }
       } else {
-        Alert.alert("Lỗi", result.message || "Mã OTP không đúng. Vui lòng thử lại.");
+        Alert.alert(
+          "Lỗi",
+          result.message || "Mã OTP không đúng. Vui lòng thử lại."
+        );
       }
     } catch (error: unknown) {
       const errorMessage =
-        error instanceof Error ? error.message : "Xác thực thất bại. Vui lòng thử lại.";
+        error instanceof Error
+          ? error.message
+          : "Xác thực thất bại. Vui lòng thử lại.";
       Alert.alert("Lỗi", errorMessage);
     }
   };
@@ -155,7 +140,9 @@ const OTPVerificationScreen: React.FC = () => {
       }
     } catch (error: unknown) {
       const errorMessage =
-        error instanceof Error ? error.message : "Failed to resend OTP. Please try again.";
+        error instanceof Error
+          ? error.message
+          : "Failed to resend OTP. Please try again.";
       Alert.alert("Error", errorMessage);
     }
   };
@@ -163,7 +150,9 @@ const OTPVerificationScreen: React.FC = () => {
   const formatPhoneNumber = (phone: string) => {
     const cleaned = phone.replace(/\D/g, "");
     if (cleaned.length >= 6) {
-      return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(6)}`;
+      return `${cleaned.slice(0, 3)} ${cleaned.slice(3, 6)} ${cleaned.slice(
+        6
+      )}`;
     } else if (cleaned.length >= 3) {
       return `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`;
     }
@@ -171,32 +160,34 @@ const OTPVerificationScreen: React.FC = () => {
   };
 
   return (
-    <KeyboardAwareScrollView
-      className="flex-1"
-      contentContainerStyle={{ flexGrow: 1 }}
-      keyboardShouldPersistTaps="handled"
-    >
-      <SafeAreaView className="flex-1 bg-white">
-        <View className="flex-1 px-8 pt-8">
-          {/* Header */}
-          <View className="mb-16">
-            <TouchableOpacity
-              className="w-10 h-10 justify-center items-start mb-8"
-              onPress={() => navigation.goBack()}
-            >
-              <Text className="text-2xl text-gray-900">←</Text>
-            </TouchableOpacity>
+    <SafeAreaView className="flex-1 bg-white">
+      <Header
+        showBackButton
+        onBackPress={() => navigation.goBack()}
+        variant="minimal"
+        hasStatusBar
+      />
 
-            <View className="items-center mb-6">
-              <Text className="text-3xl text-purple-500">🔒</Text>
+      <KeyboardAwareScrollView
+        className="flex-1"
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View className="flex-1 px-6 pt-8">
+          <View className="justify-center items-start mb-8">
+            <View className="rounded-full bg-primary-50 justify-center items-center mb-6">
+              <Icon name="lock" size={24} color="#3B82F6" />
             </View>
 
-            <Text className="text-2xl font-semibold text-gray-900 text-left mb-6">
-              {isLogin ? "Đăng nhập với OTP" : "Nhập mã OTP"}
+            <Text className="text-2xl font-semibold text-gray-900 text-left mb-4">
+              Nhập mã OTP
             </Text>
-            <Text className="text-sm text-gray-600 text-left leading-5 mb-12">
+
+            <Text className="text-md text-gray-500 text-left leading-5">
               Vui lòng kiểm tra mã OTP được gửi đến số điện thoại{" "}
-              <Text className="text-gray-900 font-semibold">{formatPhoneNumber(phoneNumber)}</Text>
+              <Text className="text-gray-900 font-medium">
+                {formatPhoneNumber(phoneNumber)}
+              </Text>
             </Text>
           </View>
 
@@ -205,11 +196,15 @@ const OTPVerificationScreen: React.FC = () => {
             control={control}
             name="otp"
             render={({ field: { value } }) => (
-              <View className="flex-row justify-center mb-12 gap-4">
+              <View className="flex-row justify-center mb-8 space-x-3 gap-2">
                 {[0, 1, 2, 3, 4, 5].map((digitIndex) => (
                   <View
-                    key={`otp-position-${digitIndex}`}
-                    className="w-15 h-15 border border-gray-200 rounded-lg bg-gray-50 justify-center items-center"
+                    key={`otp-${digitIndex}`}
+                    className={`w-16 h-16 rounded-full border-2 justify-center items-center ${
+                      value[digitIndex]
+                        ? "border-primary-500"
+                        : "border-gray-300"
+                    }`}
                   >
                     <Text className="text-2xl font-semibold text-gray-900">
                       {value[digitIndex] || ""}
@@ -219,40 +214,37 @@ const OTPVerificationScreen: React.FC = () => {
               </View>
             )}
           />
+        </View>
 
-          {/* Resend Code */}
-          <View className="flex-row justify-between items-center mb-12">
-            {canResend ? (
-              <TouchableOpacity onPress={handleResendOTP} disabled={resendOTPMutation.isPending}>
-                <Text className="text-sm text-purple-500 font-medium">
-                  {resendOTPMutation.isPending ? "Sending..." : "Resend Code"}
+        {/* Bottom Button */}
+        <View className="px-6 pb-6 pt-4 bg-white border-gray-200 gap-2">
+          <View className="flex flex-row items-center justify-between">
+            <Text className="text-sm text-gray-500">
+              Gửi lại OTP sau {countdown}s
+            </Text>
+
+            {canResend && (
+              <TouchableOpacity
+                onPress={handleResendOTP}
+                disabled={resendOTPMutation.isPending}
+              >
+                <Text className="text-base text-primary-500 font-medium">
+                  {resendOTPMutation.isPending ? "Đang gửi..." : "Gửi lại"}
                 </Text>
               </TouchableOpacity>
-            ) : (
-              <Text className="text-sm text-gray-400">Resend OTP in {countdown}s</Text>
             )}
           </View>
-
-          {/* Verify Button */}
-          <TouchableOpacity
-            className={`bg-purple-500 rounded-lg py-4 items-center mb-6 ${otp.length === 6 ? "opacity-100" : "opacity-50"}`}
+          <Button
+            title="Xong"
             onPress={handleSubmit(onSubmit)}
             disabled={otp.length !== 6 || otpVerificationMutation.isPending}
-          >
-            <Text className="text-white text-base font-semibold">
-              {otpVerificationMutation.isPending ? "Verifying..." : "Verify"}
-            </Text>
-          </TouchableOpacity>
-
-          {/* Status Text */}
-          <Text className="text-sm text-gray-600 text-center mt-3">
-            {otp.length === 6
-              ? "OTP complete - Processing..."
-              : `Enter ${6 - otp.length} more digits`}
-          </Text>
+            loading={otpVerificationMutation.isPending}
+            size="large"
+            variant="primary"
+          />
         </View>
-      </SafeAreaView>
-    </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 };
 

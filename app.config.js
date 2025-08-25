@@ -1,7 +1,7 @@
 export default ({ config }) => {
   return {
     ...config,
-    name: 'CapigrowApp',
+    name: 'Capigrow',
     slug: 'capigrow-app',
     version: '1.0.1',
     orientation: 'portrait',
