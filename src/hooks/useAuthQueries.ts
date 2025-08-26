@@ -36,15 +36,19 @@ export const useLoginMutation = () => {
       // Store tokens
       await setToken(data.access_token);
       await setRefreshToken(data.refresh_token);
-      await setUserData(data.user);
+      
+      // Only set user data if it exists
+      if (data.user) {
+        await setUserData(data.user);
+      }
 
       // Convert authService user to types User format
       const user: User = {
-        id: data.user.id,
-        email: data.user.email,
-        first_name: data.user.fullName.split(" ")[0] || "",
-        last_name: data.user.fullName.split(" ").slice(1).join(" ") || "",
-        phone_number: data.user.phoneNumber,
+        id: data.user?.id || "unknown",
+        email: data.user?.email || "",
+        first_name: data.user?.fullName?.split(" ")[0] || "",
+        last_name: data.user?.fullName?.split(" ").slice(1).join(" ") || "",
+        phone_number: data.user?.phoneNumber || "",
         is_active: true,
         is_verified: false,
         verification_status: "pending",
@@ -72,23 +76,27 @@ export const useRegisterMutation = () => {
   return useMutation({
     mutationFn: async (userData: UserRegistrationRequest) => {
       const response = await authService.register(userData);
-      if (!response.success) {
-        throw new Error(response.message || "Registration failed");
+      if (!response.data.success) {
+        throw new Error(response.data.message || "Registration failed");
       }
-      return response;
+      return response.data;
     },
     onSuccess: async (data: UserRegistrationResponse) => {
       await setToken(data.access_token);
       await setRefreshToken(data.refresh_token);
-      await setUserData(data.user);
+      
+      // Only set user data if it exists
+      if (data.user) {
+        await setUserData(data.user);
+      }
 
       // Convert authService user to types User format
       const user: User = {
-        id: data.user.id,
-        email: data.user.email,
-        first_name: data.user.fullName.split(" ")[0] || "",
-        last_name: data.user.fullName.split(" ").slice(1).join(" ") || "",
-        phone_number: data.user.phoneNumber,
+        id: data.user?.id || "unknown",
+        email: data.user?.email || "",
+        first_name: data.user?.fullName?.split(" ")[0] || "",
+        last_name: data.user?.fullName?.split(" ").slice(1).join(" ") || "",
+        phone_number: data.user?.phoneNumber || "",
         is_active: true,
         is_verified: false,
         verification_status: "pending",
@@ -310,15 +318,19 @@ export const useRefreshTokenMutation = () => {
       // Store new tokens
       await setToken(data.access_token);
       await setRefreshToken(data.refresh_token);
-      await setUserData(data.user);
+      
+      // Only set user data if it exists
+      if (data.user) {
+        await setUserData(data.user);
+      }
 
       // Convert authService user to types User format
       const user: User = {
-        id: data.user.id,
-        email: data.user.email,
-        first_name: data.user.fullName.split(" ")[0] || "",
-        last_name: data.user.fullName.split(" ").slice(1).join(" ") || "",
-        phone_number: data.user.phoneNumber,
+        id: data.user?.id || "unknown",
+        email: data.user?.email || "",
+        first_name: data.user?.fullName?.split(" ")[0] || "",
+        last_name: data.user?.fullName?.split(" ").slice(1).join(" ") || "",
+        phone_number: data.user?.phoneNumber || "",
         is_active: true,
         is_verified: false,
         verification_status: "pending",

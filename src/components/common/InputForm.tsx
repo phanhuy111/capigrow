@@ -40,37 +40,39 @@ interface InputProps<T extends FieldValues = FieldValues> {
   required?: boolean;
 }
 
-const InputForm = forwardRef(<T extends FieldValues = FieldValues>(
-  {
-    label,
-    placeholder,
-    value,
-    onChangeText,
-    onBlur,
-    secureTextEntry = false,
-    keyboardType = "default",
-    autoCapitalize = "none",
-    error,
-    disabled = false,
-    multiline = false,
-    numberOfLines = 1,
-    style,
-    inputStyle,
-    leftIcon,
-    rightIcon,
-    onRightIconPress,
-    name,
-    control,
-    rules,
-    required = false,
-  }: InputProps<T>,
-  ref: React.Ref<TextInput>
-) => {
+const InputForm = forwardRef(
+  <T extends FieldValues = FieldValues>(
+    {
+      label,
+      placeholder,
+      value,
+      onChangeText,
+      onBlur,
+      secureTextEntry = false,
+      keyboardType = "default",
+      autoCapitalize = "none",
+      error,
+      disabled = false,
+      multiline = false,
+      numberOfLines = 1,
+      style,
+      inputStyle,
+      leftIcon,
+      rightIcon,
+      onRightIconPress,
+      name,
+      control,
+      rules,
+      required = false,
+    }: InputProps<T>,
+    ref: React.Ref<TextInput>
+  ) => {
     const [isFocused, setIsFocused] = useState(false);
 
     // Copy exact style từ dropdown để match 100%
     const getInputContainerClassName = () => {
-      let baseClasses = "flex-row items-center border rounded-2xl px-4 py-4 bg-white";
+      let baseClasses =
+        "flex-row items-center border rounded-lg px-4 py-4 bg-white";
 
       if (isFocused) {
         baseClasses += " border-purple-500";
@@ -104,7 +106,7 @@ const InputForm = forwardRef(<T extends FieldValues = FieldValues>(
         <View className={getInputContainerClassName()}>
           {leftIcon && <View className="mr-3 flex-shrink-0">{leftIcon}</View>}
 
-            <TextInput
+          <TextInput
             ref={ref}
             className="flex-1 text-base text-gray-900"
             style={[
@@ -151,7 +153,8 @@ const InputForm = forwardRef(<T extends FieldValues = FieldValues>(
           <Text className="text-xs text-red-500 mt-2">
             {typeof inputError === "string"
               ? inputError
-              : inputError?.message || (typeof error === "string" ? error : error?.message)}
+              : inputError?.message ||
+                (typeof error === "string" ? error : error?.message)}
           </Text>
         )}
       </View>
@@ -173,8 +176,14 @@ const InputForm = forwardRef(<T extends FieldValues = FieldValues>(
     }
 
     // Regular input without form control
-    return renderInput(value || "", onChangeText || (() => {}), onBlur || (() => {}), error);
-}) as <T extends FieldValues = FieldValues>(
+    return renderInput(
+      value || "",
+      onChangeText || (() => {}),
+      onBlur || (() => {}),
+      error
+    );
+  }
+) as <T extends FieldValues = FieldValues>(
   props: InputProps<T> & { ref?: React.Ref<TextInput> }
 ) => React.ReactElement;
 

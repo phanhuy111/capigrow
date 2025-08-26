@@ -1,4 +1,8 @@
-import { BottomSheetModal, BottomSheetScrollView, BottomSheetView } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
 import { Check, ChevronDown } from "lucide-react-native";
 import type React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -33,6 +37,7 @@ interface BottomSheetSelectionFormProps<T extends FieldValues = FieldValues> {
   error?: string;
   className?: string;
   leftIcon?: React.ReactNode;
+  points?: string[];
 }
 
 export function BottomSheetSelectionForm<T extends FieldValues = FieldValues>({
@@ -50,12 +55,13 @@ export function BottomSheetSelectionForm<T extends FieldValues = FieldValues>({
   error,
   className,
   leftIcon,
+  points,
 }: BottomSheetSelectionFormProps<T>) {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   // Variables
-  const snapPoints = useMemo(() => ["25%", "50%", "75%"], []);
+  const snapPoints = useMemo(() => points || ["25%", "50%", "75%"], []);
 
   const hasGroups = Array.isArray(options[0]);
 
@@ -96,7 +102,9 @@ export function BottomSheetSelectionForm<T extends FieldValues = FieldValues>({
           if (found) return found.label;
         }
       } else {
-        const found = (options as SelectOption[]).find((option) => option.value === selectedValue);
+        const found = (options as SelectOption[]).find(
+          (option) => option.value === selectedValue
+        );
         if (found) return found.label;
       }
       return placeholder;
@@ -117,29 +125,43 @@ export function BottomSheetSelectionForm<T extends FieldValues = FieldValues>({
         size === "sm" && "py-2",
         (fieldError || error) && "border-red-500",
         disabled && "opacity-50",
-        "min-h-[44px]" // Ensure minimum touch target
+        "min-h-[62px]"
       )}
     >
       <View className="flex-row items-center flex-1">
         {leftIcon && <View className="mr-2">{leftIcon}</View>}
         <Text
-          className={cn("flex-1 text-foreground", !fieldValue && !value && "text-muted-foreground")}
+          className={cn(
+            "flex-1 text-foreground",
+            !fieldValue && !value && "text-muted-foreground"
+          )}
         >
           {fieldValue
             ? getSelectedLabel(fieldValue)
             : value
-              ? getSelectedLabel(value)
-              : placeholder}
+            ? getSelectedLabel(value)
+            : placeholder}
         </Text>
       </View>
-      <ChevronDown size={16} className={cn("text-muted-foreground ml-2", isOpen && "rotate-180")} />
+      <ChevronDown
+        size={16}
+        className={cn("text-muted-foreground ml-2", isOpen && "rotate-180")}
+      />
     </TouchableOpacity>
   );
 
-  const renderOptions = (fieldValue?: string, fieldOnChange?: (value: string) => void) => {
+  const renderOptions = (
+    fieldValue?: string,
+    fieldOnChange?: (value: string) => void
+  ) => {
     if (hasGroups) {
       return (options as SelectOption[][]).map((group, groupIndex) => (
-        <View key={groupLabels?.[groupIndex] || `group-${group[0]?.value || groupIndex}`}>
+        <View
+          key={
+            groupLabels?.[groupIndex] ||
+            `group-${group[0]?.value || groupIndex}`
+          }
+        >
           {groupLabels?.[groupIndex] && (
             <Text className="text-sm font-medium text-muted-foreground px-4 py-2 bg-muted/50">
               {groupLabels[groupIndex]}
@@ -154,11 +176,15 @@ export function BottomSheetSelectionForm<T extends FieldValues = FieldValues>({
                 "flex-row items-center justify-between px-4 py-3 min-h-[44px]",
                 "active:bg-accent",
                 option.disabled && "opacity-50",
-                (fieldValue === option.value || value === option.value) && "bg-accent"
+                (fieldValue === option.value || value === option.value) &&
+                  "bg-accent"
               )}
             >
               <Text
-                className={cn("text-foreground flex-1", option.disabled && "text-muted-foreground")}
+                className={cn(
+                  "text-foreground flex-1",
+                  option.disabled && "text-muted-foreground"
+                )}
               >
                 {option.label}
               </Text>
@@ -182,11 +208,15 @@ export function BottomSheetSelectionForm<T extends FieldValues = FieldValues>({
             "flex-row items-center justify-between px-4 py-3 min-h-[44px]",
             "active:bg-accent",
             option.disabled && "opacity-50",
-            (fieldValue === option.value || value === option.value) && "bg-accent"
+            (fieldValue === option.value || value === option.value) &&
+              "bg-accent"
           )}
         >
           <Text
-            className={cn("text-foreground flex-1", option.disabled && "text-muted-foreground")}
+            className={cn(
+              "text-foreground flex-1",
+              option.disabled && "text-muted-foreground"
+            )}
           >
             {option.label}
           </Text>
@@ -284,7 +314,9 @@ export function BottomSheetSelectionForm<T extends FieldValues = FieldValues>({
             </Text>
           </View>
 
-          <BottomSheetScrollView className="flex-1">{renderOptions(value)}</BottomSheetScrollView>
+          <BottomSheetScrollView className="flex-1">
+            {renderOptions(value)}
+          </BottomSheetScrollView>
         </BottomSheetView>
       </BottomSheetModal>
 

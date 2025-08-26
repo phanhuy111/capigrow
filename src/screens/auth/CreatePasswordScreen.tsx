@@ -82,15 +82,17 @@ const CreatePasswordScreen: React.FC = () => {
         gender: "other" as const,
       });
 
-      if (response.access_token) {
+      if (response && response.access_token) {
         const user: User = {
-          id: response.user.id,
-          email: response.user.email,
-          first_name: response.user.fullName?.split(" ")[0] || "",
+          id: response.user?.id || "unknown",
+          email: response.user?.email || userInfo.email,
+          first_name:
+            response.user?.fullName?.split(" ")[0] || userInfo.firstName,
           last_name:
-            response.user.fullName?.split(" ").slice(1).join(" ") || "",
-          phone_number: response.user.phoneNumber,
-          date_of_birth: undefined,
+            response.user?.fullName?.split(" ").slice(1).join(" ") ||
+            userInfo.lastName,
+          phone_number: response.user?.phoneNumber || phoneNumber,
+          date_of_birth: userInfo.dateOfBirth,
           profile_image_url: undefined,
           is_active: true,
           is_verified: false,
@@ -110,19 +112,22 @@ const CreatePasswordScreen: React.FC = () => {
         };
 
         setAuthData(user, response.access_token, response.refresh_token);
-      }
 
-      Alert.alert(
-        "Tạo tài khoản thành công",
-        "Tài khoản của bạn đã được tạo thành công!",
-        [
-          {
-            text: "Tiếp tục",
-            onPress: () => navigation.navigate("MainTabs"),
-          },
-        ]
-      );
+        Alert.alert(
+          "Tạo tài khoản thành công",
+          "Tài khoản của bạn đã được tạo thành công!",
+          [
+            {
+              text: "Tiếp tục",
+              onPress: () => navigation.navigate("MainTabs"),
+            },
+          ]
+        );
+      } else {
+        throw new Error("Invalid response from registration API");
+      }
     } catch (error: unknown) {
+      console.error("CreatePasswordScreen: Registration error:", error);
       const errorMessage =
         error instanceof Error ? error.message : "Không thể tạo tài khoản";
       Alert.alert("Lỗi", errorMessage);
@@ -180,7 +185,7 @@ const CreatePasswordScreen: React.FC = () => {
                     onPress={() => setShowPassword(!showPassword)}
                   >
                     <Icon
-                      name={showPassword ? "eye" : "eye-slash"}
+                      name={showPassword ? "eye" : "eye-off"}
                       size={20}
                       color={tokens.colors.text.secondary}
                     />
@@ -210,7 +215,7 @@ const CreatePasswordScreen: React.FC = () => {
                     onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     <Icon
-                      name={showConfirmPassword ? "eye" : "eye-slash"}
+                      name={showConfirmPassword ? "eye" : "eye-off"}
                       size={20}
                       color={tokens.colors.text.secondary}
                     />

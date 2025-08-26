@@ -37,18 +37,35 @@ export const mockAuthApi = {
   }) => {
     await mockDelay(2000);
 
-    // Simulate registration
-    return mockApiResponse(
-      {
-        access_token: "mock_access_token_456",
-        refresh_token: "mock_refresh_token_456",
-        user: {
-          id: "2",
-          phoneNumber: userData.phoneNumber,
-          fullName: userData.fullName,
-          email: userData.email,
-        },
+    console.log('Mock Auth API Register called with:', userData);
+
+    // Simulate registration validation
+    if (!userData.phoneNumber || !userData.fullName || !userData.email || !userData.password) {
+      return mockApiResponse(
+        null,
+        false,
+        "Missing required fields"
+      );
+    }
+
+    // Simulate successful registration
+    const response = {
+      access_token: "mock_access_token_456",
+      refresh_token: "mock_refresh_token_456",
+      user: {
+        id: "user_" + Date.now().toString(),
+        phoneNumber: userData.phoneNumber,
+        fullName: userData.fullName,
+        email: userData.email,
       },
+    };
+
+    if (__DEV__) {
+      console.log('Mock Auth API Register response:', response);
+    }
+    
+    return mockApiResponse(
+      response,
       true,
       "Registration successful"
     );

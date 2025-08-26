@@ -1,16 +1,13 @@
-import type React from "react";
+import * as React from "react";
 import type { ViewStyle } from "react-native";
 import { SvgXml } from "react-native-svg";
+import * as LucideIcons from "lucide-react-native";
 import tokens from "../lib/tokens";
 
 export interface IconProps {
-  /** Icon name from the available icon set */
-  name: keyof typeof iconSvgs;
-  /** Size of the icon */
+  name: keyof typeof iconSvgs | string;
   size?: number | "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
-  /** Color of the icon */
   color?: string;
-  /** Custom style */
   style?: ViewStyle;
 }
 
@@ -105,7 +102,6 @@ const iconSvgs: Record<string, string> = {
     <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>`,
 
-  // Add more icons as needed
   tick: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <polyline points="20,6 9,17 4,12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>`,
@@ -125,7 +121,6 @@ const iconSvgs: Record<string, string> = {
     <line x1="12" y1="18" x2="12.01" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>`,
 
-  // Additional Vuesax-style icons
   eye: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
@@ -235,30 +230,74 @@ const iconSvgs: Record<string, string> = {
   </svg>`,
 };
 
+// Helper function to convert icon name to PascalCase for Lucide
+const toPascalCase = (str: string): string => {
+  return str
+    .replace(/[^a-zA-Z0-9]/g, " ")
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join("");
+};
+
+// Helper function to try different name variations for Lucide
+const getLucideIcon = (name: string) => {
+  const variations = [
+    name,
+    toPascalCase(name),
+    name.charAt(0).toUpperCase() + name.slice(1),
+    name.toLowerCase(),
+  ];
+
+  for (const variation of variations) {
+    if (LucideIcons[variation as keyof typeof LucideIcons]) {
+      return LucideIcons[variation as keyof typeof LucideIcons];
+    }
+  }
+
+  return null;
+};
+
 const Icon: React.FC<IconProps> = ({
   name,
   size = "base",
   color = tokens.colors.text.primary,
   style,
 }) => {
-  const svgString = iconSvgs[name];
+  // First, try to get from custom iconSvgs
+  const customSvg = iconSvgs[name as keyof typeof iconSvgs];
 
-  if (!svgString) {
-    console.warn(`Icon "${name}" not found`);
-    return null;
+  if (customSvg) {
+    // Get actual size value
+    const actualSize = typeof size === "number" ? size : iconSizes[size];
+
+    // Replace currentColor with the actual color
+    const coloredSvg = customSvg.replace(/currentColor/g, color);
+    // Update size in SVG
+    const sizedSvg = coloredSvg
+      .replace(/width="24"/g, `width="${actualSize}"`)
+      .replace(/height="24"/g, `height="${actualSize}"`);
+
+    return React.createElement(SvgXml, { xml: sizedSvg, style });
   }
 
-  // Get actual size value
-  const actualSize = typeof size === "number" ? size : iconSizes[size];
+  // If not found in custom icons, try Lucide React Native
+  const LucideIconComponent = getLucideIcon(name);
 
-  // Replace currentColor with the actual color
-  const coloredSvg = svgString.replace(/currentColor/g, color);
-  // Update size in SVG
-  const sizedSvg = coloredSvg
-    .replace(/width="24"/g, `width="${actualSize}"`)
-    .replace(/height="24"/g, `height="${actualSize}"`);
+  if (LucideIconComponent) {
+    const actualSize = typeof size === "number" ? size : iconSizes[size];
 
-  return <SvgXml xml={sizedSvg} style={style} />;
+    return React.createElement(LucideIconComponent as any, {
+      size: actualSize,
+      color,
+      style,
+    });
+  }
+
+  // If icon is not found in either collection, show warning and return null
+  console.warn(
+    `Icon "${name}" not found in custom icons or Lucide React Native`
+  );
+  return null;
 };
 
 export default Icon;

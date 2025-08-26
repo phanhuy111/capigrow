@@ -97,7 +97,9 @@ const HomeScreen: React.FC = () => {
         {portfolioData && (
           <Card className="mb-8">
             <View className="flex-row justify-between items-center mb-6">
-              <Text className="text-lg font-semibold text-gray-900">Portfolio Overview</Text>
+              <Text className="text-lg font-semibold text-gray-900">
+                Portfolio Overview
+              </Text>
               <TouchableOpacity className="p-0">
                 <SvgXml
                   xml={Icons.more}
@@ -111,7 +113,7 @@ const HomeScreen: React.FC = () => {
             <View className="gap-6">
               <View className="items-center gap-4">
                 <Text className="text-3xl font-bold text-gray-900">
-                  {formatCurrency(portfolioData.summary.currentValue)}
+                  {formatCurrency(portfolioData?.summary?.currentValue)}
                 </Text>
                 <View className="flex-row items-center gap-2">
                   <SvgXml
@@ -119,7 +121,7 @@ const HomeScreen: React.FC = () => {
                     width={16}
                     height={16}
                     fill={
-                      portfolioData.summary.totalReturnPercentage >= 0
+                      portfolioData?.summary?.totalReturnPercentage >= 0
                         ? tokens.colors.success[500]
                         : tokens.colors.error[500]
                     }
@@ -128,12 +130,14 @@ const HomeScreen: React.FC = () => {
                     className="text-sm font-semibold"
                     style={{
                       color:
-                        portfolioData.summary.totalReturnPercentage >= 0
+                        portfolioData?.summary?.totalReturnPercentage >= 0
                           ? tokens.colors.success[500]
                           : tokens.colors.error[500],
                     }}
                   >
-                    {formatPercentage(portfolioData.summary.totalReturnPercentage)}
+                    {formatPercentage(
+                      portfolioData?.summary?.totalReturnPercentage
+                    )}
                   </Text>
                 </View>
               </View>
@@ -141,13 +145,13 @@ const HomeScreen: React.FC = () => {
               <View className="flex-row justify-around">
                 <View className="items-center gap-2">
                   <Text className="text-base font-semibold text-gray-900">
-                    {formatCurrency(portfolioData.summary.totalInvested)}
+                    {formatCurrency(portfolioData?.summary?.totalInvested)}
                   </Text>
                   <Text className="text-sm text-gray-600">Total Invested</Text>
                 </View>
                 <View className="items-center gap-2">
                   <Text className="text-base font-semibold text-gray-900">
-                    {formatCurrency(portfolioData.summary.totalReturn)}
+                    {formatCurrency(portfolioData?.summary?.totalReturn)}
                   </Text>
                   <Text className="text-sm text-gray-600">Total Return</Text>
                 </View>
@@ -159,9 +163,13 @@ const HomeScreen: React.FC = () => {
         {/* Investment Categories */}
         <View className="mb-8">
           <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-lg font-semibold text-gray-900">Categories</Text>
+            <Text className="text-lg font-semibold text-gray-900">
+              Categories
+            </Text>
             <TouchableOpacity className="p-0">
-              <Text className="text-sm font-medium text-purple-600">See all</Text>
+              <Text className="text-sm font-medium text-purple-600">
+                See all
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -170,36 +178,47 @@ const HomeScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
             style={{ marginHorizontal: -24, paddingHorizontal: 24 }}
           >
-            {["Energy", "Technology", "Real Estate", "Healthcare"].map((category, index) => (
-              <TouchableOpacity key={category} className="p-0 items-center mr-4 gap-3">
-                <View className="w-14 h-14 rounded-full bg-purple-50 justify-center items-center">
-                  <SvgXml
-                    xml={
-                      index === 0
-                        ? Icons.cup
-                        : index === 1
+            {["Energy", "Technology", "Real Estate", "Healthcare"].map(
+              (category, index) => (
+                <TouchableOpacity
+                  key={category}
+                  className="p-0 items-center mr-4 gap-3"
+                >
+                  <View className="w-14 h-14 rounded-full bg-purple-50 justify-center items-center">
+                    <SvgXml
+                      xml={
+                        index === 0
+                          ? Icons.cup
+                          : index === 1
                           ? Icons.diagram
                           : index === 2
-                            ? Icons.buildings
-                            : Icons.health
-                    }
-                    width={24}
-                    height={24}
-                    fill={tokens.colors.primary[500]}
-                  />
-                </View>
-                <Text className="text-sm font-medium text-gray-900">{category}</Text>
-              </TouchableOpacity>
-            ))}
+                          ? Icons.buildings
+                          : Icons.health
+                      }
+                      width={24}
+                      height={24}
+                      fill={tokens.colors.primary[500]}
+                    />
+                  </View>
+                  <Text className="text-sm font-medium text-gray-900">
+                    {category}
+                  </Text>
+                </TouchableOpacity>
+              )
+            )}
           </ScrollView>
         </View>
 
         {/* Featured Investments */}
         <View className="mb-12">
           <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-lg font-semibold text-gray-900">Featured Investments</Text>
+            <Text className="text-lg font-semibold text-gray-900">
+              Featured Investments
+            </Text>
             <TouchableOpacity className="p-0">
-              <Text className="text-sm font-medium text-purple-600">See all</Text>
+              <Text className="text-sm font-medium text-purple-600">
+                See all
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -210,7 +229,9 @@ const HomeScreen: React.FC = () => {
                   <Text className="text-base font-semibold text-gray-900 mb-2">
                     {investment.name}
                   </Text>
-                  <Text className="text-sm text-gray-600">{investment.category}</Text>
+                  <Text className="text-sm text-gray-600">
+                    {investment.category}
+                  </Text>
                 </View>
                 <View className="bg-green-50 px-4 py-2 rounded-lg">
                   <Text className="text-xs font-semibold text-green-600">
@@ -224,7 +245,9 @@ const HomeScreen: React.FC = () => {
                   <View
                     className="h-full bg-purple-600 rounded-full"
                     style={{
-                      width: `${(investment.totalRaised / investment.targetAmount) * 100}%`,
+                      width: `${
+                        (investment.totalRaised / investment.targetAmount) * 100
+                      }%`,
                     }}
                   />
                 </View>
@@ -238,7 +261,9 @@ const HomeScreen: React.FC = () => {
                 <Text className="text-sm text-gray-600">
                   Min: {formatCurrency(investment.minimumAmount)}
                 </Text>
-                <Text className="text-sm text-gray-600">{investment.investorCount} investors</Text>
+                <Text className="text-sm text-gray-600">
+                  {investment.investorCount} investors
+                </Text>
               </View>
             </Card>
           ))}

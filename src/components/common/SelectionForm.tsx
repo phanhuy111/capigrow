@@ -25,7 +25,9 @@ interface SelectFieldProps<T extends FieldValues = FieldValues> {
   leftIcon?: React.ReactNode;
 }
 
-export function SelectionForm<T extends FieldValues = FieldValues>(props: SelectFieldProps<T>) {
+export function SelectionForm<T extends FieldValues = FieldValues>(
+  props: SelectFieldProps<T>
+) {
   // Simply pass all props to BottomSheetSelectionForm
-  return <BottomSheetSelectionForm {...props} />;
+  return <BottomSheetSelectionForm points={["85%"]} {...props} />;
 }

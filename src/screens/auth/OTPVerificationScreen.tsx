@@ -109,10 +109,11 @@ const OTPVerificationScreen: React.FC = () => {
           navigation.navigate("CreatePassword", {
             phoneNumber,
             userInfo: {
-              firstName: result?.user?.fullName?.split(" ")[0] || "",
+              firstName: result?.user?.fullName?.split(" ")[0] || "Huy",
               lastName:
-                result?.user?.fullName?.split(" ").slice(1).join(" ") || "",
-              email: result?.user?.email || "",
+                result?.user?.fullName?.split(" ").slice(1).join(" ") ||
+                "Nguyen",
+              email: result?.user?.email || "phanhuy@gmail.com",
               dateOfBirth: "16/09/99",
             },
           });
@@ -171,13 +172,6 @@ const OTPVerificationScreen: React.FC = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <Header
-        showBackButton
-        onBackPress={() => navigation.goBack()}
-        variant="minimal"
-        hasStatusBar
-      />
-
       <KeyboardAwareScrollView
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}

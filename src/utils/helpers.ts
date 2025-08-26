@@ -17,7 +17,7 @@ export const formatNumber = (num: number): string => {
 
 // Format percentage
 export const formatPercentage = (value: number, decimals: number = 2): string => {
-  return `${value.toFixed(decimals)}%`;
+  return `${value?.toFixed(decimals)}%`;
 };
 
 // Format date

@@ -97,6 +97,10 @@ export const removeRefreshToken = async (): Promise<void> => {
 // Regular storage for non-sensitive data
 export const setUserData = async (userData: unknown): Promise<void> => {
   try {
+    if (userData === undefined || userData === null) {
+      console.error("Cannot store undefined or null user data");
+      return;
+    }
     await AsyncStorage.setItem(USER_KEY, JSON.stringify(userData));
   } catch (error) {
     console.error("Error storing user data:", error);
@@ -160,6 +164,10 @@ export const removeItem = async (key: string): Promise<void> => {
 
 export const setObject = async (key: string, value: unknown): Promise<void> => {
   try {
+    if (value === undefined || value === null) {
+      console.error(`Cannot store undefined or null value for key ${key}`);
+      return;
+    }
     await AsyncStorage.setItem(key, JSON.stringify(value));
   } catch (error) {
     console.error(`Error storing object ${key}:`, error);

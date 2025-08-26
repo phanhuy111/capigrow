@@ -83,7 +83,7 @@ export class MockInterceptor {
         : null;
     }
 
-    if (normalizedUrl.includes(API_ENDPOINTS.AUTH.REGISTER.toLowerCase())) {
+    if (normalizedUrl.includes(API_ENDPOINTS.AUTH.REGISTER.toLowerCase()) || normalizedUrl.includes(API_ENDPOINTS.USER_REGISTRATION.toLowerCase())) {
       return method === "post" ? await mockAuthApi.register(config.data) : null;
     }
 
