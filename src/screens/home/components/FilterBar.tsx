@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import Animated, { interpolate, Extrapolate, useAnimatedStyle } from "react-native-reanimated";
+import Animated, {
+  interpolate,
+  Extrapolate,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 import { Grid } from "lucide-react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { FilterList } from "./FilterList";
 
 type FilterKey = "newest" | "invested" | "profit";
 
@@ -16,7 +22,12 @@ export default function FilterBar({ scrollY }: FilterbarProps) {
   const [selected, setSelected] = useState<FilterKey>("newest");
 
   const containerAnimStyle = useAnimatedStyle(() => {
-    const paddingRight = interpolate(scrollY.value, [0, 50], [140, 42], Extrapolate.CLAMP);
+    const paddingRight = interpolate(
+      scrollY.value,
+      [0, 50],
+      [140, 42],
+      Extrapolate.CLAMP
+    );
     return {
       paddingRight,
     };
@@ -95,9 +106,21 @@ interface CategoryButtonProps {
 }
 
 function CategoryButton({ scrollY }: CategoryButtonProps) {
+  const filterRef = useRef<BottomSheetModal>(null);
+
   const textAnimStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(scrollY.value, [0, 50], [1, 0], Extrapolate.CLAMP);
-    const translateX = interpolate(scrollY.value, [0, 50], [0, -8], Extrapolate.CLAMP);
+    const opacity = interpolate(
+      scrollY.value,
+      [0, 50],
+      [1, 0],
+      Extrapolate.CLAMP
+    );
+    const translateX = interpolate(
+      scrollY.value,
+      [0, 50],
+      [0, -8],
+      Extrapolate.CLAMP
+    );
 
     return {
       opacity,
@@ -106,8 +129,18 @@ function CategoryButton({ scrollY }: CategoryButtonProps) {
   });
 
   const containerAnimStyle = useAnimatedStyle(() => {
-    const width = interpolate(scrollY.value, [0, 50], [150, 50], Extrapolate.CLAMP);
-    const borderRadius = interpolate(scrollY.value, [0, 50], [22, 22], Extrapolate.CLAMP);
+    const width = interpolate(
+      scrollY.value,
+      [0, 50],
+      [150, 50],
+      Extrapolate.CLAMP
+    );
+    const borderRadius = interpolate(
+      scrollY.value,
+      [0, 50],
+      [22, 22],
+      Extrapolate.CLAMP
+    );
     return {
       width,
       borderRadius,
@@ -115,24 +148,28 @@ function CategoryButton({ scrollY }: CategoryButtonProps) {
   });
 
   return (
-    <AnimatedTouchable
-      activeOpacity={0.8}
-      onPress={() => console.log("Open category")}
-      className="flex-row items-center px-4 py-2 bg-purple-600"
-      style={containerAnimStyle}
-    >
-      <Grid color="white" size={18} />
-      <Animated.View style={[{ marginLeft: 6 }, textAnimStyle]}>
-        <Text
-          style={{
-            color: "white",
-            fontWeight: "600",
-          }}
-          numberOfLines={1}
-        >
-          Chọn danh mục
-        </Text>
-      </Animated.View>
-    </AnimatedTouchable>
+    <>
+      <AnimatedTouchable
+        activeOpacity={0.8}
+        onPress={() => filterRef.current?.present()}
+        className="flex-row items-center px-4 py-2 bg-purple-600"
+        style={containerAnimStyle}
+      >
+        <Grid color="white" size={18} />
+        <Animated.View style={[{ marginLeft: 6 }, textAnimStyle]}>
+          <Text
+            style={{
+              color: "white",
+              fontWeight: "600",
+            }}
+            numberOfLines={1}
+          >
+            Chọn danh mục
+          </Text>
+        </Animated.View>
+      </AnimatedTouchable>
+
+      <FilterList onClose={() => filterRef.current?.close()} ref={filterRef} />
+    </>
   );
 }
