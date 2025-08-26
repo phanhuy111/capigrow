@@ -10,7 +10,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
-interface SwitchFormProps<T extends FieldValues> {
+interface SwitchFormProps<T extends FieldValues = FieldValues> {
   control?: Control<T>;
   name: FieldPath<T>;
   label?: string;
@@ -27,7 +27,7 @@ interface SwitchFormProps<T extends FieldValues> {
   rules?: RegisterOptions<T>;
 }
 
-export function SwitchForm<T extends FieldValues>({
+export function SwitchForm<T extends FieldValues = FieldValues>({
   control,
   name,
   label,

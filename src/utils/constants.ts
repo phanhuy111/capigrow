@@ -302,7 +302,7 @@ export const API_ENDPOINTS = {
   BASE_URL: "http://localhost:8080/api/v1",
   AUTH: {
     LOGIN: "/auth/login",
-    REGISTER: "/auth/register",
+    REGISTER: "/auth/user/register",
     REFRESH: "/auth/refresh",
     LOGOUT: "/auth/logout",
   },

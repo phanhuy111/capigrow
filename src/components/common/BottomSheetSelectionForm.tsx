@@ -18,7 +18,7 @@ interface SelectOption {
   disabled?: boolean;
 }
 
-interface BottomSheetSelectionFormProps<T extends FieldValues> {
+interface BottomSheetSelectionFormProps<T extends FieldValues = FieldValues> {
   control?: Control<T>;
   name: FieldPath<T>;
   label?: string;
@@ -35,7 +35,7 @@ interface BottomSheetSelectionFormProps<T extends FieldValues> {
   leftIcon?: React.ReactNode;
 }
 
-export function BottomSheetSelectionForm<T extends FieldValues>({
+export function BottomSheetSelectionForm<T extends FieldValues = FieldValues>({
   control,
   name,
   label,

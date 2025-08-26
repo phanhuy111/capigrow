@@ -117,11 +117,11 @@ const PhoneEntryScreen: React.FC = () => {
             </Text>
 
             {/* Country and Phone Input */}
-            <SelectionForm
+            <SelectionForm<PhoneFormData>
               label="Quốc gia"
               placeholder="Chọn quốc gia"
               name="country"
-              control={control as Control<PhoneFormData>}
+              control={control}
               options={[
                 { label: "🇻🇳 Vietnam (+84)", value: "VN" },
                 { label: "🇺🇸 United States (+1)", value: "US" },
@@ -137,11 +137,11 @@ const PhoneEntryScreen: React.FC = () => {
               leftIcon={<Globe size={20} color="#6B7280" />}
             />
 
-            <InputForm
+            <InputForm<PhoneFormData>
               label="Số điện thoại"
               placeholder="Nhập số điện thoại"
               name="phoneNumber"
-              control={control as Control<PhoneFormData>}
+              control={control}
               keyboardType="phone-pad"
               leftIcon={<Smartphone size={20} color="#6B7280" />}
             />

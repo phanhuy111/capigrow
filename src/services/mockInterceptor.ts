@@ -120,7 +120,7 @@ export class MockInterceptor {
 
     if (normalizedUrl.includes(API_ENDPOINTS.USER.CHANGE_PASSWORD.toLowerCase())) {
       return method === "post"
-        ? await mockUserApi.changePassword(config.data?.currentPassword, config.data?.newPassword)
+        ? await mockUserApi.changePassword(config.data)
         : null;
     }
 
@@ -136,11 +136,6 @@ export class MockInterceptor {
         : null;
     }
 
-    if (normalizedUrl.includes("/investments/") && !normalizedUrl.includes("/register")) {
-      const investmentId = this.extractIdFromUrl(url, "/investments/");
-      return method === "get" ? await mockInvestmentApi.getInvestmentDetails(investmentId) : null;
-    }
-
     // Portfolio endpoints
     if (normalizedUrl.includes(API_ENDPOINTS.PORTFOLIO.OVERVIEW.toLowerCase())) {
       return method === "get" ? await mockPortfolioApi.getPortfolio() : null;
@@ -153,13 +148,6 @@ export class MockInterceptor {
     // Transaction endpoints
     if (normalizedUrl.includes(API_ENDPOINTS.TRANSACTIONS.LIST.toLowerCase())) {
       return method === "get" ? await mockTransactionApi.getTransactions() : null;
-    }
-
-    if (normalizedUrl.includes("/transactions/") && !normalizedUrl.includes("/payment")) {
-      const transactionId = this.extractIdFromUrl(url, "/transactions/");
-      return method === "get"
-        ? await mockTransactionApi.getTransactionDetails(transactionId)
-        : null;
     }
 
     if (normalizedUrl.includes(API_ENDPOINTS.TRANSACTIONS.PAYMENT.toLowerCase())) {

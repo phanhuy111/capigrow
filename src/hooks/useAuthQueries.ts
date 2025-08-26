@@ -78,7 +78,6 @@ export const useRegisterMutation = () => {
       return response;
     },
     onSuccess: async (data: UserRegistrationResponse) => {
-      // Store tokens
       await setToken(data.access_token);
       await setRefreshToken(data.refresh_token);
       await setUserData(data.user);

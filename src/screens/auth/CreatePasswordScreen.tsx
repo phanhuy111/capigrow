@@ -1,30 +1,43 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import {
+  type RouteProp,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type React from "react";
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { z } from "zod";
-import { Button, Input } from "@/components/ui";
+import { Button } from "@/components/ui";
+import Icon from "@/components/common/Icon";
+import tokens from "@/components/lib/tokens";
 import { useRegisterMutation } from "@/hooks/useAuthQueries";
 import { useAuthClientStore } from "@/store/authClientStore";
 import type { RootStackParamList, User } from "@/types";
+import { InputForm } from "@/components/common";
 
 type CreatePasswordScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "CreatePassword"
 >;
-type CreatePasswordScreenRouteProp = RouteProp<RootStackParamList, "CreatePassword">;
+type CreatePasswordScreenRouteProp = RouteProp<
+  RootStackParamList,
+  "CreatePassword"
+>;
 
 const createPasswordSchema = z
   .object({
     password: z
       .string()
       .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
-      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Mật khẩu phải có chữ hoa, chữ thường và số"),
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+        "Mật khẩu phải có chữ hoa, chữ thường và số"
+      ),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -69,14 +82,13 @@ const CreatePasswordScreen: React.FC = () => {
         gender: "other" as const,
       });
 
-      // Store authentication data
       if (response.access_token) {
-        // Convert API user to User type format
         const user: User = {
           id: response.user.id,
           email: response.user.email,
           first_name: response.user.fullName?.split(" ")[0] || "",
-          last_name: response.user.fullName?.split(" ").slice(1).join(" ") || "",
+          last_name:
+            response.user.fullName?.split(" ").slice(1).join(" ") || "",
           phone_number: response.user.phoneNumber,
           date_of_birth: undefined,
           profile_image_url: undefined,
@@ -100,129 +112,234 @@ const CreatePasswordScreen: React.FC = () => {
         setAuthData(user, response.access_token, response.refresh_token);
       }
 
-      Alert.alert("Tạo tài khoản thành công", "Tài khoản của bạn đã được tạo thành công!", [
-        {
-          text: "Tiếp tục",
-          onPress: () => navigation.navigate("MainTabs"),
-        },
-      ]);
+      Alert.alert(
+        "Tạo tài khoản thành công",
+        "Tài khoản của bạn đã được tạo thành công!",
+        [
+          {
+            text: "Tiếp tục",
+            onPress: () => navigation.navigate("MainTabs"),
+          },
+        ]
+      );
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Không thể tạo tài khoản";
+      const errorMessage =
+        error instanceof Error ? error.message : "Không thể tạo tài khoản";
       Alert.alert("Lỗi", errorMessage);
     }
   };
 
   return (
-    <KeyboardAwareScrollView
-      className="flex-1"
-      contentContainerStyle={{ flexGrow: 1 }}
-      keyboardShouldPersistTaps="handled"
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: tokens.colors.background.primary }}
     >
-      <SafeAreaView className="flex-1 bg-white">
-        <KeyboardAwareScrollView
-          className="flex-1"
-          contentContainerStyle={{ flexGrow: 1 }}
-          bottomOffset={0}
+      <KeyboardAwareScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        bottomOffset={0}
+      >
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingHorizontal: tokens.spacing[6],
+          }}
+          showsVerticalScrollIndicator={false}
         >
-          {/* Header */}
-          <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-200">
-            <Button variant="ghost" onPress={() => navigation.goBack()}>
-              <Text className="text-xl text-gray-900">←</Text>
-            </Button>
-            <Text className="text-lg font-semibold text-gray-900">Tạo mật khẩu</Text>
-            <View className="w-10" />
-          </View>
+          <View style={{ flex: 1, paddingTop: tokens.spacing[6] }}>
+            <Text
+              style={{
+                fontSize: tokens.typography.fontSize.xl,
+                fontWeight: 600,
+                color: tokens.colors.text.primary,
+                marginBottom: tokens.spacing[2],
+              }}
+            >
+              Thiết lập mật khẩu tài khoản
+            </Text>
 
-          <ScrollView
-            className="flex-1"
-            contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24 }}
-            showsVerticalScrollIndicator={false}
-          >
-            <View className="flex-1 pt-6">
-              <Text className="text-2xl font-semibold text-gray-900 mb-3">
-                Tạo mật khẩu bảo mật
-              </Text>
-              <Text className="text-base text-gray-600 leading-5 mb-12">
-                Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số
-              </Text>
-
-              <View className="flex-1">
-                <Controller
-                  control={control}
-                  name="password"
-                  render={({ field: { onChange, value } }) => (
-                    <Input
-                      label="Mật khẩu"
-                      placeholder="Nhập mật khẩu"
-                      value={value}
-                      onChangeText={onChange}
-                      error={errors.password?.message}
-                      secureTextEntry={!showPassword}
-                      autoCapitalize="none"
-                      leftIcon={<Text className="text-lg">🔒</Text>}
-                      rightIcon={
-                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                          <Text className="text-lg">{showPassword ? "👁️" : "👁️‍🗨️"}</Text>
-                        </TouchableOpacity>
-                      }
-                      onRightIconPress={() => setShowPassword(!showPassword)}
+            <View style={{ flex: 1, marginTop: tokens.spacing[10] }}>
+              <InputForm
+                name="password"
+                control={control}
+                label="Nhập mật khẩu"
+                placeholder="Nhập mật khẩu"
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+                required
+                leftIcon={
+                  <Icon
+                    name="lock"
+                    size={20}
+                    color={tokens.colors.text.secondary}
+                  />
+                }
+                rightIcon={
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Icon
+                      name={showPassword ? "eye" : "eye-slash"}
+                      size={20}
+                      color={tokens.colors.text.secondary}
                     />
-                  )}
-                />
+                  </TouchableOpacity>
+                }
+                onRightIconPress={() => setShowPassword(!showPassword)}
+                style={{ marginBottom: tokens.spacing[4] }}
+              />
 
-                <Controller
-                  control={control}
-                  name="confirmPassword"
-                  render={({ field: { onChange, value } }) => (
-                    <Input
-                      label="Xác nhận mật khẩu"
-                      placeholder="Nhập lại mật khẩu"
-                      value={value}
-                      onChangeText={onChange}
-                      error={errors.confirmPassword?.message}
-                      secureTextEntry={!showConfirmPassword}
-                      autoCapitalize="none"
-                      leftIcon={<Text className="text-lg">🔒</Text>}
-                      rightIcon={
-                        <TouchableOpacity
-                          onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                        >
-                          <Text className="text-lg">{showConfirmPassword ? "👁️" : "👁️‍🗨️"}</Text>
-                        </TouchableOpacity>
-                      }
-                      onRightIconPress={() => setShowConfirmPassword(!showConfirmPassword)}
+              <InputForm
+                name="confirmPassword"
+                control={control}
+                label="Nhập lại mật khẩu"
+                placeholder="Nhập lại mật khẩu"
+                secureTextEntry={!showConfirmPassword}
+                autoCapitalize="none"
+                required
+                leftIcon={
+                  <Icon
+                    name="lock"
+                    size={20}
+                    color={tokens.colors.text.secondary}
+                  />
+                }
+                rightIcon={
+                  <TouchableOpacity
+                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    <Icon
+                      name={showConfirmPassword ? "eye" : "eye-slash"}
+                      size={20}
+                      color={tokens.colors.text.secondary}
                     />
-                  )}
-                />
+                  </TouchableOpacity>
+                }
+                onRightIconPress={() =>
+                  setShowConfirmPassword(!showConfirmPassword)
+                }
+              />
 
-                {/* Password Requirements */}
-                <View className="bg-gray-50 p-4 rounded-lg mt-4">
-                  <Text className="text-base font-medium text-gray-900 mb-3">
-                    Yêu cầu mật khẩu:
+              {/* Password Requirements */}
+              <View
+                style={{
+                  backgroundColor: tokens.colors.background.secondary,
+                  padding: tokens.spacing[4],
+                  borderRadius: tokens.borderRadius.lg,
+                  marginTop: tokens.spacing[4],
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: tokens.spacing[2],
+                  }}
+                >
+                  <Icon
+                    name="tick"
+                    size={16}
+                    color={tokens.colors.success[500]}
+                    style={{ marginRight: tokens.spacing[1] }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: tokens.typography.fontSize.sm,
+                      color: tokens.colors.text.secondary,
+                    }}
+                  >
+                    Mật khẩu ít nhất 8 kí tự
                   </Text>
-                  <Text className="text-sm text-gray-600 mb-1">• Ít nhất 8 ký tự</Text>
-                  <Text className="text-sm text-gray-600 mb-1">• Có chữ hoa và chữ thường</Text>
-                  <Text className="text-sm text-gray-600 mb-1">• Có ít nhất 1 số</Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: tokens.spacing[2],
+                  }}
+                >
+                  <Icon
+                    name="tick"
+                    size={16}
+                    color={tokens.colors.success[500]}
+                    style={{ marginRight: tokens.spacing[1] }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: tokens.typography.fontSize.sm,
+                      color: tokens.colors.text.secondary,
+                    }}
+                  >
+                    Bao gồm cả kí tự đặc biệt, chữ và số
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: tokens.spacing[2],
+                  }}
+                >
+                  <Icon
+                    name="tick"
+                    size={16}
+                    color={tokens.colors.success[500]}
+                    style={{ marginRight: tokens.spacing[1] }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: tokens.typography.fontSize.sm,
+                      color: tokens.colors.text.secondary,
+                    }}
+                  >
+                    Có ít nhất 1 chữ viết thường (a-z)
+                  </Text>
+                </View>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Icon
+                    name="tick"
+                    size={16}
+                    color={tokens.colors.success[500]}
+                    style={{ marginRight: tokens.spacing[1] }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: tokens.typography.fontSize.sm,
+                      color: tokens.colors.text.secondary,
+                    }}
+                  >
+                    Có ít nhất 1 chữ viết hoa (A-Z)
+                  </Text>
                 </View>
               </View>
             </View>
-          </ScrollView>
-
-          {/* Footer */}
-          <View className="px-6 py-4 border-t border-gray-200 bg-white">
-            <Button
-              onPress={handleSubmit(onSubmit)}
-              loading={registerMutation.isPending}
-              disabled={registerMutation.isPending || !isValid}
-            >
-              <Text className="text-white text-base font-semibold">
-                {registerMutation.isPending ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
-              </Text>
-            </Button>
           </View>
-        </KeyboardAwareScrollView>
-      </SafeAreaView>
-    </KeyboardAwareScrollView>
+        </ScrollView>
+
+        {/* Bottom Button Bar */}
+        <View
+          style={{
+            paddingHorizontal: tokens.spacing[6],
+            paddingVertical: tokens.spacing[4],
+            borderTopWidth: 1,
+            borderTopColor: tokens.colors.border.primary,
+            backgroundColor: tokens.colors.background.primary,
+          }}
+        >
+          <Button
+            variant="primary"
+            size="large"
+            title={
+              registerMutation.isPending ? "Đang tạo tài khoản..." : "Tiếp tục"
+            }
+            onPress={handleSubmit(onSubmit)}
+            loading={registerMutation.isPending}
+            disabled={registerMutation.isPending || !isValid}
+          />
+        </View>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 };
 

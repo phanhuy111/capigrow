@@ -16,7 +16,7 @@ import {
   type ViewStyle,
 } from "react-native";
 
-interface InputProps<T extends FieldValues> {
+interface InputProps<T extends FieldValues = FieldValues> {
   label?: string;
   placeholder?: string;
   value?: string;
@@ -40,33 +40,32 @@ interface InputProps<T extends FieldValues> {
   required?: boolean;
 }
 
-const InputForm = forwardRef<TextInput, InputProps<FieldValues>>(
-  (
-    {
-      label,
-      placeholder,
-      value,
-      onChangeText,
-      onBlur,
-      secureTextEntry = false,
-      keyboardType = "default",
-      autoCapitalize = "none",
-      error,
-      disabled = false,
-      multiline = false,
-      numberOfLines = 1,
-      style,
-      inputStyle,
-      leftIcon,
-      rightIcon,
-      onRightIconPress,
-      name,
-      control,
-      rules,
-      required = false,
-    },
-    ref
-  ) => {
+const InputForm = forwardRef(<T extends FieldValues = FieldValues>(
+  {
+    label,
+    placeholder,
+    value,
+    onChangeText,
+    onBlur,
+    secureTextEntry = false,
+    keyboardType = "default",
+    autoCapitalize = "none",
+    error,
+    disabled = false,
+    multiline = false,
+    numberOfLines = 1,
+    style,
+    inputStyle,
+    leftIcon,
+    rightIcon,
+    onRightIconPress,
+    name,
+    control,
+    rules,
+    required = false,
+  }: InputProps<T>,
+  ref: React.Ref<TextInput>
+) => {
     const [isFocused, setIsFocused] = useState(false);
 
     // Copy exact style từ dropdown để match 100%
@@ -105,7 +104,7 @@ const InputForm = forwardRef<TextInput, InputProps<FieldValues>>(
         <View className={getInputContainerClassName()}>
           {leftIcon && <View className="mr-3 flex-shrink-0">{leftIcon}</View>}
 
-          <TextInput
+            <TextInput
             ref={ref}
             className="flex-1 text-base text-gray-900"
             style={[
@@ -163,7 +162,7 @@ const InputForm = forwardRef<TextInput, InputProps<FieldValues>>(
       return (
         <Controller
           control={control}
-          name={name}
+          name={name as any}
           rules={rules}
           render={({
             field: { onChange, onBlur, value: fieldValue },
@@ -175,9 +174,11 @@ const InputForm = forwardRef<TextInput, InputProps<FieldValues>>(
 
     // Regular input without form control
     return renderInput(value || "", onChangeText || (() => {}), onBlur || (() => {}), error);
-  }
-);
+}) as <T extends FieldValues = FieldValues>(
+  props: InputProps<T> & { ref?: React.Ref<TextInput> }
+) => React.ReactElement;
 
-InputForm.displayName = "InputForm";
+// Add displayName to the function
+(InputForm as any).displayName = "InputForm";
 
 export default InputForm;

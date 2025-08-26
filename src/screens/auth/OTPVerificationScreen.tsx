@@ -21,6 +21,7 @@ import {
 } from "@/hooks/useAuthQueries";
 import { useAuthClientStore } from "@/store/authClientStore";
 import type { RootStackParamList } from "@/types";
+import OtpInput from "@/components/ui/otp-input";
 
 type OTPVerificationScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -105,7 +106,16 @@ const OTPVerificationScreen: React.FC = () => {
         }
 
         if (!result.isNewUser) {
-          navigation.navigate("MainTabs");
+          navigation.navigate("CreatePassword", {
+            phoneNumber,
+            userInfo: {
+              firstName: result?.user?.fullName?.split(" ")[0] || "",
+              lastName:
+                result?.user?.fullName?.split(" ").slice(1).join(" ") || "",
+              email: result?.user?.email || "",
+              dateOfBirth: "16/09/99",
+            },
+          });
         } else {
           navigation.navigate("Welcome", { phoneNumber });
         }
@@ -195,23 +205,8 @@ const OTPVerificationScreen: React.FC = () => {
           <Controller
             control={control}
             name="otp"
-            render={({ field: { value } }) => (
-              <View className="flex-row justify-center mb-8 space-x-3 gap-2">
-                {[0, 1, 2, 3, 4, 5].map((digitIndex) => (
-                  <View
-                    key={`otp-${digitIndex}`}
-                    className={`w-16 h-16 rounded-full border-2 justify-center items-center ${
-                      value[digitIndex]
-                        ? "border-primary-500"
-                        : "border-gray-300"
-                    }`}
-                  >
-                    <Text className="text-2xl font-semibold text-gray-900">
-                      {value[digitIndex] || ""}
-                    </Text>
-                  </View>
-                ))}
-              </View>
+            render={({ field: { value, onChange } }) => (
+              <OtpInput onTextChange={onChange} />
             )}
           />
         </View>

@@ -153,7 +153,7 @@ export const mockAuthApi = {
     await mockDelay(1000);
 
     // Simulate OTP verification - accept common test OTPs
-    if (data.otp === "0000" || data.otp === "1234" || data.otp === "1111") {
+    if (data.otp === "000000" || data.otp === "123456" || data.otp === "111111") {
       return mockApiResponse(
         {
           access_token: "mock_access_token_otp",

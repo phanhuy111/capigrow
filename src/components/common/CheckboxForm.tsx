@@ -10,7 +10,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
-interface CheckboxFormProps<T extends FieldValues> {
+interface CheckboxFormProps<T extends FieldValues = FieldValues> {
   control?: Control<T>;
   name: FieldPath<T>;
   label?: string;
@@ -27,7 +27,7 @@ interface CheckboxFormProps<T extends FieldValues> {
   rules?: RegisterOptions<T>;
 }
 
-export function CheckboxForm<T extends FieldValues>({
+export function CheckboxForm<T extends FieldValues = FieldValues>({
   control,
   name,
   label,
