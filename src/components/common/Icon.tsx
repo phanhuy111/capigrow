@@ -294,9 +294,7 @@ const Icon: React.FC<IconProps> = ({
   }
 
   // If icon is not found in either collection, show warning and return null
-  console.warn(
-    `Icon "${name}" not found in custom icons or Lucide React Native`
-  );
+  console.warn(`Icon "${name}" not found in custom icons or Lucide React Native`);
   return null;
 };
 

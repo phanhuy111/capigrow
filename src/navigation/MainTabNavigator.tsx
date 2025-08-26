@@ -1,20 +1,16 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import type React from "react";
 import { View } from "react-native";
-import { SvgXml } from "react-native-svg";
-import { Icons } from "@/assets";
 import tokens from "@/components/lib/tokens";
-// Import screens
 import HomeScreen from "@/screens/home/HomeScreen";
 import InvestmentsScreen from "@/screens/investment/InvestmentsScreen";
 import PortfolioScreen from "@/screens/portfolio/PortfolioScreen";
 import ProfileScreen from "@/screens/profile/ProfileScreen";
-import TransactionsScreen from "@/screens/transaction/TransactionsScreen";
 import type { MainTabParamList } from "@/types";
+import { Icon } from "@/components/common";
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
-// Custom tab bar icon component
 const TabBarIcon: React.FC<{
   route: string;
   focused: boolean;
@@ -24,23 +20,21 @@ const TabBarIcon: React.FC<{
   const getIconSource = () => {
     switch (route) {
       case "Home":
-        return focused ? Icons.home : Icons.homeOutline;
+        return focused ? "house" : "house";
       case "Investments":
-        return Icons.explore;
+        return focused ? "chart-pie" : "chart-pie";
       case "Portfolio":
-        return Icons.portfolio;
-      case "Transactions":
-        return Icons.graph;
+        return focused ? "square-play" : "square-play";
       case "Profile":
-        return Icons.profile;
+        return focused ? "user" : "user";
       default:
-        return Icons.home;
+        return "house";
     }
   };
 
   return (
     <View className="items-center justify-center">
-      <SvgXml xml={getIconSource()} width={size} height={size} fill={color} />
+      <Icon name={getIconSource()} size={size} color={color} />
     </View>
   );
 };
@@ -56,13 +50,9 @@ const MainTabNavigator: React.FC = () => {
         tabBarInactiveTintColor: tokens.colors.neutral[400],
         tabBarStyle: {
           backgroundColor: tokens.colors.background.primary,
-          borderTopWidth: 1,
-          borderTopColor: tokens.colors.border.primary,
           paddingBottom: tokens.spacing[4],
           paddingTop: tokens.spacing[4],
           height: 80,
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
           shadowColor: "#000000",
           shadowOffset: {
             width: 0,
@@ -75,11 +65,8 @@ const MainTabNavigator: React.FC = () => {
         tabBarLabelStyle: {
           fontSize: tokens.typography.fontSize.xs,
           fontWeight: tokens.typography.fontWeight.medium as "500",
-          marginTop: 4,
         },
-        tabBarItemStyle: {
-          paddingVertical: 8,
-        },
+        tabBarItemStyle: {},
         headerShown: false,
       })}
     >
@@ -91,13 +78,6 @@ const MainTabNavigator: React.FC = () => {
         }}
       />
       <Tab.Screen
-        name="Investments"
-        component={InvestmentsScreen}
-        options={{
-          tabBarLabel: "Explore",
-        }}
-      />
-      <Tab.Screen
         name="Portfolio"
         component={PortfolioScreen}
         options={{
@@ -105,10 +85,10 @@ const MainTabNavigator: React.FC = () => {
         }}
       />
       <Tab.Screen
-        name="Transactions"
-        component={TransactionsScreen}
+        name="Investments"
+        component={InvestmentsScreen}
         options={{
-          tabBarLabel: "History",
+          tabBarLabel: "Explore",
         }}
       />
       <Tab.Screen

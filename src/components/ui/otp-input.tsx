@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  OtpInput as BaseOtpInput,
-  OtpInputProps,
-} from "react-native-otp-entry";
+import { OtpInput as BaseOtpInput, OtpInputProps } from "react-native-otp-entry";
 
 interface CustomOtpInputProps extends OtpInputProps {}
 

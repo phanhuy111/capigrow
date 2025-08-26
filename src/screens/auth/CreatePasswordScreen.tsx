@@ -1,9 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  type RouteProp,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { type RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type React from "react";
 import { useState } from "react";
@@ -24,20 +20,14 @@ type CreatePasswordScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "CreatePassword"
 >;
-type CreatePasswordScreenRouteProp = RouteProp<
-  RootStackParamList,
-  "CreatePassword"
->;
+type CreatePasswordScreenRouteProp = RouteProp<RootStackParamList, "CreatePassword">;
 
 const createPasswordSchema = z
   .object({
     password: z
       .string()
       .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        "Mật khẩu phải có chữ hoa, chữ thường và số"
-      ),
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Mật khẩu phải có chữ hoa, chữ thường và số"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -86,11 +76,8 @@ const CreatePasswordScreen: React.FC = () => {
         const user: User = {
           id: response.user?.id || "unknown",
           email: response.user?.email || userInfo.email,
-          first_name:
-            response.user?.fullName?.split(" ")[0] || userInfo.firstName,
-          last_name:
-            response.user?.fullName?.split(" ").slice(1).join(" ") ||
-            userInfo.lastName,
+          first_name: response.user?.fullName?.split(" ")[0] || userInfo.firstName,
+          last_name: response.user?.fullName?.split(" ").slice(1).join(" ") || userInfo.lastName,
           phone_number: response.user?.phoneNumber || phoneNumber,
           date_of_birth: userInfo.dateOfBirth,
           profile_image_url: undefined,
@@ -113,31 +100,24 @@ const CreatePasswordScreen: React.FC = () => {
 
         setAuthData(user, response.access_token, response.refresh_token);
 
-        Alert.alert(
-          "Tạo tài khoản thành công",
-          "Tài khoản của bạn đã được tạo thành công!",
-          [
-            {
-              text: "Tiếp tục",
-              onPress: () => navigation.navigate("MainTabs"),
-            },
-          ]
-        );
+        Alert.alert("Tạo tài khoản thành công", "Tài khoản của bạn đã được tạo thành công!", [
+          {
+            text: "Tiếp tục",
+            onPress: () => navigation.navigate("MainTabs"),
+          },
+        ]);
       } else {
         throw new Error("Invalid response from registration API");
       }
     } catch (error: unknown) {
       console.error("CreatePasswordScreen: Registration error:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Không thể tạo tài khoản";
+      const errorMessage = error instanceof Error ? error.message : "Không thể tạo tài khoản";
       Alert.alert("Lỗi", errorMessage);
     }
   };
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: tokens.colors.background.primary }}
-    >
+    <SafeAreaView style={{ flex: 1, backgroundColor: tokens.colors.background.primary }}>
       <KeyboardAwareScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1 }}
@@ -173,17 +153,9 @@ const CreatePasswordScreen: React.FC = () => {
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
                 required
-                leftIcon={
-                  <Icon
-                    name="lock"
-                    size={20}
-                    color={tokens.colors.text.secondary}
-                  />
-                }
+                leftIcon={<Icon name="lock" size={20} color={tokens.colors.text.secondary} />}
                 rightIcon={
-                  <TouchableOpacity
-                    onPress={() => setShowPassword(!showPassword)}
-                  >
+                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                     <Icon
                       name={showPassword ? "eye" : "eye-off"}
                       size={20}
@@ -203,17 +175,9 @@ const CreatePasswordScreen: React.FC = () => {
                 secureTextEntry={!showConfirmPassword}
                 autoCapitalize="none"
                 required
-                leftIcon={
-                  <Icon
-                    name="lock"
-                    size={20}
-                    color={tokens.colors.text.secondary}
-                  />
-                }
+                leftIcon={<Icon name="lock" size={20} color={tokens.colors.text.secondary} />}
                 rightIcon={
-                  <TouchableOpacity
-                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
+                  <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
                     <Icon
                       name={showConfirmPassword ? "eye" : "eye-off"}
                       size={20}
@@ -221,9 +185,7 @@ const CreatePasswordScreen: React.FC = () => {
                     />
                   </TouchableOpacity>
                 }
-                onRightIconPress={() =>
-                  setShowConfirmPassword(!showConfirmPassword)
-                }
+                onRightIconPress={() => setShowConfirmPassword(!showConfirmPassword)}
               />
 
               {/* Password Requirements */}
@@ -335,9 +297,7 @@ const CreatePasswordScreen: React.FC = () => {
           <Button
             variant="primary"
             size="large"
-            title={
-              registerMutation.isPending ? "Đang tạo tài khoản..." : "Tiếp tục"
-            }
+            title={registerMutation.isPending ? "Đang tạo tài khoản..." : "Tiếp tục"}
             onPress={handleSubmit(onSubmit)}
             loading={registerMutation.isPending}
             disabled={registerMutation.isPending || !isValid}

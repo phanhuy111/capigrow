@@ -334,6 +334,26 @@ const ProfileScreen: React.FC = () => {
               </View>
               <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
             </Button>
+
+            <Button
+              variant="ghost"
+              onPress={() => navigation.navigate("BottomSheetDemo")}
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingVertical: 16,
+                paddingHorizontal: 16,
+              }}
+            >
+              <View className="flex-row items-center flex-1 gap-4">
+                <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
+                  <SvgXml xml={Icons.note} width={20} height={20} fill={COLORS.primary} />
+                </View>
+                <Text className="text-base font-medium text-gray-900">Bottom Sheet Demo</Text>
+              </View>
+              <SvgXml xml={Icons.arrowRight} width={20} height={20} fill={COLORS.textTertiary} />
+            </Button>
           </Card>
         </View>
 

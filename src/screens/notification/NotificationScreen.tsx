@@ -10,7 +10,12 @@ import {
   useNotificationsQuery,
 } from "@/hooks/useNotificationQueries";
 import { formatDate } from "@/utils/helpers";
-import { COLORS } from "@/utils/theme";
+import { COLORS } from "@/utils/constants";
+import Header from "../common/Header";
+import HeaderNotification from "./components/Header";
+import { Icon } from "@/components/common";
+import NotificationItem from "./components/NotificationItem";
+import Screen from "@/components/common/Screen";
 
 interface Notification {
   id: string;
@@ -23,8 +28,6 @@ interface Notification {
 }
 
 const NotificationScreen: React.FC = () => {
-  const navigation = useNavigation();
-
   const { data: notificationsData, isLoading, refetch } = useNotificationsQuery();
 
   const markAsReadMutation = useMarkAsReadMutation();
@@ -40,140 +43,38 @@ const NotificationScreen: React.FC = () => {
     markAsReadMutation.mutate(notificationId);
   };
 
-  const handleMarkAllAsRead = () => {
-    markAllAsReadMutation.mutate();
-  };
-
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case "investment_update":
-        return Icons.trendUp;
-      case "transaction_completed":
-        return Icons.tick;
-      case "verification_approved":
-        return Icons.shieldTick;
-      case "new_investment":
-        return Icons.cup;
-      case "dividend_received":
-        return Icons.moneyReceive;
-      default:
-        return Icons.notification;
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return COLORS.error;
-      case "medium":
-        return COLORS.warning;
-      case "low":
-        return COLORS.info;
-      default:
-        return COLORS.textTertiary;
-    }
-  };
-
   const renderNotificationItem = (item: Notification) => {
-    const priorityColor = getPriorityColor(item.priority);
-
-    return (
-      <TouchableOpacity key={item.id} onPress={() => handleMarkAsRead(item.id)}>
-        <Card className={`mb-4 ${!item.isRead ? "border-l-4 border-l-blue-600" : ""}`}>
-          <View className="flex-row justify-between items-start">
-            <View className="flex-row flex-1 gap-4">
-              <View
-                className="w-10 h-10 rounded-full justify-center items-center"
-                style={{ backgroundColor: `${priorityColor}20` }}
-              >
-                <SvgXml
-                  xml={getNotificationIcon(item.type)}
-                  width={20}
-                  height={20}
-                  fill={priorityColor}
-                />
-              </View>
-              <View className="flex-1 gap-2">
-                <Text
-                  className={`text-base text-gray-900 ${
-                    !item.isRead ? "font-semibold" : "font-medium"
-                  }`}
-                >
-                  {item.title}
-                </Text>
-                <Text className="text-base text-gray-600 leading-5" numberOfLines={2}>
-                  {item.message}
-                </Text>
-                <Text className="text-xs text-gray-400">
-                  {formatDate(item.createdAt, "relative")}
-                </Text>
-              </View>
-            </View>
-            {!item.isRead && <View className="w-2 h-2 rounded-full bg-blue-600 mt-2" />}
-          </View>
-        </Card>
-      </TouchableOpacity>
-    );
+    return <NotificationItem key={item.id} notification={item} onPress={handleMarkAsRead} />;
   };
-
-  const unreadCount = notifications.filter((n: Notification) => !n.isRead).length;
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh} />}
-    >
-      {/* Header */}
-      <View className="flex-row justify-between items-center mb-8 pt-4">
-        <TouchableOpacity
-          className="w-11 h-11 rounded-full bg-gray-50 justify-center items-center"
-          onPress={() => navigation.goBack()}
-        >
-          <SvgXml xml={Icons.arrowLeft} width={24} height={24} fill={COLORS.textPrimary} />
-        </TouchableOpacity>
-        <Text className="text-2xl font-semibold text-gray-900 flex-1 text-center">
-          Notifications
-        </Text>
-        {unreadCount > 0 && (
-          <TouchableOpacity onPress={handleMarkAllAsRead}>
-            <Text className="text-base font-medium text-blue-600">Mark all read</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+    <Screen>
+      <HeaderNotification />
 
-      {/* Notification Stats */}
-      {unreadCount > 0 && (
-        <Card className="mb-8">
-          <View className="flex-row items-center gap-4">
-            <SvgXml xml={Icons.notification} width={24} height={24} fill={COLORS.primary} />
-            <Text className="text-base text-gray-900 flex-1">
-              You have {unreadCount} unread notification
-              {unreadCount !== 1 ? "s" : ""}
-            </Text>
-          </View>
-        </Card>
-      )}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh} />}
+      >
+        {/* Header */}
 
-      {/* Notifications List */}
-      <View className="mb-16">
-        {notifications.length > 0 ? (
-          notifications.map(renderNotificationItem)
-        ) : (
-          <View className="items-center py-16 gap-6">
-            <SvgXml
-              xml={Icons.notificationSlash}
-              width={60}
-              height={60}
-              fill={COLORS.textTertiary}
-            />
-            <Text className="text-xl font-semibold text-gray-900">No Notifications</Text>
-            <Text className="text-base text-gray-600 text-center px-6">
-              You're all caught up! Check back later for updates.
-            </Text>
-          </View>
-        )}
-      </View>
-    </ScrollView>
+        {/* Notifications List */}
+        <View className="mb-16">
+          {notifications.length > 0 ? (
+            notifications.map(renderNotificationItem)
+          ) : (
+            <View className="items-center py-16 gap-4">
+              <View className="h-12 w-12 rounded-full bg-gray-200 p-9 flex justify-center items-center">
+                <Icon name="bell-off" color={COLORS.black} />
+              </View>
+              <Text className="text-xl font-semibold text-gray-900">Chưa có thông báo nào</Text>
+              <Text className="text-base text-gray-600 text-center px-6">
+                Danh sách các thông báo của bạn sẽ được cập nhật tại đây.
+              </Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
+    </Screen>
   );
 };
 

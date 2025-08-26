@@ -154,6 +154,13 @@ export type RootStackParamList = {
   };
   MainTabs: undefined;
   Notifications: undefined;
+  NotificationDetail: {
+    notificationId: string;
+    title: string;
+    message: string;
+    createdAt: string;
+    type: string;
+  };
   IdentityVerification: undefined;
   VerificationDocument: undefined;
   VerificationSelfie: undefined;
@@ -166,6 +173,15 @@ export type RootStackParamList = {
   BankTransferQR: { transactionId: string };
   ComponentsDemo: undefined;
   Profile: undefined;
+  BottomSheetDemo: undefined;
+  CommonSuccessScreen: {
+    title: string;
+    description: string;
+    buttonText: string;
+    onButtonPress?: () => void;
+    navigateToScreen?: string;
+    navigateParams?: any;
+  };
 };
 
 export type AuthStackParamList = RootStackParamList;

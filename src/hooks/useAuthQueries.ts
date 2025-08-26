@@ -36,7 +36,7 @@ export const useLoginMutation = () => {
       // Store tokens
       await setToken(data.access_token);
       await setRefreshToken(data.refresh_token);
-      
+
       // Only set user data if it exists
       if (data.user) {
         await setUserData(data.user);
@@ -76,15 +76,15 @@ export const useRegisterMutation = () => {
   return useMutation({
     mutationFn: async (userData: UserRegistrationRequest) => {
       const response = await authService.register(userData);
-      if (!response.data.success) {
-        throw new Error(response.data.message || "Registration failed");
+      if (!response) {
+        throw new Error("Registration failed");
       }
       return response.data;
     },
     onSuccess: async (data: UserRegistrationResponse) => {
       await setToken(data.access_token);
       await setRefreshToken(data.refresh_token);
-      
+
       // Only set user data if it exists
       if (data.user) {
         await setUserData(data.user);
@@ -318,7 +318,7 @@ export const useRefreshTokenMutation = () => {
       // Store new tokens
       await setToken(data.access_token);
       await setRefreshToken(data.refresh_token);
-      
+
       // Only set user data if it exists
       if (data.user) {
         await setUserData(data.user);

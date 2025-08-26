@@ -37,15 +37,11 @@ export const mockAuthApi = {
   }) => {
     await mockDelay(2000);
 
-    console.log('Mock Auth API Register called with:', userData);
+    console.log("Mock Auth API Register called with:", userData);
 
     // Simulate registration validation
     if (!userData.phoneNumber || !userData.fullName || !userData.email || !userData.password) {
-      return mockApiResponse(
-        null,
-        false,
-        "Missing required fields"
-      );
+      return mockApiResponse(null, false, "Missing required fields");
     }
 
     // Simulate successful registration
@@ -61,14 +57,10 @@ export const mockAuthApi = {
     };
 
     if (__DEV__) {
-      console.log('Mock Auth API Register response:', response);
+      console.log("Mock Auth API Register response:", response);
     }
-    
-    return mockApiResponse(
-      response,
-      true,
-      "Registration successful"
-    );
+
+    return mockApiResponse(response, true, "Registration successful");
   },
 
   verifyPhone: async (_phone: string, otp: string) => {

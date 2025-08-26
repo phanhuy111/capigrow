@@ -9,10 +9,12 @@ import PhoneEntryScreen from "@/screens/auth/PhoneEntryScreen";
 import SplashScreen from "@/screens/auth/SplashScreen";
 import WelcomeScreen from "@/screens/auth/WelcomeScreen";
 import LoadingScreen from "@/screens/common/LoadingScreen";
+import CommonSuccessScreen from "@/screens/common/CommonSuccessScreen";
 import InvestmentAmountScreen from "@/screens/investment/InvestmentAmountScreen";
 import InvestmentDetailsScreen from "@/screens/investment/InvestmentDetailsScreen";
 import InvestmentReviewScreen from "@/screens/investment/InvestmentReviewScreen";
 import NotificationScreen from "@/screens/notification/NotificationScreen";
+import NotificationDetailScreen from "@/screens/notification/NotificationDetailScreen";
 import BankTransferQRScreen from "@/screens/payment/BankTransferQRScreen";
 import PaymentConfirmationScreen from "@/screens/payment/PaymentConfirmationScreen";
 import PaymentProcessingScreen from "@/screens/payment/PaymentProcessingScreen";
@@ -23,7 +25,7 @@ import VerificationStatusScreen from "@/screens/verification/VerificationStatusS
 import { getToken, getUserData } from "@/services/storage";
 import { useAuthClientStore } from "@/store";
 
-import type { RootStackParamList } from "@/types";
+import type { RootStackParamList, User } from "@/types";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -38,7 +40,7 @@ const AppNavigator: React.FC = () => {
         const userData = await getUserData();
 
         if (token && userData) {
-          setAuthData(userData, token, ""); // user, token, refreshToken
+          setAuthData(userData as User, token, "");
         }
       } catch (error) {
         console.error("Error initializing auth:", error);
@@ -63,7 +65,6 @@ const AppNavigator: React.FC = () => {
         }}
       >
         {!isAuthenticated ? (
-          // Auth Stack
           <>
             <Stack.Screen name="Splash" component={SplashScreen} />
             <Stack.Screen name="PhoneEntry" component={PhoneEntryScreen} />
@@ -76,6 +77,7 @@ const AppNavigator: React.FC = () => {
           <>
             <Stack.Screen name="MainTabs" component={MainTabNavigator} />
             <Stack.Screen name="Notifications" component={NotificationScreen} />
+            <Stack.Screen name="NotificationDetail" component={NotificationDetailScreen} />
             <Stack.Screen name="IdentityVerification" component={IdentityVerificationScreen} />
             <Stack.Screen
               name="VerificationDocument"
@@ -121,6 +123,11 @@ const AppNavigator: React.FC = () => {
               name="BankTransferQR"
               component={BankTransferQRScreen}
               options={{ headerShown: true, title: "Bank Transfer" }}
+            />
+            <Stack.Screen
+              name="CommonSuccessScreen"
+              component={CommonSuccessScreen}
+              options={{ headerShown: false }}
             />
           </>
         )}

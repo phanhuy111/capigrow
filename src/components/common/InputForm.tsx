@@ -71,8 +71,7 @@ const InputForm = forwardRef(
 
     // Copy exact style từ dropdown để match 100%
     const getInputContainerClassName = () => {
-      let baseClasses =
-        "flex-row items-center border rounded-lg px-4 py-4 bg-white";
+      let baseClasses = "flex-row items-center border rounded-lg px-4 py-4 bg-white";
 
       if (isFocused) {
         baseClasses += " border-purple-500";
@@ -153,8 +152,7 @@ const InputForm = forwardRef(
           <Text className="text-xs text-red-500 mt-2">
             {typeof inputError === "string"
               ? inputError
-              : inputError?.message ||
-                (typeof error === "string" ? error : error?.message)}
+              : inputError?.message || (typeof error === "string" ? error : error?.message)}
           </Text>
         )}
       </View>
@@ -176,12 +174,7 @@ const InputForm = forwardRef(
     }
 
     // Regular input without form control
-    return renderInput(
-      value || "",
-      onChangeText || (() => {}),
-      onBlur || (() => {}),
-      error
-    );
+    return renderInput(value || "", onChangeText || (() => {}), onBlur || (() => {}), error);
   }
 ) as <T extends FieldValues = FieldValues>(
   props: InputProps<T> & { ref?: React.Ref<TextInput> }

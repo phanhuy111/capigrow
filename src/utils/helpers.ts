@@ -20,6 +20,10 @@ export const formatPercentage = (value: number, decimals: number = 2): string =>
   return `${value?.toFixed(decimals)}%`;
 };
 
+export const formatPercentageValue = (value: number) => {
+  return `${value >= 0 ? "+" : ""}${value?.toFixed(2)}%`;
+};
+
 // Format date
 export const formatDate = (
   date: string | Date,

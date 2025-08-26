@@ -149,7 +149,7 @@ const authApi = {
   },
 
   // Register new user
-  register: async (data: UserRegistrationRequest): Promise<{data: UserRegistrationResponse}> => {
+  register: async (data: UserRegistrationRequest): Promise<{ data: UserRegistrationResponse }> => {
     return apiClient.post(API_ENDPOINTS.USER_REGISTRATION, data);
   },
 

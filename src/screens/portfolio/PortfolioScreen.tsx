@@ -5,10 +5,14 @@ import { SvgXml } from "react-native-svg";
 import { Icons } from "@/assets";
 import Screen from "@/components/common/Screen";
 import tokens from "@/components/lib/tokens";
-import { Button, Card } from "@/components/ui";
+import { Button } from "@/components/ui";
+import InvestmentItem from "@/screens/portfolio/components/InvestmentItem";
+import OverviewStats from "@/screens/portfolio/components/OverviewStats";
+import PerformanceChart from "@/screens/portfolio/components/PerformanceChart";
+import PortfolioSummaryCard from "@/screens/portfolio/components/PortfolioSummaryCard";
+import TabNavigation from "@/screens/portfolio/components/TabNavigation";
 import { usePortfolioPerformanceQuery, usePortfolioQuery } from "@/hooks/usePortfolioQueries";
-import type { UserInvestment } from "@/types";
-import { formatDate } from "@/utils/helpers";
+import { formatPercentageValue } from "@/utils/helpers";
 
 const PortfolioScreen: React.FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<"daily" | "monthly" | "yearly">("monthly");
@@ -29,101 +33,17 @@ const PortfolioScreen: React.FC = () => {
     await Promise.all([refetchPortfolio(), refetchPerformance()]);
   };
 
-  const formatCurrencyVND = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
+  const handleInvestmentPress = (id: string) => {
+    console.log("Navigate to investment:", id);
   };
 
-  const formatPercentageValue = (value: number) => {
-    return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
+  const handleWithdraw = () => {
+    console.log("Withdraw pressed");
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return tokens.colors.success[500];
-      case "completed":
-        return tokens.colors.primary[500];
-      case "pending":
-        return tokens.colors.warning[500];
-      case "cancelled":
-        return tokens.colors.error[500];
-      default:
-        return tokens.colors.text.tertiary;
-    }
-  };
-
-  const renderInvestmentItem = (
-    item: UserInvestment & { title?: string; investedAt?: string; expectedMaturity?: string }
-  ) => {
-    const returnAmount = item.currentValue - item.amount;
-    const returnPercentage = item.amount > 0 ? (returnAmount / item.amount) * 100 : 0;
-    const isPositive = returnAmount >= 0;
-
-    return (
-      <Card key={item.id} className="bg-white p-6 rounded-xl mb-4 shadow-sm">
-        <View className="flex-row justify-between items-start mb-4">
-          <View className="flex-1 flex-row items-center gap-4">
-            <Text className="text-base font-bold text-gray-900 flex-1 mr-2">{item.title}</Text>
-            <View
-              className="px-2 py-1 rounded-sm"
-              style={{ backgroundColor: `${getStatusColor(item.status)}20` }}
-            >
-              <Text
-                className="text-xs font-semibold"
-                style={{ color: getStatusColor(item.status) }}
-              >
-                {item.status.toUpperCase()}
-              </Text>
-            </View>
-          </View>
-          <Button variant="ghost" size="icon" className="p-2">
-            <SvgXml xml={Icons.more} width={20} height={20} fill={tokens.colors.text.secondary} />
-          </Button>
-        </View>
-
-        <View className="flex-row justify-between mb-4">
-          <View className="items-center gap-2">
-            <Text className="text-sm text-gray-600">Invested</Text>
-            <Text className="text-base text-gray-900 font-semibold">
-              {formatCurrencyVND(item.amount)}
-            </Text>
-          </View>
-          <View className="items-center gap-2">
-            <Text className="text-sm text-gray-600">Current Value</Text>
-            <Text className="text-base text-gray-900 font-semibold">
-              {formatCurrencyVND(item.currentValue)}
-            </Text>
-          </View>
-          <View className="items-center gap-2">
-            <Text className="text-sm text-gray-600">Return</Text>
-            <Text
-              className="text-base font-semibold"
-              style={{ color: isPositive ? tokens.colors.success[500] : tokens.colors.error[500] }}
-            >
-              {formatCurrencyVND(returnAmount)}
-            </Text>
-            <Text
-              className="text-xs font-medium"
-              style={{ color: isPositive ? tokens.colors.success[500] : tokens.colors.error[500] }}
-            >
-              ({formatPercentageValue(returnPercentage)})
-            </Text>
-          </View>
-        </View>
-
-        <View className="flex-row justify-between items-center">
-          <Text className="text-xs text-gray-600">Invested: {formatDate(item.investedAt)}</Text>
-          {item.expectedMaturity && (
-            <Text className="text-xs text-gray-600">
-              Maturity: {formatDate(item.expectedMaturity)}
-            </Text>
-          )}
-        </View>
-      </Card>
-    );
+  const handleInfoPress = () => {
+    // Handle info press
+    console.log("Info pressed");
   };
 
   if (portfolioLoading || performanceLoading || !portfolioData) {
@@ -135,8 +55,6 @@ const PortfolioScreen: React.FC = () => {
       </Screen>
     );
   }
-
-  const isPositiveReturn = portfolioData.summary.totalReturn >= 0;
 
   return (
     <Screen paddingHorizontal>
@@ -150,11 +68,20 @@ const PortfolioScreen: React.FC = () => {
         }
       >
         {/* Header */}
-        <View className="flex-row justify-between items-center mb-12 pt-4">
+        <View className="flex-row justify-between items-center mb-6 pt-4">
           <Text className="text-2xl font-bold text-gray-900">Portfolio</Text>
-          <Button variant="ghost" size="icon" className="w-11 h-11 rounded-full bg-gray-50">
+          <Button
+            variant="ghost"
+            size="icon"
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              backgroundColor: tokens.colors.background.secondary,
+            }}
+          >
             <SvgXml
-              xml={Icons.notification}
+              xml={Icons.infoCircle}
               width={24}
               height={24}
               fill={tokens.colors.text.primary}
@@ -162,195 +89,91 @@ const PortfolioScreen: React.FC = () => {
           </Button>
         </View>
 
-        {/* Portfolio Summary */}
-        <Card className="mb-12">
-          <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-sm font-medium text-gray-600">Total Portfolio Value</Text>
-            <Button variant="ghost" size="icon" className="w-8 h-8">
-              <SvgXml xml={Icons.more} width={20} height={20} fill={tokens.colors.text.secondary} />
-            </Button>
-          </View>
+        {/* Portfolio Summary Card */}
+        <PortfolioSummaryCard
+          totalValue={portfolioData?.summary?.currentValue}
+          availableBalance={portfolioData?.summary?.totalInvested}
+          totalReturn={portfolioData?.summary?.totalReturn}
+          totalReturnPercentage={portfolioData?.summary?.totalReturnPercentage}
+          onWithdraw={handleWithdraw}
+          onInfoPress={handleInfoPress}
+        />
 
-          <View className="items-center mb-12 gap-4">
-            <Text className="text-4xl font-bold text-gray-900">
-              {formatCurrencyVND(portfolioData.summary.currentValue)}
-            </Text>
-            <View className="flex-row items-center gap-2">
-              <SvgXml
-                xml={Icons.trendUp}
-                width={16}
-                height={16}
-                fill={isPositiveReturn ? tokens.colors.success[500] : tokens.colors.error[500]}
-              />
-              <Text
-                className="text-base font-semibold"
-                style={{
-                  color: isPositiveReturn ? tokens.colors.success[500] : tokens.colors.error[500],
-                }}
-              >
-                {formatCurrencyVND(portfolioData.summary.totalReturn)}
-              </Text>
-              <Text
-                className="text-sm font-medium"
-                style={{
-                  color: isPositiveReturn ? tokens.colors.success[500] : tokens.colors.error[500],
-                }}
-              >
-                ({formatPercentageValue(portfolioData.summary.totalReturnPercentage)})
-              </Text>
-            </View>
-          </View>
-
-          <View className="flex-row justify-around">
-            <View className="items-center gap-2">
-              <Text className="text-base text-gray-900 font-semibold">
-                {formatCurrencyVND(portfolioData.summary.totalInvested)}
-              </Text>
-              <Text className="text-sm text-gray-600">Total Invested</Text>
-            </View>
-            <View className="items-center gap-2">
-              <Text className="text-base text-gray-900 font-semibold">
-                {portfolioData.summary.activeInvestments}
-              </Text>
-              <Text className="text-sm text-gray-600">Active Investments</Text>
-            </View>
-            <View className="items-center gap-2">
-              <Text className="text-base text-gray-900 font-semibold">
-                {portfolioData.summary.completedInvestments}
-              </Text>
-              <Text className="text-sm text-gray-600">Completed</Text>
-            </View>
-          </View>
-        </Card>
-
-        {/* Performance Period Selector */}
-        <View className="flex-row justify-between items-center mb-6">
-          <Text className="text-lg font-semibold text-gray-900">Performance</Text>
-          <View className="flex-row bg-gray-50 rounded-lg p-1">
-            {(["daily", "monthly", "yearly"] as const).map((period) => (
-              <Button
-                key={period}
-                variant={selectedPeriod === period ? "default" : "ghost"}
-                size="sm"
-                className={`px-4 py-2 rounded-md ${selectedPeriod === period ? "bg-blue-600" : "bg-transparent"}`}
-                onPress={() => setSelectedPeriod(period)}
-              >
-                <Text
-                  className={`text-xs ${selectedPeriod === period ? "text-white" : "text-gray-600"}`}
-                >
-                  {period.charAt(0).toUpperCase() + period.slice(1)}
-                </Text>
-              </Button>
-            ))}
-          </View>
-        </View>
-
-        {/* Performance Chart Placeholder */}
-        <Card className="mb-12">
-          <View className="items-center py-16 gap-4">
-            <SvgXml
-              xml={Icons.chartSuccess}
-              width={48}
-              height={48}
-              fill={tokens.colors.primary[500]}
-            />
-            <Text className="text-base font-semibold text-gray-900">Performance Chart</Text>
-            <Text className="text-sm text-gray-600">
-              {selectedPeriod.charAt(0).toUpperCase() + selectedPeriod.slice(1)} performance data
-            </Text>
-          </View>
-        </Card>
+        {/* Performance Chart */}
+        <PerformanceChart
+          title="Portfolio Performance"
+          height={200}
+          data={_performanceData?.data || []}
+        />
 
         {/* Tab Navigation */}
-        <View className="flex-row bg-white mx-6 rounded-xl p-1 mb-4">
-          <Button
-            variant={selectedTab === "overview" ? "default" : "ghost"}
-            size="sm"
-            className={`flex-1 py-2 rounded-sm ${selectedTab === "overview" ? "bg-blue-600" : "bg-transparent"}`}
-            onPress={() => setSelectedTab("overview")}
-          >
-            <Text
-              className={`text-sm font-medium ${selectedTab === "overview" ? "text-white" : "text-gray-600"}`}
-            >
-              Overview
-            </Text>
-          </Button>
-          <Button
-            variant={selectedTab === "investments" ? "default" : "ghost"}
-            size="sm"
-            className={`flex-1 py-2 rounded-sm ${selectedTab === "investments" ? "bg-blue-600" : "bg-transparent"}`}
-            onPress={() => setSelectedTab("investments")}
-          >
-            <Text
-              className={`text-sm font-medium ${selectedTab === "investments" ? "text-white" : "text-gray-600"}`}
-            >
-              My Investments
-            </Text>
-          </Button>
-        </View>
+        <TabNavigation
+          tabs={[
+            { id: "overview", label: "Overview" },
+            { id: "investments", label: "My Investments" },
+          ]}
+          activeTab={selectedTab}
+          onTabChange={(tabId) => setSelectedTab(tabId as "overview" | "investments")}
+        />
 
         {/* Tab Content */}
         {selectedTab === "overview" ? (
-          <View className="px-6">
-            <View className="flex-row flex-wrap gap-4 mb-6">
-              <Card className="flex-1 min-w-[45%] items-center p-6">
-                <SvgXml
-                  xml={Icons.trendUp}
-                  width={24}
-                  height={24}
-                  fill={tokens.colors.success[500]}
-                />
-                <Text className="text-lg font-semibold text-gray-900 mb-1">
-                  +{formatPercentageValue(8.5)}
-                </Text>
-                <Text className="text-sm text-gray-600 text-center">Best Performing</Text>
-              </Card>
-              <Card className="flex-1 min-w-[45%] items-center p-6">
-                <SvgXml
-                  xml={Icons.graph}
-                  width={24}
-                  height={24}
-                  fill={tokens.colors.primary[500]}
-                />
-                <Text className="text-lg font-semibold text-gray-900 mb-1">
-                  {formatPercentageValue(portfolioData.summary.totalReturnPercentage)}
-                </Text>
-                <Text className="text-sm text-gray-600 text-center">Average Return</Text>
-              </Card>
-              <Card className="flex-1 min-w-[45%] items-center p-6">
-                <SvgXml
-                  xml={Icons.shieldTick}
-                  width={24}
-                  height={24}
-                  fill={tokens.colors.warning[500]}
-                />
-                <Text className="text-lg font-semibold text-gray-900 mb-1">Medium</Text>
-                <Text className="text-sm text-gray-600 text-center">Risk Level</Text>
-              </Card>
-              <Card className="flex-1 min-w-[45%] items-center p-6">
-                <SvgXml
-                  xml={Icons.timer}
-                  width={24}
-                  height={24}
-                  fill={tokens.colors.primary[500]}
-                />
-                <Text className="text-lg font-semibold text-gray-900 mb-1">24 months</Text>
-                <Text className="text-sm text-gray-600 text-center">Avg. Duration</Text>
-              </Card>
-            </View>
-          </View>
+          <OverviewStats
+            stats={[
+              {
+                label: "Total Value",
+                value: `$${portfolioData?.summary?.currentValue.toLocaleString()}`,
+                icon: Icons.trendUp,
+                iconColor: tokens.colors.success?.[500] || "#10B981",
+                backgroundColor: tokens.colors.success?.[100] || "#DCFCE7",
+              },
+              {
+                label: "Total Return",
+                value: `$${portfolioData?.summary?.totalReturn.toLocaleString()}`,
+                change: {
+                  value: formatPercentageValue(portfolioData?.summary?.totalReturnPercentage),
+                  isPositive: portfolioData?.summary?.totalReturn >= 0,
+                },
+                icon: Icons.graph,
+                iconColor: tokens.colors.primary?.[500] || "#3B82F6",
+                backgroundColor: tokens.colors.primary?.[100] || "#DBEAFE",
+              },
+              {
+                label: "Active Investments",
+                value: portfolioData?.summary?.activeInvestments.toString(),
+                icon: Icons.shieldTick,
+                iconColor: tokens.colors.warning?.[500] || "#F59E0B",
+                backgroundColor: tokens.colors.warning?.[100] || "#FEF3C7",
+              },
+              {
+                label: "Completed",
+                value: portfolioData?.summary?.completedInvestments.toString(),
+                icon: Icons.timer,
+                iconColor: tokens.colors.neutral?.[500] || "#6B7280",
+                backgroundColor: tokens.colors.neutral?.[100] || "#F3F4F6",
+              },
+            ]}
+          />
         ) : (
           <View className="px-6">
             {portfolioData.investments && portfolioData.investments.length > 0 ? (
-              portfolioData.investments.map(
-                (
-                  investment: UserInvestment & {
-                    title?: string;
-                    investedAt?: string;
-                    expectedMaturity?: string;
+              portfolioData.investments.map((item) => (
+                <InvestmentItem
+                  key={item.id}
+                  id={item.id}
+                  title={item.investmentName}
+                  investedAmount={item.investedAmount}
+                  currentValue={item.currentValue}
+                  returnAmount={item.returnAmount}
+                  returnPercentage={item.returnPercentage}
+                  status={
+                    item.status === "cancelled"
+                      ? "completed"
+                      : (item.status as "active" | "completed" | "pending")
                   }
-                ) => renderInvestmentItem(investment)
-              )
+                  onPress={() => handleInvestmentPress(item.id)}
+                />
+              ))
             ) : (
               <View className="items-center py-20">
                 <SvgXml xml={Icons.cup} width={60} height={60} fill={tokens.colors.text.tertiary} />

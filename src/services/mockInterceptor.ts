@@ -83,7 +83,10 @@ export class MockInterceptor {
         : null;
     }
 
-    if (normalizedUrl.includes(API_ENDPOINTS.AUTH.REGISTER.toLowerCase()) || normalizedUrl.includes(API_ENDPOINTS.USER_REGISTRATION.toLowerCase())) {
+    if (
+      normalizedUrl.includes(API_ENDPOINTS.AUTH.REGISTER.toLowerCase()) ||
+      normalizedUrl.includes(API_ENDPOINTS.USER_REGISTRATION.toLowerCase())
+    ) {
       return method === "post" ? await mockAuthApi.register(config.data) : null;
     }
 
@@ -119,9 +122,7 @@ export class MockInterceptor {
     }
 
     if (normalizedUrl.includes(API_ENDPOINTS.USER.CHANGE_PASSWORD.toLowerCase())) {
-      return method === "post"
-        ? await mockUserApi.changePassword(config.data)
-        : null;
+      return method === "post" ? await mockUserApi.changePassword(config.data) : null;
     }
 
     // Investment endpoints

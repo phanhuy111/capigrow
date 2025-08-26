@@ -15,8 +15,8 @@ const Screen: React.FC<ScreenProps> = ({
   style,
   className,
 }) => {
-  const baseClasses = "flex-1 bg-white";
-  const paddingClasses = paddingHorizontal ? " px-6" : "";
+  const baseClasses = "flex-1 bg-white gap-2";
+  const paddingClasses = paddingHorizontal ? "" : "";
   const combinedClasses = `${baseClasses}${paddingClasses} ${className || ""}`;
 
   return (

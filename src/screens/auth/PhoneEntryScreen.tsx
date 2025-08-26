@@ -110,10 +110,10 @@ const PhoneEntryScreen: React.FC = () => {
         </View>
 
         {/* Bottom Form Section */}
-        <View className="bg-white rounded-t-2xl pt-6" style={{ minHeight: height * 0.5 }}>
+        <View className="bg-white rounded-t-2xl pt-6" style={{ minHeight: height * 0.56 }}>
           <View className="px-6 flex gap-2">
             <Text className="text-3xl font-bold text-gray-900 mb-3 text-left">
-              Nhập số điện thoại của bạn{"\n"}để bắt đầu
+              Nhập số điện thoại của bạn để bắt đầu
             </Text>
 
             {/* Country and Phone Input */}
