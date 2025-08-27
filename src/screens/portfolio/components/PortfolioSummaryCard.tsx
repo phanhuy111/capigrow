@@ -1,7 +1,7 @@
 import type React from "react";
 import { Text, View } from "react-native";
-import { SvgXml } from "react-native-svg";
 import { Icons } from "@/assets";
+import Icon from "@/components/common/Icon";
 import tokens from "@/components/lib/tokens";
 import { Button, Card } from "@/components/ui";
 import { formatPercentageValue } from "@/utils/helpers";
@@ -37,11 +37,10 @@ const PortfolioSummaryCard: React.FC<PortfolioSummaryCardProps> = ({
       <View className="flex-row justify-between items-center mb-6">
         <View className="flex-row items-center gap-3">
           <View className="w-12 h-12 bg-blue-50 rounded-full items-center justify-center">
-            <SvgXml
-              xml={Icons.emptyWallet}
-              width={24}
-              height={24}
-              fill={tokens.colors.primary[500]}
+            <Icon
+              name="emptyWallet"
+              size={24}
+              color={tokens.colors.primary[500]}
             />
           </View>
           <View>
@@ -52,22 +51,20 @@ const PortfolioSummaryCard: React.FC<PortfolioSummaryCardProps> = ({
           </View>
         </View>
         <Button variant="ghost" size="icon" style={{ width: 32, height: 32 }} onPress={onInfoPress}>
-          <SvgXml
-            xml={Icons.infoCircle}
-            width={20}
-            height={20}
-            fill={tokens.colors.text.secondary}
+          <Icon
+            name="infoCircle"
+            size={20}
+            color={tokens.colors.text.secondary}
           />
         </Button>
       </View>
 
       {/* Return Information */}
       <View className="flex-row items-center justify-center gap-2 mb-6">
-        <SvgXml
-          xml={Icons.trendUp}
-          width={16}
-          height={16}
-          fill={isPositiveReturn ? tokens.colors.success[500] : tokens.colors.error[500]}
+        <Icon
+          name="trendUp"
+          size={16}
+          color={isPositiveReturn ? tokens.colors.success[500] : tokens.colors.error[500]}
         />
         <Text
           className="text-base font-semibold"
@@ -94,11 +91,10 @@ const PortfolioSummaryCard: React.FC<PortfolioSummaryCardProps> = ({
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-3">
           <View className="w-10 h-10 bg-green-50 rounded-xl items-center justify-center">
-            <SvgXml
-              xml={Icons.moneyReceive}
-              width={20}
-              height={20}
-              fill={tokens.colors.success[500]}
+            <Icon
+              name="moneyReceive"
+              size={20}
+              color={tokens.colors.success[500]}
             />
           </View>
           <View>
@@ -110,11 +106,10 @@ const PortfolioSummaryCard: React.FC<PortfolioSummaryCardProps> = ({
                 style={{ width: 20, height: 20 }}
                 onPress={onInfoPress}
               >
-                <SvgXml
-                  xml={Icons.infoCircle}
-                  width={16}
-                  height={16}
-                  fill={tokens.colors.text.secondary}
+                <Icon
+                  name="infoCircle"
+                  size={16}
+                  color={tokens.colors.text.secondary}
                 />
               </Button>
             </View>

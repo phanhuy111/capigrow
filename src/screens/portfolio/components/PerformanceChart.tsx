@@ -1,7 +1,7 @@
 import type React from "react";
 import { Text, View } from "react-native";
-import { SvgXml } from "react-native-svg";
 import { Icons } from "@/assets";
+import Icon from "@/components/common/Icon";
 import tokens from "@/components/lib/tokens";
 import { Card } from "@/components/ui";
 
@@ -40,11 +40,10 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
         style={{ height }}
       >
         <View className="items-center">
-          <SvgXml
-            xml={Icons.chartSuccess}
-            width={48}
-            height={48}
-            fill={tokens.colors.neutral[400]}
+          <Icon
+            name="chartSuccess"
+            size={48}
+            color={tokens.colors.neutral[400]}
           />
           <Text className="text-sm text-gray-500 mt-2">Biểu đồ hiệu suất</Text>
           <Text className="text-xs text-gray-400 mt-1">Dữ liệu sẽ được hiển thị tại đây</Text>

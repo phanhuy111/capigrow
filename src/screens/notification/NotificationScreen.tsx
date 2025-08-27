@@ -1,7 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import type React from "react";
 import { RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { SvgXml } from "react-native-svg";
 import { Icons } from "@/assets";
 import { Card } from "@/components/ui";
 import {

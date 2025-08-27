@@ -1,8 +1,8 @@
 import type React from "react";
 import { useState } from "react";
 import { RefreshControl, ScrollView, Text, View } from "react-native";
-import { SvgXml } from "react-native-svg";
 import { Icons } from "@/assets";
+import Icon from "@/components/common/Icon";
 import Screen from "@/components/common/Screen";
 import tokens from "@/components/lib/tokens";
 import { Button } from "@/components/ui";
@@ -80,11 +80,10 @@ const PortfolioScreen: React.FC = () => {
               backgroundColor: tokens.colors.background.secondary,
             }}
           >
-            <SvgXml
-              xml={Icons.infoCircle}
-              width={24}
-              height={24}
-              fill={tokens.colors.text.primary}
+            <Icon
+              name="infoCircle"
+              size={24}
+              color={tokens.colors.text.primary}
             />
           </Button>
         </View>
@@ -123,7 +122,7 @@ const PortfolioScreen: React.FC = () => {
               {
                 label: "Total Value",
                 value: `$${portfolioData?.summary?.currentValue.toLocaleString()}`,
-                icon: Icons.trendUp,
+                icon: "trendUp",
                 iconColor: tokens.colors.success?.[500] || "#10B981",
                 backgroundColor: tokens.colors.success?.[100] || "#DCFCE7",
               },
@@ -134,21 +133,21 @@ const PortfolioScreen: React.FC = () => {
                   value: formatPercentageValue(portfolioData?.summary?.totalReturnPercentage),
                   isPositive: portfolioData?.summary?.totalReturn >= 0,
                 },
-                icon: Icons.graph,
+                icon: "graph",
                 iconColor: tokens.colors.primary?.[500] || "#3B82F6",
                 backgroundColor: tokens.colors.primary?.[100] || "#DBEAFE",
               },
               {
                 label: "Active Investments",
                 value: portfolioData?.summary?.activeInvestments.toString(),
-                icon: Icons.shieldTick,
+                icon: "shieldTick",
                 iconColor: tokens.colors.warning?.[500] || "#F59E0B",
                 backgroundColor: tokens.colors.warning?.[100] || "#FEF3C7",
               },
               {
                 label: "Completed",
                 value: portfolioData?.summary?.completedInvestments.toString(),
-                icon: Icons.timer,
+                icon: "timer",
                 iconColor: tokens.colors.neutral?.[500] || "#6B7280",
                 backgroundColor: tokens.colors.neutral?.[100] || "#F3F4F6",
               },
@@ -176,7 +175,7 @@ const PortfolioScreen: React.FC = () => {
               ))
             ) : (
               <View className="items-center py-20">
-                <SvgXml xml={Icons.cup} width={60} height={60} fill={tokens.colors.text.tertiary} />
+                <Icon name="cup" size={60} color={tokens.colors.text.tertiary} />
                 <Text className="text-lg font-bold text-gray-900 mt-4 mb-1">
                   No Investments Yet
                 </Text>

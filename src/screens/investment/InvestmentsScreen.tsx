@@ -3,8 +3,8 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type React from "react";
 import { useState } from "react";
 import { RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { SvgXml } from "react-native-svg";
 import { Icons } from "@/assets";
+import Icon from "@/components/common/Icon";
 import Screen from "@/components/common/Screen";
 import { Card } from "@/components/ui/card";
 import { useInvestmentCategoriesQuery, useInvestmentsQuery } from "@/hooks/useInvestmentQueries";
@@ -76,22 +76,22 @@ const InvestmentsScreen: React.FC = () => {
     }
   };
 
-  const getCategoryIcon = (category: string) => {
+  const getCategoryIconName = (category: string) => {
     switch (category.toLowerCase()) {
       case "energy":
-        return Icons.cup;
+        return "cup";
       case "technology":
-        return Icons.diagram;
+        return "diagram";
       case "real estate":
-        return Icons.buildings;
+        return "buildings";
       case "healthcare":
-        return Icons.health;
+        return "health";
       case "agriculture":
-        return Icons.global;
+        return "global";
       case "finance":
-        return Icons.bank;
+        return "bank";
       default:
-        return Icons.cup;
+        return "cup";
     }
   };
 
@@ -114,11 +114,10 @@ const InvestmentsScreen: React.FC = () => {
           <View className="flex-row justify-between items-start mb-6">
             <View className="flex-row items-center flex-1 gap-4">
               <View className="w-10 h-10 rounded-full bg-blue-50 justify-center items-center">
-                <SvgXml
-                  xml={getCategoryIcon(item.category)}
-                  width={20}
-                  height={20}
-                  fill={COLORS.primary}
+                <Icon
+                  name={getCategoryIconName(item.category)}
+                  size={20}
+                  color={COLORS.primary}
                 />
               </View>
               <View className="flex-1">
@@ -139,15 +138,15 @@ const InvestmentsScreen: React.FC = () => {
 
           <View className="flex-row justify-between mb-6">
             <View className="flex-row items-center gap-2">
-              <SvgXml xml={Icons.trendUp} width={16} height={16} fill={COLORS.positive} />
+              <Icon name="trendUp" size={16} color={COLORS.positive} />
               <Text className="text-sm text-gray-600 font-medium">{item.expectedReturn}% APY</Text>
             </View>
             <View className="flex-row items-center gap-2">
-              <SvgXml xml={Icons.timer} width={16} height={16} fill={COLORS.textSecondary} />
+              <Icon name="timer" size={16} color={COLORS.textSecondary} />
               <Text className="text-sm text-gray-600 font-medium">{item.duration} months</Text>
             </View>
             <View className="flex-row items-center gap-2">
-              <SvgXml xml={Icons.emptyWallet} width={16} height={16} fill={COLORS.textSecondary} />
+              <Icon name="emptyWallet" size={16} color={COLORS.textSecondary} />
               <Text className="text-sm text-gray-600 font-medium">
                 {formatCurrency(item.minInvestment ?? 0)}
               </Text>
@@ -189,11 +188,10 @@ const InvestmentsScreen: React.FC = () => {
         className="w-14 h-14 rounded-full justify-center items-center"
         style={{ backgroundColor: `${category.color}20` }}
       >
-        <SvgXml
-          xml={getCategoryIcon(category.name)}
-          width={20}
-          height={20}
-          fill={selectedCategory === category.name ? COLORS.white : category.color}
+        <Icon
+          name={getCategoryIconName(category.name)}
+          size={20}
+          color={selectedCategory === category.name ? COLORS.white : category.color}
         />
       </View>
       <Text
@@ -233,14 +231,14 @@ const InvestmentsScreen: React.FC = () => {
         <View className="flex-row justify-between items-center mb-8 pt-4">
           <Text className="text-2xl font-bold text-gray-900">Explore</Text>
           <TouchableOpacity className="w-11 h-11 rounded-full bg-gray-50 justify-center items-center">
-            <SvgXml xml={Icons.notification} width={24} height={24} fill={COLORS.textPrimary} />
+            <Icon name="notification" size={24} color={COLORS.textPrimary} />
           </TouchableOpacity>
         </View>
 
         {/* Search Bar */}
         <View className="flex-row items-center mb-8 gap-4">
           <View className="flex-1 flex-row items-center bg-gray-50 rounded-lg px-5 py-4 gap-4">
-            <SvgXml xml={Icons.search} width={20} height={20} fill={COLORS.textTertiary} />
+            <Icon name="search" size={20} color={COLORS.textTertiary} />
             <TextInput
               className="flex-1 text-base text-gray-900"
               placeholder="Search investments..."
@@ -250,7 +248,7 @@ const InvestmentsScreen: React.FC = () => {
             />
           </View>
           <TouchableOpacity className="w-12 h-12 rounded-lg bg-gray-50 justify-center items-center">
-            <SvgXml xml={Icons.menuSquare} width={20} height={20} fill={COLORS.textPrimary} />
+            <Icon name="menuSquare" size={20} color={COLORS.textPrimary} />
           </TouchableOpacity>
         </View>
 
@@ -282,7 +280,7 @@ const InvestmentsScreen: React.FC = () => {
               Found
             </Text>
             <TouchableOpacity className="flex-row items-center gap-2">
-              <SvgXml xml={Icons.arrowDown} width={16} height={16} fill={COLORS.textSecondary} />
+              <Icon name="arrowDown" size={16} color={COLORS.textSecondary} />
               <Text className="text-sm font-medium text-gray-600">Sort</Text>
             </TouchableOpacity>
           </View>
@@ -291,7 +289,7 @@ const InvestmentsScreen: React.FC = () => {
             filteredInvestments.map(renderInvestmentCard)
           ) : (
             <View className="items-center py-16 gap-6">
-              <SvgXml xml={Icons.cup} width={60} height={60} fill={COLORS.textTertiary} />
+              <Icon name="cup" size={60} color={COLORS.textTertiary} />
               <Text className="text-xl font-semibold text-gray-900">No Investments Found</Text>
               <Text className="text-base text-gray-600 text-center px-6">
                 Try adjusting your search criteria or check back later for new opportunities.

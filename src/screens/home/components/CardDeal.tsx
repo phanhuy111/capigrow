@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import { SvgXml } from "react-native-svg";
 import { Icons } from "@/assets";
+import Icon from "@/components/common/Icon";
 export interface CardDealProps {
   title: string;
   category: string;
@@ -76,7 +76,7 @@ const CardDeal: React.FC<CardDealProps> = ({
             {/* Raised Amount */}
             <View className="gap-2">
               <View className="flex-row items-center gap-2">
-                <SvgXml xml={Icons.cup} width={16} height={16} color="#616162" />
+                <Icon name="cup" size={16} color="#616162" />
                 <Text className="text-xs font-semibold leading-4 text-gray-500">Đã gọi vốn</Text>
               </View>
               <View className="flex-row items-center gap-1">
@@ -95,7 +95,7 @@ const CardDeal: React.FC<CardDealProps> = ({
                 <Text className="text-xs font-semibold leading-4 text-gray-500">
                   Thu nhập kỳ vọng
                 </Text>
-                <SvgXml xml={Icons.trendUp} width={16} height={16} color="#616162" />
+                <Icon name="trendUp" size={16} color="#616162" />
               </View>
               <View className="flex-row items-center gap-1">
                 <Text className="text-sm font-semibold leading-5 text-green-600">

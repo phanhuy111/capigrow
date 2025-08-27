@@ -1,7 +1,7 @@
 import type React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
-import { SvgXml } from "react-native-svg";
 import { Icons } from "@/assets";
+import Icon from "@/components/common/Icon";
 import tokens from "@/components/lib/tokens";
 import { Card } from "@/components/ui";
 import { formatPercentageValue } from "@/utils/helpers";
@@ -78,11 +78,10 @@ const InvestmentItem: React.FC<InvestmentItemProps> = ({
                   resizeMode="cover"
                 />
               ) : (
-                <SvgXml
-                  xml={Icons.buildings}
-                  width={24}
-                  height={24}
-                  fill={tokens.colors.neutral[600]}
+                <Icon
+                  name="buildings"
+                  size={24}
+                  color={tokens.colors.neutral[600]}
                 />
               )}
             </View>
@@ -106,11 +105,10 @@ const InvestmentItem: React.FC<InvestmentItemProps> = ({
               {formatCurrencyVND(currentValue)}
             </Text>
             <View className="flex-row items-center gap-1">
-              <SvgXml
-                xml={isPositiveReturn ? Icons.trendUp : Icons.arrowDown}
-                width={12}
-                height={12}
-                fill={isPositiveReturn ? tokens.colors.success[500] : tokens.colors.error[500]}
+              <Icon
+                name={isPositiveReturn ? "trendUp" : "arrowDown"}
+                size={12}
+                color={isPositiveReturn ? tokens.colors.success[500] : tokens.colors.error[500]}
               />
               <Text
                 className="text-xs font-medium"

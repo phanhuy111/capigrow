@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { SvgXml } from "react-native-svg";
+import Icon from "../../components/common/Icon";
 import Screen from "../../components/common/Screen";
 import { Icons } from "../../assets";
 import { theme } from "../../lib/theme";
@@ -58,12 +58,10 @@ const CommonSuccessScreen: React.FC = () => {
               <View className="w-1 h-3 bg-black rounded-sm" />
             </View>
             {/* WiFi */}
-            <SvgXml
-              xml={`<svg width="17" height="12" viewBox="0 0 17 12" fill="none">
-                <path d="M8.5 12C9.33 12 10 11.33 10 10.5S9.33 9 8.5 9 7 9.67 7 10.5 7.67 12 8.5 12ZM8.5 0C5.19 0 2.27 1.4 0 3.67L1.41 5.08C3.32 3.17 5.8 2 8.5 2S13.68 3.17 15.59 5.08L17 3.67C14.73 1.4 11.81 0 8.5 0ZM8.5 4C6.76 4 5.15 4.65 3.93 5.87L5.34 7.28C6.2 6.42 7.3 6 8.5 6S10.8 6.42 11.66 7.28L13.07 5.87C11.85 4.65 10.24 4 8.5 4Z" fill="black"/>
-              </svg>`}
-              width={17}
-              height={12}
+            <Icon
+              name="wifi"
+              size={17}
+              color="black"
             />
             {/* Battery */}
             <View className="w-7 h-3 border border-black border-opacity-35 rounded-sm relative">
@@ -84,7 +82,7 @@ const CommonSuccessScreen: React.FC = () => {
 
               {/* Success Icon Container */}
               <View className="w-12 h-12 bg-green-500 rounded-2xl justify-center items-center">
-                <SvgXml xml={Icons.shieldTick} width={24} height={24} color="white" />
+                <Icon name="shieldTick" size={24} color="white" />
               </View>
             </View>
 

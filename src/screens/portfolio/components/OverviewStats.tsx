@@ -1,7 +1,7 @@
 import type React from "react";
 import { Text, View } from "react-native";
-import { SvgXml } from "react-native-svg";
 import { Icons } from "@/assets";
+import Icon from "@/components/common/Icon";
 import tokens from "@/components/lib/tokens";
 import { Card } from "@/components/ui";
 
@@ -33,15 +33,14 @@ const OverviewStats: React.FC<OverviewStatsProps> = ({ stats }) => {
                 className="w-10 h-10 rounded-xl items-center justify-center"
                 style={{ backgroundColor: stat.backgroundColor }}
               >
-                <SvgXml xml={stat.icon} width={20} height={20} fill={stat.iconColor} />
+                <Icon name={stat.icon} size={20} color={stat.iconColor} />
               </View>
               {stat.change && (
                 <View className="flex-row items-center gap-1">
-                  <SvgXml
-                    xml={stat.change.isPositive ? Icons.trendUp : Icons.arrowDown}
-                    width={12}
-                    height={12}
-                    fill={
+                  <Icon
+                    name={stat.change.isPositive ? "trendUp" : "arrowDown"}
+                    size={12}
+                    color={
                       stat.change.isPositive ? tokens.colors.success[500] : tokens.colors.error[500]
                     }
                   />
