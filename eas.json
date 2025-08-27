@@ -35,7 +35,9 @@
         "EXPO_PUBLIC_ENVIRONMENT": "production"
       },
       "ios": {
-        "autoIncrement": true
+        "autoIncrement": true,
+        "image": "latest",
+        "enterpriseProvisioning": "universal"
       },
       "android": {
         "autoIncrement": true,

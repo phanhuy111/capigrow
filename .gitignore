@@ -36,6 +36,8 @@ google-service-account.json
 
 # EAS credentials
 .easignore
+credentials.json
+credentials/
 
 # Android/IntelliJ
 #
